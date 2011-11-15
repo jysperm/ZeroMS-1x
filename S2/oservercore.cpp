@@ -63,32 +63,33 @@ void OServerCore::checkMsg(QString uname)
     int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
-	throwError(uname);
-	return;
+        throwError(uname);
+        return;
     }
     if(databuf->size()>=(len+P_HEADLEN))
     {
-	//如果已经接收到了数据包的全部数据，进行分发命令
-	int type=QBtoint(databuf->mid(8,4));
-	unsigned int time=QBtoint(databuf->mid(12,4));
-	QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
-	cl[uname]->lasttime=QDateTime::currentDateTime().toTime_t();
-	switch(type)
-	{
-	    case M_Login:
-		msgLogin(uname,msgData,time);
-		break;
-	    case M_AskTime:
-		msgAckTime(uname,msgData,time);
-		break;
-	    case M_AskUList:
-		msgAskUList(uname,msgData,time);
-		break;
-	    default:
-		throwError(uname);
-		return;//TODO
-	}
-	DELETE(msgData);
+        //如果已经接收到了数据包的全部数据，进行分发命令
+        int type=QBtoint(databuf->mid(8,4));
+        unsigned int time=QBtoint(databuf->mid(12,4));
+        QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
+        cl[uname]->lasttime=QDateTime::currentDateTime().toTime_t();
+        switch(type)
+        {
+            case M_Error:
+            case M_AskTime:
+            case M_Time:
+            case M_Ping:
+            case M_Exit:
+            case M_CMsg:
+            case M_SMsg:
+            case M_Login:
+            case M_LoginOk:
+            case M_LoginError:
+            case M_AskUList:
+            case M_UList:
+            case M_ChangeUList:
+        }
+        DELETE(msgData);
         if(databuf)
             databuf->remove(0,P_HEADLEN+len);
     }
