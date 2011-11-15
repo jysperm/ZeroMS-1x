@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Act">
+        <file>images/40_0ms.png</file>
+        <file>images/web.png</file>
+    </qresource>
+    <qresource prefix="/Images">
+        <file>images/banner.png</file>
+    </qresource>
+</RCC>
