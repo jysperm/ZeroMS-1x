@@ -88,6 +88,7 @@ void OServerCore::checkMsg(QString uname)
             case M_AskUList:
             case M_UList:
             case M_ChangeUList:
+                ;
         }
         DELETE(msgData);
         if(databuf)
@@ -192,6 +193,12 @@ void OServerCore::msgLoginError(QString)
 }
 
 void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
+{
+    if(cl[uname]->isLoged)
+        msgUList(uname);
+}
+
+void OServerCore::msgUList(QString)
 {
 
 }
