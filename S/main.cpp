@@ -2,8 +2,7 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include "const.h"
-#include "socketlist.h"
-#include "servercore.h"
+#include "oservercore.h"
 
 //标准输入和标准输出
 QTextStream cin(stdin);
@@ -20,7 +19,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-    ServerCore sc;
+    OServerCore sc;
     sc.run();
 
     return a.exec();
