@@ -1,6 +1,6 @@
 QT       = core network
 
-TARGET = S2
+TARGET = S
 CONFIG   += console
 CONFIG   -= app_bundle
 
