@@ -1,4 +1,5 @@
 *.pro.user
 *.qm
 /S2-build/*
+/S-build/*
 
