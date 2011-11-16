@@ -202,9 +202,20 @@ void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
         msgUList(uname);
 }
 
-void OServerCore::msgUList(QString)
+void OServerCore::msgUList(QString uname)
 {
-
+    QStringList users=cl.keys();
+    QStringList online;
+    foreach(QString i,users)
+    {
+        if(cl[i]->isLoged)
+            online.append(i);
+    }
+    QByteArray msgData;
+    msgData.append(users.join(","));
+    OPacket packet(msgData,M_UList);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgChangeUList(QStringList users)
