@@ -220,7 +220,15 @@ void OServerCore::msgUList(QString uname)
 
 void OServerCore::msgChangeUList(QStringList users)
 {
-
+    foreach(QString i,users)
+    {
+        if(cl[i]->isLoged)
+        {
+            OPacket packet(M_ChangeUList);
+            QTcpSocket *conn=cl[i]->conn;
+            conn->write(packet.exec());
+        }
+    }
 }
 
 //private slots:
