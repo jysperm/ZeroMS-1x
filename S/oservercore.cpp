@@ -182,14 +182,18 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     connect(reply, SIGNAL(finished()), this, SLOT(LoginResult()));
 }
 
-void OServerCore::msgLoginOk(QString)
+void OServerCore::msgLoginOk(QString uname)
 {
-
+    OPacket packet(M_LoginOk);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
-void OServerCore::msgLoginError(QString)
+void OServerCore::msgLoginError(QString uname)
 {
-
+    OPacket packet(M_LoginError);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
