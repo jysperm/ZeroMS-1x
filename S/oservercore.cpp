@@ -163,6 +163,37 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
         return;
     }
     cl[uname]->ping();
+
+    QString msg=*data;
+    QString objUName=msg.left(msg.indexOf(" "));
+    msg.remove(0,objUName.length()+1);
+
+    if(objUName==MAIN_GROUP)
+    {
+        for(it i=cl.begin();i!=cl.end();i++)
+        {
+            if(i.value()->isLoged)
+                msgSMsg(i.key(),MAIN_GROUP,uname,msg);
+        }
+    }
+
+    if(cl.contains(objUName))
+    {
+        msgSMsg(objUName,uname,uname,msg);
+    }
+}
+
+void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg)
+{
+    //注意这里的参数
+    //objname是要发送的目标用户，from是来自的目标(私聊同uname，群聊同MAIN_GROUP)
+    //uname是发送者用户名，msg是消息内容
+    QByteArray msgData;
+    //注意，这里的时间戳是字符串的形式
+    msgData.append(QString("%1 %2 %3").arg(from).arg(uname).arg(msg));
+    OPacket packet(msgData,M_SMsg);
+    QTcpSocket *conn=cl[objname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
