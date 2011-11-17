@@ -63,7 +63,7 @@ void OServerCore::checkMsg(QString uname)
     int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
-        throwError(uname);
+        msgError(uname);
         return;
     }
     if(databuf->size()>=(len+P_HEADLEN))
@@ -94,24 +94,6 @@ void OServerCore::checkMsg(QString uname)
         if(databuf)
             databuf->remove(0,P_HEADLEN+len);
     }
-}
-
-void OServerCore::throwError(QString uname)
-{/*
-    //向客户端抛出异样，并关闭连接
-    //一般是无法解析客户端发来的消息时，使用此函数
-    log(tr("%1 abort，cant understand").arg(uname));
-    QByteArray data;
-    QByteArray msgData;
-    //请注意，只能用QDataStream处理数字类型，如果处理字符串的话，会被转换成QT专有的格式，而非UTF-8
-    QDataStream DSdata(&data,QIODevice::ReadWrite);
-    msgData.append(ERROR_STR);
-    unsigned int time=QDateTime::currentDateTime().toTime_t();
-    DSdata<<P_USE<<msgData.size()<<M1_Error<<time;
-    data.append(msgData);
-    QTcpSocket *conn=sl[uname]->conn;
-    conn->write(data);
-    sl[uname]->isClose=1;*/
 }
 
 //----

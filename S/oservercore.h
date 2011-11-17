@@ -24,8 +24,6 @@ private:
     void log(QString msg);
     //分发消息
     void checkMsg(QString uname);
-    //向客户端抛出错误
-    void throwError(QString);
 
     void msgError(QString uname);
     void msgAckTime(QString uname,QByteArray *data,unsigned int time);
