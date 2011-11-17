@@ -173,7 +173,8 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     QByteArray content;
     content.append(QString("do=login&uname=%1&listname=%2&pwd=%3&time=%4&clientver=%5&clientname=%6")
                    .arg(msgUName).arg(uname).arg(dpwd).arg(QString::number(stime)).arg(msgClientVer).arg(msgClientName));
-    manager=new QNetworkAccessManager(this);
+    if(!manager)
+        manager=new QNetworkAccessManager(this);
     QNetworkRequest request ;
     request.setUrl(QUrl(LOGIN_APIURL));
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
@@ -256,7 +257,6 @@ void OServerCore::LoginResult()
         msgLoginError(result[UAPI_LISTNAME]);
     }
     DELETE(reply);
-    DELETE(manager);
 }
 
 void OServerCore::onNewConn()
