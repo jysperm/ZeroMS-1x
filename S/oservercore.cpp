@@ -141,7 +141,12 @@ void OServerCore::msgTime(QString uname)
 
 void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
 {
-
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
 }
 
 void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
@@ -152,12 +157,22 @@ void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
 
 void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
 {
-
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
-
+    if(cl[uname]->isLoged)
+    {
+        //如果已经登陆，则向客户端发送解析错误
+        msgError(uname);
+        return;
+    }
     QString msg=*data;
     //下面几句比较乱，总之是为了从数据部分(msg)里拆分出各个字段
     QString msgUName=msg.left(msg.indexOf(" "));
@@ -199,8 +214,13 @@ void OServerCore::msgLoginError(QString uname)
 
 void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
 {
-    if(cl[uname]->isLoged)
-        msgUList(uname);
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
+    msgUList(uname);
 }
 
 void OServerCore::msgUList(QString uname)
