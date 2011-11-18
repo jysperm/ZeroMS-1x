@@ -24,7 +24,6 @@ OServerCore::OServerCore():manager(0),reply(0)
 
 OServerCore::~OServerCore()
 {
-    DELETE(reply);
     DELETE(manager);
     stop();
 }
@@ -289,7 +288,6 @@ void OServerCore::LoginResult()
     {
         msgLoginError(result[UAPI_LISTNAME]);
     }
-    DELETE(reply);
 }
 
 void OServerCore::onNewConn()
