@@ -19,8 +19,8 @@ OClientCore::OClientCore(QApplication *app):conn(0),app(app),stime(0),uptime(0),
 
 OClientCore::~OClientCore()
 {
-    sDelete(conn);
-    sDelete(databuf);
+    DELETE(conn);
+    DELETE(databuf);
 }
 
 void OClientCore::init()
@@ -50,7 +50,7 @@ void OClientCore::msgAskTime()
     QDataStream DSdata(&data,QIODevice::ReadWrite);
     unsigned int time=QDateTime::currentDateTime().toTime_t();
 
-    DSdata<<P_USE<<msgData.size()<<M1_AskTime<<time;
+    DSdata<<P_VER<<msgData.size()<<M_AskTime<<time;
     data.append(msgData);
 
     conn->write(data);
@@ -79,7 +79,7 @@ void OClientCore::msgLogin(QString username,QString pwd)
 
     msgData.append(username+" "+spwd+" "+QString::number(CLIENT_VER_NUM)+" "+CLIENT_NAME);
 
-    DSdata<<P_USE<<msgData.size()<<M1_Login<<time;
+    DSdata<<P_VER<<msgData.size()<<M_Login<<time;
     data.append(msgData);
     this->uname=username;
     conn->write(data);
@@ -92,7 +92,7 @@ void OClientCore::msgAskUList()
     QDataStream DSdata(&data,QIODevice::ReadWrite);
     unsigned int time=QDateTime::currentDateTime().toTime_t();
 
-    DSdata<<P_USE<<msgData.size()<<M1_AskUList<<time;
+    DSdata<<P_VER<<msgData.size()<<M_AskUList<<time;
     data.append(msgData);
 
     conn->write(data);
@@ -123,7 +123,7 @@ void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
     msgAskUList();
 }
 
-void ClientCore::msgUList(QByteArray*,unsigned int time)
+void OClientCore::msgUList(QByteArray*,unsigned int time)
 {
 
 }
@@ -156,8 +156,8 @@ void OClientCore::throwError()
     if(conn->state()==QAbstractSocket::ClosingState)
 	conn->waitForDisconnected();
     stime=0;
-    sDelete(conn);
-    sDelete(databuf);
+    DELETE(conn);
+    DELETE(databuf);
 }
 
 //private slots:
@@ -165,48 +165,48 @@ void OClientCore::onData()
 {
     //分发消息，该函数将根据消息的类型分发给具体的处理函数
     databuf->append(conn->readAll());
-    if(databuf->size() < P1_HEAD_LEN)
+    if(databuf->size() < P_HEADLEN)
 	return;
     //取前32位(协议版本)，注意只是复制，并没有从data中删除
     unsigned int ver=QBtoint(databuf->mid(0,4));
     unsigned int len=QBtoint(databuf->mid(4,4));
-    if(!P_checkVer(ver))
+    if(!checkVer(ver))
     {
 	throwError();
 	return;
     }
     //这是因为包头中的长度字段并不包含头部本身的长度
-    if(databuf->size() >= (P1_HEAD_LEN+len))
+    if(databuf->size() >= (P_HEADLEN+len))
     {
 	//如果已经接收到了全部数据，进行分发命令
 	unsigned int type=QBtoint(databuf->mid(8,4));
 	unsigned int time=QBtoint(databuf->mid(12,4));
 	unsigned int len=QBtoint(databuf->mid(4,4));
-	QByteArray *msgData=new QByteArray(databuf->mid(P1_HEAD_LEN,len));
+        QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
 	switch(type)
 	{
-	    case M1_Time:
+            case M_Time:
 		msgTime(msgData,time);
 		break;
-	    case M1_LoginOk:
+            case M_LoginOk:
 		msgLoginOk(msgData,time);
 		break;
-	    case M1_LoginError:
+            case M_LoginError:
 		msgLoginError(msgData,time);
 		break;
-	    case M1_ChangeUList:
+            case M_ChangeUList:
 		msgChangeUList(msgData,time);
 		break;
-	    case M1_UList:
+            case M_UList:
 		msgUList(msgData,time);
 		break;
 	    default:
 		throwError();
 		return;
 	}
-	sDelete(msgData);
+        DELETE(msgData);
 	if(databuf)
-	    databuf->remove(0,P1_HEAD_LEN+len);
+            databuf->remove(0,P_HEADLEN+len);
     }
 }
 

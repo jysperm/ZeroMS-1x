@@ -1,6 +1,6 @@
 #ifndef CLIENTCOREEX_H
 #define CLIENTCOREEX_H
-
+/*
 #include "const.h"
 #include "oclientcore.h"
 class QApplication;
@@ -31,5 +31,5 @@ public:
     //TODO,又一个蛋疼的设计
     int error;
 };
-
+*/
 #endif // CLIENTCOREEX_H
