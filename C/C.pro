@@ -24,7 +24,9 @@ HEADERS	+= \
     chatwidget.h \
     clientcoreex.h \
     threadlogodowner.h \
-    inline.h
+    inline.h \
+    p1.h \
+    opacket.h
 
 FORMS	+= \
     login.ui \
@@ -33,6 +35,8 @@ FORMS	+= \
 
 RESOURCES += \
     res.qrc
+
+
 
 
 
