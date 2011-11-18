@@ -9,26 +9,26 @@
 #include <QTcpSocket>
 #include "const.h"
 #include "inline.h"
-#include "clientcore.h"
+#include "oclientcore.h"
 
 //public:
-ClientCore::ClientCore(QApplication *app):conn(0),app(app),stime(0),uptime(0),databuf(0)
+OClientCore::OClientCore(QApplication *app):conn(0),app(app),stime(0),uptime(0),databuf(0)
 {
 
 }
 
-ClientCore::~ClientCore()
+OClientCore::~OClientCore()
 {
     sDelete(conn);
     sDelete(databuf);
 }
 
-void ClientCore::init()
+void OClientCore::init()
 {
 
 }
 
-void ClientCore::connectTo(QString ip,int port)
+void OClientCore::connectTo(QString ip,int port)
 {
     conn=new QTcpSocket;
     databuf=new QByteArray;
@@ -37,13 +37,13 @@ void ClientCore::connectTo(QString ip,int port)
     conn->connectToHost(QHostAddress(ip),port);
 }
 
-void ClientCore::abort()
+void OClientCore::abort()
 {
     this->throwError();
 }
 
 //消息发送函数:
-void ClientCore::msgAskTime()
+void OClientCore::msgAskTime()
 {
     QByteArray data;
     QByteArray msgData;
@@ -56,7 +56,7 @@ void ClientCore::msgAskTime()
     conn->write(data);
 }
 
-void ClientCore::msgLogin(QString username,QString pwd)
+void OClientCore::msgLogin(QString username,QString pwd)
 {
     unsigned int ltime=QDateTime::currentDateTime().toTime_t();
     unsigned int sertime=ltime+stime;
@@ -85,7 +85,7 @@ void ClientCore::msgLogin(QString username,QString pwd)
     conn->write(data);
 }
 
-void ClientCore::msgAskUList()
+void OClientCore::msgAskUList()
 {
     QByteArray data;
     QByteArray msgData;
@@ -100,17 +100,17 @@ void ClientCore::msgAskUList()
 
 //protected:
 //消息回调函数:
-void ClientCore::msgLoginOk(QByteArray *data,unsigned int time)
+void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
 {
 
 }
 
-void ClientCore::msgLoginError(QByteArray *data,unsigned int time)
+void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
 {
 
 }
 
-void ClientCore::msgTime(QByteArray *data,unsigned int time)
+void OClientCore::msgTime(QByteArray *data,unsigned int time)
 {
     unsigned int ltime=QDateTime::currentDateTime().toTime_t();
     unsigned int sertime=QString(*data).toUInt();
@@ -118,7 +118,7 @@ void ClientCore::msgTime(QByteArray *data,unsigned int time)
     uptime=1;
 }
 
-void ClientCore::msgChangeUList(QByteArray*,unsigned int time)
+void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
 {
     msgAskUList();
 }
@@ -129,12 +129,12 @@ void ClientCore::msgUList(QByteArray*,unsigned int time)
 }
 
 //protected:
-QString ClientCore::md5(QString s)
+QString OClientCore::md5(QString s)
 {
     return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
 }
 
-int ClientCore::QBtoint(QByteArray b)
+int OClientCore::QBtoint(QByteArray b)
 {
     QDataStream d(b);
     int i;
@@ -142,7 +142,7 @@ int ClientCore::QBtoint(QByteArray b)
     return i;
 }
 
-QByteArray ClientCore::inttoQB(int i)
+QByteArray OClientCore::inttoQB(int i)
 {
     QByteArray b;
     QDataStream d(b);
@@ -150,7 +150,7 @@ QByteArray ClientCore::inttoQB(int i)
     return b;
 }
 
-void ClientCore::throwError()
+void OClientCore::throwError()
 {
     conn->abort();
     if(conn->state()==QAbstractSocket::ClosingState)
@@ -161,7 +161,7 @@ void ClientCore::throwError()
 }
 
 //private slots:
-void ClientCore::onData()
+void OClientCore::onData()
 {
     //分发消息，该函数将根据消息的类型分发给具体的处理函数
     databuf->append(conn->readAll());
@@ -210,7 +210,7 @@ void ClientCore::onData()
     }
 }
 
-void ClientCore::onError(QAbstractSocket::SocketError s)
+void OClientCore::onError(QAbstractSocket::SocketError s)
 {
     throwError();
 }

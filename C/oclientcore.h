@@ -9,12 +9,12 @@ class QByteArray;
 class QString;
 class QTcpSocket;
 
-class ClientCore:public QObject
+class OClientCore:public QObject
 {
     Q_OBJECT
 public:
-    explicit ClientCore(QApplication *app=0);
-    virtual ~ClientCore();
+    explicit OClientCore(QApplication *app=0);
+    virtual ~OClientCore();
     //初始化，因为有些工作不能在构造函数里完成
     virtual void init();
     //连接到

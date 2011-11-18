@@ -6,7 +6,7 @@
 #include <QStringList>
 #include "const.h"
 #include "inline.h"
-#include "clientcoreex.h"
+#include "oclientcoreex.h"
 #include "ui_mainwidget.h"
 #include "login.h"
 #include "mainwidget.h"
@@ -16,18 +16,18 @@
 #include <QMessageBox>
 
 //public:
-ClientCoreEx::ClientCoreEx(QApplication *app):ClientCore(app),login(0),mw(0),error(0)
+OClientCoreEx::OClientCoreEx(QApplication *app):ClientCore(app),login(0),mw(0),error(0)
 {
 
 }
 
-ClientCoreEx::~ClientCoreEx()
+OClientCoreEx::~OClientCoreEx()
 {
     sDelete(login);
     sDelete(mw);
 }
 
-void ClientCoreEx::init()
+void OClientCoreEx::init()
 {
     ClientCore::init();
     login=new Login;
@@ -35,7 +35,7 @@ void ClientCoreEx::init()
 }
 
 //----
-void ClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
+void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
     ClientCore::msgLoginOk(data,time);
     sDelete(login);
@@ -44,14 +44,14 @@ void ClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
     msgAskUList();
 }
 
-void ClientCoreEx::msgLoginError(QByteArray *data,unsigned int time)
+void OClientCoreEx::msgLoginError(QByteArray *data,unsigned int time)
 {
     ClientCore::msgLoginError(data,time);
     login->LoginError();
     throwError();
 }
 
-void ClientCoreEx::msgUList(QByteArray *data,unsigned int time)
+void OClientCoreEx::msgUList(QByteArray *data,unsigned int time)
 {
     ClientCore::msgUList(data,time);
     QStringList needDown,users=QString(*data).split(",");
@@ -82,7 +82,7 @@ void ClientCoreEx::msgUList(QByteArray *data,unsigned int time)
 }
 
 //----
-void ClientCoreEx::throwError()
+void OClientCoreEx::throwError()
 {
     ClientCore::throwError();
     error=1;

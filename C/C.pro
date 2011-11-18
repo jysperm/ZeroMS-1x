@@ -9,20 +9,28 @@ TEMPLATE= app
 
 SOURCES	+= \
     main.cpp \
-    clientcore.cpp \
-    clientcoreex.cpp
+    oclientcore.cpp \
+    oclientcoreex.cpp
 
 HEADERS	+= \
     const.h \
-    clientcore.h \
-    clientcoreex.h \
     inline.h \
     p1.h \
-    opacket.h
+    opacket.h \
+    oclientcore.h \
+    oclientcoreex.h
 
 FORMS	+=
 
 RESOURCES +=
+
+
+
+
+
+
+
+
 
 
 
