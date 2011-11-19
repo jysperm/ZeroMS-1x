@@ -26,7 +26,7 @@ private:
     void checkMsg(QString uname);
 
     void msgError(QString uname);
-    void msgAckTime(QString uname,QByteArray *data,unsigned int time);
+    void msgAskTime(QString uname,QByteArray *data,unsigned int time);
     void msgTime(QString uname);
     void msgPing(QString uname,QByteArray *data,unsigned int time);
     void msgExit(QString uname,QByteArray *data,unsigned int time);

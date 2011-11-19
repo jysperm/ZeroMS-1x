@@ -75,7 +75,7 @@ void OServerCore::checkMsg(QString uname)
         switch(type)
         {
             case M_AskTime:
-                msgAckTime(uname,msgData,time);
+                msgAskTime(uname,msgData,time);
             case M_Ping:
                 msgPing(uname,msgData,time);
             case M_Exit:
@@ -105,7 +105,7 @@ void OServerCore::msgError(QString uname)
     conn->write(packet.exec());
 }
 
-void OServerCore::msgAckTime(QString uname,QByteArray *data,unsigned int time)
+void OServerCore::msgAskTime(QString uname,QByteArray *data,unsigned int time)
 {
     msgTime(uname);
 }
