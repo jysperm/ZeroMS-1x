@@ -25,7 +25,7 @@ OClientCore::~OClientCore()
 
 void OClientCore::init()
 {
-
+    emit onInit();
 }
 
 void OClientCore::connectTo(QString ip,int port)

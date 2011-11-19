@@ -57,6 +57,7 @@ signals:
     void onData();//收到数据
     void onSocketError(QAbstractSocket::SocketError s);//遇到错误
     void onConnected();//已连接到服务器
+    void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接
     void onTimeChange();//服务器时间被更新
 private slots:
