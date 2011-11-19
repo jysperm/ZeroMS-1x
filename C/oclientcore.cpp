@@ -12,7 +12,7 @@
 #include "oclientcore.h"
 
 //public:
-OClientCore::OClientCore():conn(0),stime(0),uptime(0),databuf(0)
+OClientCore::OClientCore():conn(0),timediff(0),databuf(0)
 {
 
 }
