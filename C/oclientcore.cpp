@@ -32,8 +32,8 @@ void OClientCore::connectTo(QString ip,int port)
 {
     conn=new QTcpSocket;
     databuf=new QByteArray;
-    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
-    connect(conn,SIGNAL(readyRead()),this,SLOT(onData()));
+    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(socketError(QAbstractSocket::SocketError)));
+    connect(conn,SIGNAL(readyRead()),this,SLOT(dataCome()));
     conn->connectToHost(QHostAddress(ip),port);
 }
 
