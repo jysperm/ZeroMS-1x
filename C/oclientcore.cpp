@@ -39,7 +39,7 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
-    this->throwError();
+
 }
 
 //消息发送函数:
@@ -129,36 +129,6 @@ void OClientCore::msgUList(QByteArray*,unsigned int time)
 }
 
 //protected:
-QString OClientCore::md5(QString s)
-{
-    return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
-}
-
-int OClientCore::QBtoint(QByteArray b)
-{
-    QDataStream d(b);
-    int i;
-    d>>i;
-    return i;
-}
-
-QByteArray OClientCore::inttoQB(int i)
-{
-    QByteArray b;
-    QDataStream d(b);
-    d<<i;
-    return b;
-}
-
-void OClientCore::throwError()
-{
-    conn->abort();
-    if(conn->state()==QAbstractSocket::ClosingState)
-	conn->waitForDisconnected();
-    stime=0;
-    DELETE(conn);
-    DELETE(databuf);
-}
 
 //private slots:
 void OClientCore::onData()
@@ -172,7 +142,7 @@ void OClientCore::onData()
     unsigned int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
-	throwError();
+        //throwError();
 	return;
     }
     //这是因为包头中的长度字段并不包含头部本身的长度
@@ -201,7 +171,7 @@ void OClientCore::onData()
 		msgUList(msgData,time);
 		break;
 	    default:
-		throwError();
+                //throwError();
 		return;
 	}
         DELETE(msgData);
@@ -212,5 +182,5 @@ void OClientCore::onData()
 
 void OClientCore::onError(QAbstractSocket::SocketError s)
 {
-    throwError();
+    //throwError();
 }

@@ -43,15 +43,6 @@ protected:
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
     virtual void msgUList(QByteArray *data,unsigned int time);
 
-    //MD5,只是为了简写
-    static QString md5(QString s);
-    //从QByteArray向int转换
-    static int QBtoint(QByteArray b);
-    //从int向QByteArray转换
-    static QByteArray inttoQB(int i);
-    //抛出错误(无法理解服务器的协议)
-    virtual void throwError();
-
     //数据缓冲
     QByteArray *databuf;
 private slots:
