@@ -13,7 +13,7 @@ class OClientCore:public QObject
 {
     Q_OBJECT
 public:
-    explicit OClientCore(QApplication *app=0);
+    explicit OClientCore();
     virtual ~OClientCore();
     //初始化，因为有些工作不能在构造函数里完成
     virtual void init();
@@ -24,8 +24,6 @@ public:
 
     //Socket连接对象
     QTcpSocket *conn;
-    //当前应用程序对象
-    QApplication *app;
     //服务器时间与本地时间差值，服务器时间-本地时间
     unsigned int stime;
     //用户名

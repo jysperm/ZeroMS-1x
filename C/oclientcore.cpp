@@ -12,7 +12,7 @@
 #include "oclientcore.h"
 
 //public:
-OClientCore::OClientCore(QApplication *app):conn(0),app(app),stime(0),uptime(0),databuf(0)
+OClientCore::OClientCore():conn(0),stime(0),uptime(0),databuf(0)
 {
 
 }
@@ -64,7 +64,7 @@ void OClientCore::msgLogin(QString username,QString pwd)
     //....总之很绕口，大家看一下通讯协议
     while((sertime%(unsigned int)10)>5)
     {
-	app->processEvents();
+        qApp->processEvents();
 	ltime=QDateTime::currentDateTime().toTime_t();
 	sertime=ltime+stime;
     }
