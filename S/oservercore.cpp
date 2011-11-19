@@ -8,6 +8,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
+#include <QTimer>
 #include "const.h"
 #include "inline.h"
 #include "oservercore.h"
@@ -32,12 +33,16 @@ void OServerCore::run()
 {
     listen(QHostAddress::Any,CLIENT_PORT);
     connect(this,SIGNAL(newConnection()),this,SLOT(onNewConn()));
+    timer=new QTimer(this);
+    connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
+    timer->start(60*1000);
     log(tr("listening,port %1").arg(QString::number(CLIENT_PORT)));
 }
 
 void OServerCore::stop()
 {
     //终止监听并释放所有连接，请谨慎使用，这将导致所有用户掉线
+    timer->stop();
     close();
     for(it i=cl.begin();i!=cl.end();i++)
     {
@@ -265,6 +270,18 @@ void OServerCore::msgChangeUList(QStringList users)
 }
 
 //private slots:
+void OServerCore::checkTimeOut()
+{
+    for(it i=cl.begin();i!=cl.end();i++)
+    {
+        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>Time_OffLine*1000)
+        {
+            delete i.value();
+            cl.erase(i);
+        }
+    }
+}
+
 void OServerCore::LoginResult()
 {
     QStringList result=QString::fromUtf8(reply->readAll()).split("\n");

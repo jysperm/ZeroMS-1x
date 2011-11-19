@@ -9,6 +9,7 @@ class OClient;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QStringList;
+class QTimer;
 
 class OServerCore:public QTcpServer
 {
@@ -46,7 +47,11 @@ private:
     //下面两个对象是用来post网页来实现登陆的
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
+    //定时器，用于定时剔除长时间未相应的用户
+    QTimer *timer;
 private slots:
+    //timer的槽
+    void checkTimeOut();
     //登录结果,是reply对象发出的
     void LoginResult();
     //收到新连接,是this类的基类QTcpServer发出的
