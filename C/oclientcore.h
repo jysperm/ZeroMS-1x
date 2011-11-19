@@ -4,7 +4,6 @@
 #include <QAbstractSocket>
 #include <QObject>
 #include "const.h"
-class QApplication;
 class QByteArray;
 class QString;
 class QTcpSocket;
@@ -15,7 +14,7 @@ class OClientCore:public QObject
 public:
     explicit OClientCore();
     virtual ~OClientCore();
-    //初始化，因为有些工作不能在构造函数里完成
+    //初始化，因为有些工作不能在构造函数里完成（好像在构造函数里没法往自己身上绑定信号槽）
     virtual void init();
     //连接到
     virtual void connectTo(QString ip,int port);
@@ -35,6 +34,9 @@ public:
     virtual void msgAskTime();
     virtual void msgLogin(QString username,QString pwd);
     virtual void msgAskUList();
+    virtual void msgPing();
+    virtual void msgExit();
+    virtual void msgCMsg();
 protected:
 //消息回调函数:
     virtual void msgLoginOk(QByteArray *data,unsigned int time);
@@ -42,11 +44,13 @@ protected:
     virtual void msgTime(QByteArray *data,unsigned int time);
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
     virtual void msgUList(QByteArray *data,unsigned int time);
+    virtual void msgError(QByteArray *data,unsigned int time);
+    virtual void msgSMsg(QByteArray *data,unsigned int time);
 
     //数据缓冲
     QByteArray *databuf;
 private slots:
-    //收到数据，是conn发出的
+    //收到数据，是conn发出的，该函数还会进行消息分发
     void onData();
     //错误信息，是conn发出的
     void onError(QAbstractSocket::SocketError s);
