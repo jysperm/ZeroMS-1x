@@ -46,11 +46,23 @@ protected:
 
     //数据缓冲
     QByteArray *databuf;
+signals:
+    void onError(QByteArray *data,unsigned int time);
+    void onSMsg(QByteArray *data,unsigned int time);
+    void onTime(QByteArray *data,unsigned int time);
+    void onLoginOk(QByteArray *data,unsigned int time);
+    void onLoginError(QByteArray *data,unsigned int time);
+    void onUList(QByteArray *data,unsigned int time);
+    void onChangeUList(QByteArray *data,unsigned int time);
+    void onData();//收到数据
+    void onSocketError(QAbstractSocket::SocketError s);//遇到错误
+    void onConnected();//已连接到服务器
+    void onTimeChange();//服务器时间被更新
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发
-    void onData();
+    void dataCome();
     //错误信息，是conn发出的
-    void onError(QAbstractSocket::SocketError s);
+    void socketError(QAbstractSocket::SocketError s);
 };
 
 #endif // CLIENTCORE_H
