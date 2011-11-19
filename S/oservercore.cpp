@@ -74,20 +74,20 @@ void OServerCore::checkMsg(QString uname)
         cl[uname]->lasttime=QDateTime::currentDateTime().toTime_t();
         switch(type)
         {
-            case M_Error:
             case M_AskTime:
-            case M_Time:
+                msgAckTime(uname,msgData,time);
             case M_Ping:
+                msgPing(uname,msgData,time);
             case M_Exit:
+                msgExit(uname,msgData,time);
             case M_CMsg:
-            case M_SMsg:
+                msgCMsg(uname,msgData,time);
             case M_Login:
-            case M_LoginOk:
-            case M_LoginError:
+                msgLogin(uname,msgData,time);
             case M_AskUList:
-            case M_UList:
-            case M_ChangeUList:
-                ;
+                msgAskUList(uname,msgData,time);
+            default:
+                msgError(uname);
         }
         DELETE(msgData);
         if(databuf)
