@@ -2,4 +2,5 @@
 *.qm
 /S2-build/*
 /S-build/*
+/C-build/*
 

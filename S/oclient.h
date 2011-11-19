@@ -5,8 +5,8 @@
 #include <QDateTime>
 #include <QObject>
 #include <QString>
+#include <QTcpSocket>
 #include "const.h"
-class QTcpSocket;
 
 class OClient:public QObject
 {
@@ -19,12 +19,15 @@ public:
     OClient():isLoged(0),clientver(0),conn(0)
     {
 	databuf=new QByteArray;
-	lasttime=QDateTime::currentDateTime().toTime_t();
+        ping();
     }
-
+    unsigned int ping()
+    {
+        //将最后登陆时间改为当前时间
+        return lasttime=QDateTime::currentDateTime().toTime_t();
+    }
     ~OClient()
     {
-	DELETE(conn);
 	DELETE(databuf);
     }
     int isLoged;//是否已经登录成功

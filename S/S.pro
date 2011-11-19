@@ -15,7 +15,7 @@ HEADERS += \
     oservercore.h
 
 SOURCES += main.cpp \
-    opacket.cpp \
     oservercore.cpp
 
 TRANSLATIONS = ZeroMS_S_zh_CN.ts
+

@@ -9,6 +9,7 @@ class OClient;
 class QNetworkAccessManager;
 class QNetworkReply;
 class QStringList;
+class QTimer;
 
 class OServerCore:public QTcpServer
 {
@@ -24,16 +25,14 @@ private:
     void log(QString msg);
     //分发消息
     void checkMsg(QString uname);
-    //向客户端抛出错误
-    void throwError(QString);
 
     void msgError(QString uname);
-    void msgAckTime(QString uname,QByteArray *data,unsigned int time);
+    void msgAskTime(QString uname,QByteArray *data,unsigned int time);
     void msgTime(QString uname);
     void msgPing(QString uname,QByteArray *data,unsigned int time);
     void msgExit(QString uname,QByteArray *data,unsigned int time);
     void msgCMsg(QString uname,QByteArray *data,unsigned int time);
-    void msgSMsg(QString uname);
+    void msgSMsg(QString objname,QString from,QString uname,QString msg);
     void msgLogin(QString uname,QByteArray *data,unsigned int time);
     void msgLoginOk(QString);
     void msgLoginError(QString);
@@ -48,7 +47,11 @@ private:
     //下面两个对象是用来post网页来实现登陆的
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
+    //定时器，用于定时剔除长时间未相应的用户
+    QTimer *timer;
 private slots:
+    //timer的槽
+    void checkTimeOut();
     //登录结果,是reply对象发出的
     void LoginResult();
     //收到新连接,是this类的基类QTcpServer发出的

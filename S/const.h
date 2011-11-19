@@ -20,6 +20,9 @@ const int CLIENT_MAX = 100;
 //客户端监听端口
 const int CLIENT_PORT = 4321;
 
+//客户端多长时间不发送消息判定为掉线，单位秒
+const int Time_OffLine = 200;
+
 //用于登陆的api接口文件
 const QString LOGIN_APIURL = "http://jybox.net/0-ms/api/login.php?mode=post";
 
@@ -28,5 +31,8 @@ const QString API_KEY = "0-ms-0.1";
 
 //无法解析协议时向客户端发出的消息
 const QString ERROR_STR = QString::fromUtf8("服务器无法解析您所使用的协议，稍后将断开连接，请到以下地址查看最新通讯协议的有关信息：http://0-ms.org/wiki\n");
+
+//主群群号
+const QString MAIN_GROUP = "*0";
 
 #endif // CONST_H

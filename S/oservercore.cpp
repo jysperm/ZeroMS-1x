@@ -8,6 +8,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
+#include <QTimer>
 #include "const.h"
 #include "inline.h"
 #include "oservercore.h"
@@ -24,7 +25,6 @@ OServerCore::OServerCore():manager(0),reply(0)
 
 OServerCore::~OServerCore()
 {
-    DELETE(reply);
     DELETE(manager);
     stop();
 }
@@ -33,12 +33,16 @@ void OServerCore::run()
 {
     listen(QHostAddress::Any,CLIENT_PORT);
     connect(this,SIGNAL(newConnection()),this,SLOT(onNewConn()));
+    timer=new QTimer(this);
+    connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
+    timer->start(60*1000);
     log(tr("listening,port %1").arg(QString::number(CLIENT_PORT)));
 }
 
 void OServerCore::stop()
 {
     //终止监听并释放所有连接，请谨慎使用，这将导致所有用户掉线
+    timer->stop();
     close();
     for(it i=cl.begin();i!=cl.end();i++)
     {
@@ -63,7 +67,7 @@ void OServerCore::checkMsg(QString uname)
     int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
-        throwError(uname);
+        msgError(uname);
         return;
     }
     if(databuf->size()>=(len+P_HEADLEN))
@@ -75,42 +79,25 @@ void OServerCore::checkMsg(QString uname)
         cl[uname]->lasttime=QDateTime::currentDateTime().toTime_t();
         switch(type)
         {
-            case M_Error:
             case M_AskTime:
-            case M_Time:
+                msgAskTime(uname,msgData,time);
             case M_Ping:
+                msgPing(uname,msgData,time);
             case M_Exit:
+                msgExit(uname,msgData,time);
             case M_CMsg:
-            case M_SMsg:
+                msgCMsg(uname,msgData,time);
             case M_Login:
-            case M_LoginOk:
-            case M_LoginError:
+                msgLogin(uname,msgData,time);
             case M_AskUList:
-            case M_UList:
-            case M_ChangeUList:
+                msgAskUList(uname,msgData,time);
+            default:
+                msgError(uname);
         }
         DELETE(msgData);
         if(databuf)
             databuf->remove(0,P_HEADLEN+len);
     }
-}
-
-void OServerCore::throwError(QString uname)
-{/*
-    //向客户端抛出异样，并关闭连接
-    //一般是无法解析客户端发来的消息时，使用此函数
-    log(tr("%1 abort，cant understand").arg(uname));
-    QByteArray data;
-    QByteArray msgData;
-    //请注意，只能用QDataStream处理数字类型，如果处理字符串的话，会被转换成QT专有的格式，而非UTF-8
-    QDataStream DSdata(&data,QIODevice::ReadWrite);
-    msgData.append(ERROR_STR);
-    unsigned int time=QDateTime::currentDateTime().toTime_t();
-    DSdata<<P_USE<<msgData.size()<<M1_Error<<time;
-    data.append(msgData);
-    QTcpSocket *conn=sl[uname]->conn;
-    conn->write(data);
-    sl[uname]->isClose=1;*/
 }
 
 //----
@@ -123,7 +110,7 @@ void OServerCore::msgError(QString uname)
     conn->write(packet.exec());
 }
 
-void OServerCore::msgAckTime(QString uname,QByteArray *data,unsigned int time)
+void OServerCore::msgAskTime(QString uname,QByteArray *data,unsigned int time)
 {
     msgTime(uname);
 }
@@ -140,7 +127,12 @@ void OServerCore::msgTime(QString uname)
 
 void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
 {
-
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
 }
 
 void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
@@ -151,12 +143,53 @@ void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
 
 void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
 {
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
 
+    QString msg=*data;
+    QString objUName=msg.left(msg.indexOf(" "));
+    msg.remove(0,objUName.length()+1);
+
+    if(objUName==MAIN_GROUP)
+    {
+        for(it i=cl.begin();i!=cl.end();i++)
+        {
+            if(i.value()->isLoged)
+                msgSMsg(i.key(),MAIN_GROUP,uname,msg);
+        }
+    }
+
+    if(cl.contains(objUName))
+    {
+        msgSMsg(objUName,uname,uname,msg);
+    }
+}
+
+void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg)
+{
+    //注意这里的参数
+    //objname是要发送的目标用户，from是来自的目标(私聊同uname，群聊同MAIN_GROUP)
+    //uname是发送者用户名，msg是消息内容
+    QByteArray msgData;
+    //注意，这里的时间戳是字符串的形式
+    msgData.append(QString("%1 %2 %3").arg(from).arg(uname).arg(msg));
+    OPacket packet(msgData,M_SMsg);
+    QTcpSocket *conn=cl[objname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
-
+    if(cl[uname]->isLoged)
+    {
+        //如果已经登陆，则向客户端发送解析错误
+        msgError(uname);
+        return;
+    }
     QString msg=*data;
     //下面几句比较乱，总之是为了从数据部分(msg)里拆分出各个字段
     QString msgUName=msg.left(msg.indexOf(" "));
@@ -172,7 +205,8 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     QByteArray content;
     content.append(QString("do=login&uname=%1&listname=%2&pwd=%3&time=%4&clientver=%5&clientname=%6")
                    .arg(msgUName).arg(uname).arg(dpwd).arg(QString::number(stime)).arg(msgClientVer).arg(msgClientName));
-    manager=new QNetworkAccessManager(this);
+    if(!manager)
+        manager=new QNetworkAccessManager(this);
     QNetworkRequest request ;
     request.setUrl(QUrl(LOGIN_APIURL));
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
@@ -181,27 +215,73 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     connect(reply, SIGNAL(finished()), this, SLOT(LoginResult()));
 }
 
-void OServerCore::msgLoginOk(QString)
+void OServerCore::msgLoginOk(QString uname)
 {
-
+    OPacket packet(M_LoginOk);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
-void OServerCore::msgLoginError(QString)
+void OServerCore::msgLoginError(QString uname)
 {
-
+    OPacket packet(M_LoginError);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
 {
+    if(!cl[uname]->isLoged)
+    {
+        msgError(uname);
+        return;
+    }
+    cl[uname]->ping();
+    msgUList(uname);
+}
 
+void OServerCore::msgUList(QString uname)
+{
+    QStringList users=cl.keys();
+    QStringList online;
+    foreach(QString i,users)
+    {
+        if(cl[i]->isLoged)
+            online.append(i);
+    }
+    QByteArray msgData;
+    msgData.append(users.join(","));
+    OPacket packet(msgData,M_UList);
+    QTcpSocket *conn=cl[uname]->conn;
+    conn->write(packet.exec());
 }
 
 void OServerCore::msgChangeUList(QStringList users)
 {
-
+    foreach(QString i,users)
+    {
+        if(cl[i]->isLoged)
+        {
+            OPacket packet(M_ChangeUList);
+            QTcpSocket *conn=cl[i]->conn;
+            conn->write(packet.exec());
+        }
+    }
 }
 
 //private slots:
+void OServerCore::checkTimeOut()
+{
+    for(it i=cl.begin();i!=cl.end();i++)
+    {
+        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>Time_OffLine*1000)
+        {
+            delete i.value();
+            cl.erase(i);
+        }
+    }
+}
+
 void OServerCore::LoginResult()
 {
     QStringList result=QString::fromUtf8(reply->readAll()).split("\n");
@@ -225,8 +305,6 @@ void OServerCore::LoginResult()
     {
         msgLoginError(result[UAPI_LISTNAME]);
     }
-    DELETE(reply);
-    DELETE(manager);
 }
 
 void OServerCore::onNewConn()
