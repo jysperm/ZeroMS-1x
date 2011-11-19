@@ -24,13 +24,6 @@ const int M_AskUList	= 300;
 const int M_UList	= 301;
 const int M_ChangeUList	= 311;
 
-//关于用户验证api的返回信息
-const int UAPI_RESULT	    = 0;
-const int UAPI_UNAME	    = 1;
-const int UAPI_LISTNAME	    = 2;
-const int UAPI_CLIENTVER    = 3;
-const int UAPI_CLIENTNAME   = 4;
-
 //验证是否兼容该协议版本
 inline int checkVer(int n)
 {

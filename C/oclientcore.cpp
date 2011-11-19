@@ -45,61 +45,51 @@ void OClientCore::abort()
 //消息发送函数:
 void OClientCore::msgAskTime()
 {
-    QByteArray data;
-    QByteArray msgData;
-    QDataStream DSdata(&data,QIODevice::ReadWrite);
-    unsigned int time=QDateTime::currentDateTime().toTime_t();
 
-    DSdata<<P_VER<<msgData.size()<<M_AskTime<<time;
-    data.append(msgData);
+}
 
-    conn->write(data);
+void OClientCore::msgPing()
+{
+
+}
+
+void OClientCore::msgExit()
+{
+
+}
+
+void OClientCore::msgCMsg()
+{
+
 }
 
 void OClientCore::msgLogin(QString username,QString pwd)
 {
-    unsigned int ltime=QDateTime::currentDateTime().toTime_t();
-    unsigned int sertime=ltime+stime;
-    //下面这句就是等到离下次密码更新时间大于5秒的时候
-    //....总之很绕口，大家看一下通讯协议
-    while((sertime%(unsigned int)10)>5)
-    {
-        qApp->processEvents();
-	ltime=QDateTime::currentDateTime().toTime_t();
-	sertime=ltime+stime;
-    }
 
-    unsigned int time=sertime-(sertime%10);
-    QString spwd=md5(md5(QString::number(time))+md5(username)+md5(pwd));
-
-    QByteArray data;
-    QByteArray msgData;
-    QDataStream DSdata(&data,QIODevice::ReadWrite);
-    ltime=QDateTime::currentDateTime().toTime_t();
-
-    msgData.append(username+" "+spwd+" "+QString::number(CLIENT_VER_NUM)+" "+CLIENT_NAME);
-
-    DSdata<<P_VER<<msgData.size()<<M_Login<<time;
-    data.append(msgData);
-    this->uname=username;
-    conn->write(data);
 }
 
 void OClientCore::msgAskUList()
 {
-    QByteArray data;
-    QByteArray msgData;
-    QDataStream DSdata(&data,QIODevice::ReadWrite);
-    unsigned int time=QDateTime::currentDateTime().toTime_t();
 
-    DSdata<<P_VER<<msgData.size()<<M_AskUList<<time;
-    data.append(msgData);
-
-    conn->write(data);
 }
 
 //protected:
 //消息回调函数:
+void OClientCore::msgError(QByteArray *data,unsigned int time)
+{
+
+}
+
+void OClientCore::msgSMsg(QByteArray *data,unsigned int time)
+{
+
+}
+
+void OClientCore::msgTime(QByteArray *data,unsigned int time)
+{
+
+}
+
 void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
 {
 
@@ -110,25 +100,15 @@ void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
 
 }
 
-void OClientCore::msgTime(QByteArray *data,unsigned int time)
-{
-    unsigned int ltime=QDateTime::currentDateTime().toTime_t();
-    unsigned int sertime=QString(*data).toUInt();
-    stime=sertime-ltime;
-    uptime=1;
-}
-
-void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
-{
-    msgAskUList();
-}
-
 void OClientCore::msgUList(QByteArray*,unsigned int time)
 {
 
 }
 
-//protected:
+void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
+{
+
+}
 
 //private slots:
 void OClientCore::onData()
