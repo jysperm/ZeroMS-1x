@@ -57,6 +57,7 @@ signals:
     void onData();//收到数据
     void onSocketError(QAbstractSocket::SocketError s);//遇到错误
     void onConnected();//已连接到服务器
+    void onAborted();//断开连接
     void onTimeChange();//服务器时间被更新
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发

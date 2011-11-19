@@ -39,7 +39,11 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
-
+    conn->abort();
+    conn->waitForDisconnected();
+    DELETE(conn);
+    DELETE(databuf);
+    emit onAborted();
 }
 
 //消息发送函数:
@@ -111,7 +115,7 @@ void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
 }
 
 //private slots:
-void OClientCore::onData()
+void OClientCore::dataCome()
 {
     //分发消息，该函数将根据消息的类型分发给具体的处理函数
     databuf->append(conn->readAll());
@@ -160,7 +164,7 @@ void OClientCore::onData()
     }
 }
 
-void OClientCore::onError(QAbstractSocket::SocketError s)
+void OClientCore::socketError(QAbstractSocket::SocketError s)
 {
     //throwError();
 }
