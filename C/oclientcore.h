@@ -51,7 +51,6 @@ protected:
     //数据缓冲
     QByteArray *databuf;
 signals:
-    void onError(QByteArray *data,unsigned int time);
     void onSMsg(QByteArray *data,unsigned int time);
     void onTime(QByteArray *data,unsigned int time);
     void onLoginOk(QByteArray *data,unsigned int time);
@@ -59,7 +58,7 @@ signals:
     void onUList(QByteArray *data,unsigned int time);
     void onChangeUList(QByteArray *data,unsigned int time);
     void onData();//收到数据
-    void onError();//遇到错误
+    void onError(QString msg);//遇到错误
     void onConnected();//已连接到服务器
     void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接

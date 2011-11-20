@@ -106,7 +106,9 @@ void OClientCore::msgAskUList()
 //消息回调函数:
 void OClientCore::msgError(QByteArray *data,unsigned int time)
 {
-
+    //这里的表述不太严谨，应该是服务器不支持该版本的协议
+    //但是考虑到一般用户的理解，先这么写
+    Error(tr("服务器不支持该版本客户端，可能是客户端已经过期"));
 }
 
 void OClientCore::msgSMsg(QByteArray *data,unsigned int time)
@@ -142,7 +144,7 @@ void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
 void OClientCore::Error(QString msg)
 {
     abort();
-    emit onError();
+    emit onError(msg);
 }
 
 //private slots:
