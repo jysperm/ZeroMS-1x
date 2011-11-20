@@ -127,12 +127,12 @@ void OClientCore::dataCome()
     if(databuf->size()<P_HEADLEN)
         return;
     int ver=QBtoint(databuf->mid(0,4));
-    int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
         Error(tr("不支持的协议版本，可能是客户端已经过期"));
         return;
     }
+    int len=QBtoint(databuf->mid(4,4));
     if(databuf->size()>=(len+P_HEADLEN))
     {
         //如果已经接收到了数据包的全部数据，进行分发命令
