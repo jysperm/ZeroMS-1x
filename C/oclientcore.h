@@ -3,6 +3,7 @@
 
 #include <QAbstractSocket>
 #include <QObject>
+#include <QStringList>
 #include "const.h"
 class QByteArray;
 class QString;
@@ -26,49 +27,49 @@ public:
     //服务器时间与本地时间差值，服务器时间-本地时间
     unsigned int timeDiff;
     //用户名
-    QString uname;
+    QString myname;
 //消息发送函数:
     virtual void msgAskTime();
     virtual void msgPing();
     virtual void msgExit();
     virtual void msgCMsg(QString objname,QString msg);
-    virtual void msgLogin(QString username,QString pwd);
+    virtual void msgLogin(QString uname,QString pwd);
     virtual void msgAskUList();
 protected:
-//消息回调函数:
-    virtual void msgError(QByteArray *data,unsigned int time);
+//可重载消息回调函数:
     virtual void msgSMsg(QByteArray *data,unsigned int time);
-    virtual void msgTime(QByteArray *data,unsigned int time);
     virtual void msgLoginOk(QByteArray *data,unsigned int time);
     virtual void msgLoginError(QByteArray *data,unsigned int time);
+    //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是解析后的QStringList
     virtual void msgUList(QByteArray *data,unsigned int time);
-    virtual void msgChangeUList(QByteArray *data,unsigned int time);
-
-    //发生错误(会被socketError调用)
-    //该函数中会断开连接
-    virtual void Error(QString msg="");
 
     //数据缓冲
     QByteArray *databuf;
+private:
+//不可重载消息回调函数:
+    virtual void msgError(QByteArray *data,unsigned int time);
+    virtual void msgTime(QByteArray *data,unsigned int time);
+    virtual void msgChangeUList(QByteArray *data,unsigned int time);
+    //发生错误(会被socketError调用)
+    //该函数中会断开连接
+    virtual void Error(QString msg="");
 signals:
-    void onSMsg(QByteArray *data,unsigned int time);
-    void onTime(QByteArray *data,unsigned int time);
-    void onLoginOk(QByteArray *data,unsigned int time);
-    void onLoginError(QByteArray *data,unsigned int time);
-    void onUList(QByteArray *data,unsigned int time);
-    void onChangeUList(QByteArray *data,unsigned int time);
+    void onSMsg(QString objName,QString from,QString uname,QString msg);
+    void onLoginOk();
+    void onLoginError();
+    void onUList(QStringList &users);
+    void onChangeUList();
     void onData();//收到数据
     void onError(QString msg);//遇到错误
     void onConnected();//已连接到服务器
     void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接
-    void onTimeChange();//服务器时间被更新
+    void onTimeChange(unsigned int time);//服务器时间被更新
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发
     void dataCome();
     //Socket错误，是conn发出的
     void socketError(QAbstractSocket::SocketError s);
-
 };
 
 #endif // CLIENTCORE_H

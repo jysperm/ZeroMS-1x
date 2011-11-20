@@ -73,7 +73,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
     conn->write(packet.exec());
 }
 
-void OClientCore::msgLogin(QString username,QString pwd)
+void OClientCore::msgLogin(QString uname,QString pwd)
 {
     //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
@@ -88,10 +88,10 @@ void OClientCore::msgLogin(QString username,QString pwd)
     }
 
     unsigned int time=serTime-(serTime%10);
-    QString spwd=md5(md5(QString::number(time))+md5(username)+md5(pwd));
+    QString spwd=md5(md5(QString::number(time))+md5(uname)+md5(pwd));
 
     QByteArray msgData;
-    msgData.append(QString("%1 %2 %3 %4").arg(username).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));
+    msgData.append(QString("%1 %2 %3 %4").arg(uname).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));
     OPacket packet(msgData,M_Login);
     conn->write(packet.exec());
 }
@@ -118,7 +118,10 @@ void OClientCore::msgSMsg(QByteArray *data,unsigned int time)
 
 void OClientCore::msgTime(QByteArray *data,unsigned int time)
 {
-
+    unsigned int curTime=QDateTime::currentDateTime().toTime_t();
+    unsigned int serTime=QString(*data).toUInt();
+    timeDiff=serTime-curTime;
+    emit onTimeChange(timeDiff);
 }
 
 void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
@@ -128,17 +131,19 @@ void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
 
 void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
 {
-
+    //如果不希望登陆错误后断开连接，请重载这个函数
+    abort();
 }
 
-void OClientCore::msgUList(QByteArray*,unsigned int time)
+void OClientCore::msgUList(QByteArray *data,unsigned int time)
 {
 
 }
 
-void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
+void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
 {
-
+    msgAskUList();
+    emit onChangeUList();
 }
 
 void OClientCore::Error(QString msg)
@@ -169,19 +174,46 @@ void OClientCore::dataCome()
         switch(type)
         {
             case M_Error:
-                msgError(msgData,time);break;
+                msgError(msgData,time);
+                break;
             case M_SMsg:
-                msgSMsg(msgData,time);break;
+                msgSMsg(msgData,time);
+                //可重载的消息回调函数都是在函数外来发射信号
+                //否则的话，重载后将无法发射信号
+            {
+                QString msg=*msgData;
+                //下面就是提取msgData中的各个字段
+                QString objName=msg.left(msg.indexOf(" "));
+                msg.remove(0,objName.length()+1);
+                QString from=msg.left(msg.indexOf(" "));
+                msg.remove(0,from.length()+1);
+                QString uname=msg.left(msg.indexOf(" "));
+                msg.remove(0,uname.length()+1);
+                QString msgMsg=msg.left(msg.indexOf(" "));
+                emit onSMsg(objName,from,uname,msgMsg);
+            }
+                break;
             case M_Time:
-                msgTime(msgData,time);break;
+                msgTime(msgData,time);
+                break;
             case M_LoginOk:
-                msgLoginOk(msgData,time);break;
+                msgLoginOk(msgData,time);
+                emit onLoginOk();
+                break;
             case M_LoginError:
-                msgLoginError(msgData,time);break;
+                msgLoginError(msgData,time);
+                emit onLoginError();
+                break;
             case M_UList:
-                msgUList(msgData,time);break;
+                msgUList(msgData,time);
+            {
+                QStringList users=QString(*msgData).split(",");
+                emit onUList(users);
+            }
+                break;
             case M_ChangeUList:
-                msgChangeUList(msgData,time);break;
+                msgChangeUList(msgData,time);
+                break;
             default:
                 Error(tr("不支持的协议版本，可能是客户端已经过期"));
         }
