@@ -57,7 +57,7 @@ void OClientCoreEx::msgUList(QByteArray *data,unsigned int time)
     QMessageBox::about(0,0,users.join(" "));
 
     QString i;
-/*
+
     QDir dir(QDir::currentPath());
     dir.mkdir("cahce");
     dir.cd(QDir::currentPath()+"/cahce");
