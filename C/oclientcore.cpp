@@ -117,7 +117,8 @@ void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
 
 void OClientCore::Error(QString msg)
 {
-
+    emit onError();
+    abort();
 }
 
 //private slots:
@@ -166,5 +167,5 @@ void OClientCore::dataCome()
 
 void OClientCore::socketError(QAbstractSocket::SocketError s)
 {
-    //throwError();
+    Error(conn->errorString());
 }
