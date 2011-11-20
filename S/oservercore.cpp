@@ -80,17 +80,17 @@ void OServerCore::checkMsg(QString uname)
         switch(type)
         {
             case M_AskTime:
-                msgAskTime(uname,msgData,time);
+                msgAskTime(uname,msgData,time);break;
             case M_Ping:
-                msgPing(uname,msgData,time);
+                msgPing(uname,msgData,time);break;
             case M_Exit:
-                msgExit(uname,msgData,time);
+                msgExit(uname,msgData,time);break;
             case M_CMsg:
-                msgCMsg(uname,msgData,time);
+                msgCMsg(uname,msgData,time);break;
             case M_Login:
-                msgLogin(uname,msgData,time);
+                msgLogin(uname,msgData,time);break;
             case M_AskUList:
-                msgAskUList(uname,msgData,time);
+                msgAskUList(uname,msgData,time);break;
             default:
                 msgError(uname);
         }
