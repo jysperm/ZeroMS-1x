@@ -103,25 +103,10 @@ void OClientCore::msgAskUList()
 }
 
 //protected:
-//消息回调函数:
-void OClientCore::msgError(QByteArray *data,unsigned int time)
-{
-    //这里的表述不太严谨，应该是服务器不支持该版本的协议
-    //但是考虑到一般用户的理解，先这么写
-    Error(tr("服务器不支持该版本客户端，可能是客户端已经过期"));
-}
-
+//可重载消息回调函数:
 void OClientCore::msgSMsg(QByteArray *data,unsigned int time)
 {
 
-}
-
-void OClientCore::msgTime(QByteArray *data,unsigned int time)
-{
-    unsigned int curTime=QDateTime::currentDateTime().toTime_t();
-    unsigned int serTime=QString(*data).toUInt();
-    timeDiff=serTime-curTime;
-    emit onTimeChange(timeDiff);
 }
 
 void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
@@ -138,6 +123,23 @@ void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
 void OClientCore::msgUList(QByteArray *data,unsigned int time)
 {
 
+}
+
+//private:
+//不可重载消息回调函数:
+void OClientCore::msgError(QByteArray *data,unsigned int time)
+{
+    //这里的表述不太严谨，应该是服务器不支持该版本的协议
+    //但是考虑到一般用户的理解，先这么写
+    Error(tr("服务器不支持该版本客户端，可能是客户端已经过期"));
+}
+
+void OClientCore::msgTime(QByteArray *data,unsigned int time)
+{
+    unsigned int curTime=QDateTime::currentDateTime().toTime_t();
+    unsigned int serTime=QString(*data).toUInt();
+    timeDiff=serTime-curTime;
+    emit onTimeChange(timeDiff);
 }
 
 void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
