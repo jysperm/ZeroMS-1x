@@ -76,7 +76,7 @@ void OServerCore::checkMsg(QString uname)
         int type=QBtoint(databuf->mid(8,4));
         unsigned int time=QBtoint(databuf->mid(12,4));
         QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
-        cl[uname]->lasttime=QDateTime::currentDateTime().toTime_t();
+        cl[uname]->ping();
         switch(type)
         {
             case M_AskTime:
