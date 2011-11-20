@@ -115,52 +115,51 @@ void OClientCore::msgChangeUList(QByteArray*,unsigned int time)
 
 }
 
+void OClientCore::Error(QString msg)
+{
+
+}
+
 //private slots:
 void OClientCore::dataCome()
 {
-    //分发消息，该函数将根据消息的类型分发给具体的处理函数
     databuf->append(conn->readAll());
-    if(databuf->size() < P_HEADLEN)
-	return;
-    //取前32位(协议版本)，注意只是复制，并没有从data中删除
-    unsigned int ver=QBtoint(databuf->mid(0,4));
-    unsigned int len=QBtoint(databuf->mid(4,4));
+    if(databuf->size()<P_HEADLEN)
+        return;
+    int ver=QBtoint(databuf->mid(0,4));
+    int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
-        //throwError();
-	return;
+        Error(tr("不支持的协议版本，可能是客户端已经过期"));
+        return;
     }
-    //这是因为包头中的长度字段并不包含头部本身的长度
-    if(databuf->size() >= (P_HEADLEN+len))
+    if(databuf->size()>=(len+P_HEADLEN))
     {
-	//如果已经接收到了全部数据，进行分发命令
-	unsigned int type=QBtoint(databuf->mid(8,4));
-	unsigned int time=QBtoint(databuf->mid(12,4));
-	unsigned int len=QBtoint(databuf->mid(4,4));
+        //如果已经接收到了数据包的全部数据，进行分发命令
+        int type=QBtoint(databuf->mid(8,4));
+        unsigned int time=QBtoint(databuf->mid(12,4));
         QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
-	switch(type)
-	{
+        switch(type)
+        {
+            case M_Error:
+                msgError(msgData,time);
+            case M_SMsg:
+                msgSMsg(msgData,time);
             case M_Time:
-		msgTime(msgData,time);
-		break;
+                msgTime(msgData,time);
             case M_LoginOk:
-		msgLoginOk(msgData,time);
-		break;
+                msgLoginOk(msgData,time);
             case M_LoginError:
-		msgLoginError(msgData,time);
-		break;
-            case M_ChangeUList:
-		msgChangeUList(msgData,time);
-		break;
+                msgLoginError(msgData,time);
             case M_UList:
-		msgUList(msgData,time);
-		break;
-	    default:
-                //throwError();
-		return;
-	}
+                msgUList(msgData,time);
+            case M_ChangeUList:
+                msgChangeUList(msgData,time);
+            default:
+                Error(tr("不支持的协议版本，可能是客户端已经过期"));
+        }
         DELETE(msgData);
-	if(databuf)
+        if(databuf)
             databuf->remove(0,P_HEADLEN+len);
     }
 }

@@ -6,7 +6,7 @@
 #include <QString>
 #include "const.h"
 
-int QBtoint(QByteArray b)
+inline int QBtoint(QByteArray b)
 {
     //从QByteArray向int转换
     QDataStream d(b);
@@ -15,7 +15,7 @@ int QBtoint(QByteArray b)
     return i;
 }
 
-QByteArray inttoQB(int i)
+inline QByteArray inttoQB(int i)
 {
     //从int向QByteArray转换
     QByteArray b;
@@ -24,7 +24,7 @@ QByteArray inttoQB(int i)
     return b;
 }
 
-QString md5(QString s)
+inline QString md5(QString s)
 {
     //简写MD5操作
     return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());

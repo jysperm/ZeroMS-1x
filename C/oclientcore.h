@@ -44,6 +44,10 @@ protected:
     virtual void msgUList(QByteArray *data,unsigned int time);
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
 
+    //发生错误(会被socketError调用)
+    //该函数中会断开连接
+    virtual void Error(QString msg="");
+
     //数据缓冲
     QByteArray *databuf;
 signals:
@@ -55,7 +59,7 @@ signals:
     void onUList(QByteArray *data,unsigned int time);
     void onChangeUList(QByteArray *data,unsigned int time);
     void onData();//收到数据
-    void onSocketError(QAbstractSocket::SocketError s);//遇到错误
+    void onError();//遇到错误
     void onConnected();//已连接到服务器
     void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接
@@ -63,8 +67,9 @@ signals:
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发
     void dataCome();
-    //错误信息，是conn发出的
+    //Socket错误，是conn发出的
     void socketError(QAbstractSocket::SocketError s);
+
 };
 
 #endif // CLIENTCORE_H
