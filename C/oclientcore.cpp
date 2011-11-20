@@ -1,15 +1,11 @@
 #include <QAbstractSocket>
-#include <QApplication>
 #include <QByteArray>
-#include <QCryptographicHash>
-#include <QDataStream>
-#include <QDateTime>
 #include <QHostAddress>
-#include <QString>
 #include <QTcpSocket>
 #include "const.h"
 #include "inline.h"
 #include "oclientcore.h"
+#include "opacket.h"
 
 //public:
 OClientCore::OClientCore():conn(0),timediff(0),databuf(0)
