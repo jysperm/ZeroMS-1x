@@ -142,19 +142,19 @@ void OClientCore::dataCome()
         switch(type)
         {
             case M_Error:
-                msgError(msgData,time);
+                msgError(msgData,time);break;
             case M_SMsg:
-                msgSMsg(msgData,time);
+                msgSMsg(msgData,time);break;
             case M_Time:
-                msgTime(msgData,time);
+                msgTime(msgData,time);break;
             case M_LoginOk:
-                msgLoginOk(msgData,time);
+                msgLoginOk(msgData,time);break;
             case M_LoginError:
-                msgLoginError(msgData,time);
+                msgLoginError(msgData,time);break;
             case M_UList:
-                msgUList(msgData,time);
+                msgUList(msgData,time);break;
             case M_ChangeUList:
-                msgChangeUList(msgData,time);
+                msgChangeUList(msgData,time);break;
             default:
                 Error(tr("不支持的协议版本，可能是客户端已经过期"));
         }
