@@ -24,7 +24,7 @@ public:
     //Socket连接对象
     QTcpSocket *conn;
     //服务器时间与本地时间差值，服务器时间-本地时间
-    unsigned int timediff;
+    unsigned int timeDiff;
     //用户名
     QString uname;
 //消息发送函数:

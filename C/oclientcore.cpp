@@ -1,5 +1,7 @@
 #include <QAbstractSocket>
+#include <QApplication>
 #include <QByteArray>
+#include <QDateTime>
 #include <QHostAddress>
 #include <QString>
 #include <QTcpSocket>
@@ -9,7 +11,7 @@
 #include "opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timediff(0),databuf(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),databuf(0)
 {
 
 }
@@ -73,7 +75,25 @@ void OClientCore::msgCMsg(QString objname,QString msg)
 
 void OClientCore::msgLogin(QString username,QString pwd)
 {
+    //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
+    unsigned int curTime=QDateTime::currentDateTime().toTime_t();
+    unsigned int serTime=curTime+timeDiff;
+    //下面这句就是等到离下次密码更新时间大于5秒的时候
+    //....总之很绕口，大家看一下通讯协议
+    while((serTime%(unsigned int)10)>5)
+    {
+        qApp->processEvents();
+        curTime=QDateTime::currentDateTime().toTime_t();
+        serTime=curTime+timeDiff;
+    }
 
+    unsigned int time=serTime-(serTime%10);
+    QString spwd=md5(md5(QString::number(time))+md5(username)+md5(pwd));
+
+    QByteArray msgData;
+    msgData.append(QString("%1 %2 %3 %4").arg(username).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));
+    OPacket packet(msgData,M_Login);
+    conn->write(packet.exec());
 }
 
 void OClientCore::msgAskUList()
