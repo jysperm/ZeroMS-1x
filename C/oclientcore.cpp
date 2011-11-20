@@ -1,6 +1,7 @@
 #include <QAbstractSocket>
 #include <QByteArray>
 #include <QHostAddress>
+#include <QString>
 #include <QTcpSocket>
 #include "const.h"
 #include "inline.h"
@@ -62,9 +63,12 @@ void OClientCore::msgExit()
     conn->write(packet.exec());
 }
 
-void OClientCore::msgCMsg()
+void OClientCore::msgCMsg(QString objname,QString msg)
 {
-
+    QByteArray msgData;
+    msgData.append(QString("%1 %2").arg(objname).arg(msg));
+    OPacket packet(msgData,M_Error);
+    conn->write(packet.exec());
 }
 
 void OClientCore::msgLogin(QString username,QString pwd)

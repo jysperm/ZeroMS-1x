@@ -31,7 +31,7 @@ public:
     virtual void msgAskTime();
     virtual void msgPing();
     virtual void msgExit();
-    virtual void msgCMsg();
+    virtual void msgCMsg(QString objname,QString msg);
     virtual void msgLogin(QString username,QString pwd);
     virtual void msgAskUList();
 protected:
