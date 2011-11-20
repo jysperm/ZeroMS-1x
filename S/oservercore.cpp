@@ -64,12 +64,12 @@ void OServerCore::checkMsg(QString uname)
 {
     QByteArray *databuf=cl[uname]->databuf;
     int ver=QBtoint(databuf->mid(0,4));
-    int len=QBtoint(databuf->mid(4,4));
     if(!checkVer(ver))
     {
         msgError(uname);
         return;
     }
+    int len=QBtoint(databuf->mid(4,4));
     if(databuf->size()>=(len+P_HEADLEN))
     {
         //如果已经接收到了数据包的全部数据，进行分发命令
