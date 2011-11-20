@@ -46,17 +46,20 @@ void OClientCore::abort()
 //消息发送函数:
 void OClientCore::msgAskTime()
 {
-
+    OPacket packet(M_AskTime);
+    conn->write(packet.exec());
 }
 
 void OClientCore::msgPing()
 {
-
+    OPacket packet(M_Ping);
+    conn->write(packet.exec());
 }
 
 void OClientCore::msgExit()
 {
-
+    OPacket packet(M_Exit);
+    conn->write(packet.exec());
 }
 
 void OClientCore::msgCMsg()
@@ -71,7 +74,8 @@ void OClientCore::msgLogin(QString username,QString pwd)
 
 void OClientCore::msgAskUList()
 {
-
+    OPacket packet(M_AskUList);
+    conn->write(packet.exec());
 }
 
 //protected:
