@@ -2,10 +2,9 @@
 #include <QTextCodec>
 #include "const.h"
 #include "oclientcoreex.h"
-#include "oclientcore.h"
 
 //声明客户端通讯核心(扩展)
-OClientCore *cc;
+OClientCoreEx *cc;
 
 int main(int argc, char *argv[])
 {
@@ -13,7 +12,7 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
-    cc=new OClientCore;
+    cc=new OClientCoreEx;
     cc->init();
 
     return a.exec();
