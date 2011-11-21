@@ -1,16 +1,33 @@
 #ifndef INLINE_H
 #define INLINE_H
 
-//安全指针销毁函数(宏)
-#define sDelete(p) if(p)delete p;p=0;
+#include <QByteArray>
+#include <QCryptographicHash>
+#include <QString>
+#include "const.h"
 
-inline int P_checkVer(int n)
+inline int QBtoint(QByteArray b)
 {
-    //判断协议协议版本是否支持
-    if(n==1)
-	return 1;
-    else
-	return 0;
+    //从QByteArray向int转换
+    QDataStream d(b);
+    int i;
+    d>>i;
+    return i;
+}
+
+inline QByteArray inttoQB(int i)
+{
+    //从int向QByteArray转换
+    QByteArray b;
+    QDataStream d(b);
+    d<<i;
+    return b;
+}
+
+inline QString md5(QString s)
+{
+    //简写MD5操作
+    return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
 }
 
 #endif // INLINE_H

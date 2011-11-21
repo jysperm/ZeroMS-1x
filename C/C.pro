@@ -9,30 +9,42 @@ TEMPLATE= app
 
 SOURCES	+= \
     main.cpp \
-    login.cpp \
-    clientcore.cpp \
-    mainwidget.cpp \
-    chatwidget.cpp \
-    clientcoreex.cpp \
-    threadlogodowner.cpp
+    oclientcore.cpp \
+    oclientcoreex.cpp
 
 HEADERS	+= \
-    login.h \
     const.h \
-    clientcore.h \
-    mainwidget.h \
-    chatwidget.h \
-    clientcoreex.h \
-    threadlogodowner.h \
-    inline.h
+    inline.h \
+    p1.h \
+    opacket.h \
+    oclientcore.h \
+    oclientcoreex.h
 
-FORMS	+= \
-    login.ui \
-    mainwidget.ui \
-    chatwidget.ui
+FORMS	+=
 
-RESOURCES += \
-    res.qrc
+RESOURCES +=
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
