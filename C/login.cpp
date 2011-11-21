@@ -1,8 +1,6 @@
-#include <QApplication>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QMessageBox>
-#include <QTcpSocket>
 #include <QString>
 #include <QUrl>
 #include <QWidget>
@@ -29,8 +27,13 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
-
-    ui->Banner->setStyleSheet("border-image: url(:/Images/images/banner.png)");
+/*
+    QImage image("/cahce/logo/%1.png");
+    image=image.scaled(60,60);
+    ui->MyLogo->setPixmap(QPixmap::fromImage(image));
+    ui->MyLogo->adjustSize();
+     */
+    ui->Banner->setStyleSheet("border-image: url(:/images/banner.png)");
 }
 
 Login::~Login()
@@ -41,7 +44,6 @@ Login::~Login()
 //public slots:
 void Login::cancel()
 {
-    cc->error=0;
     ui->DoLogin->setEnabled(1);
 }
 
@@ -58,46 +60,5 @@ void Login::QLable_linkActivated(const QString &link)
 
 void Login::on_DoLogin_clicked()
 {
-    ui->DoLogin->setEnabled(0);
-
-    QString uname=ui->UserInput->text();
-    QString pwd=ui->PassWordInput->text();
-
-    cc->connectTo(SERVER_ADDRESS,SERVER_PORT);
-    if(!cc->conn || cc->error)
-    {
-        cc->app->processEvents();
-        if(cc->error)
-        {
-            QMessageBox::critical(this,CLIENT_TITLE_NAME,tr("连接到服务器时发生错误\nps.很可能是服务器挂了"));
-            cancel();
-            return;
-        }
-    }
-
-    if(!cc->conn)
-    {
-        QMessageBox::critical(this,CLIENT_TITLE_NAME,tr("连接到服务器时发生错误\nps.很可能是服务器挂了"));
-        cancel();
-        return;
-    }
-
-    while(!(cc->conn->state()==QTcpSocket::ConnectedState))
-    {
-        cc->app->processEvents();
-        if(cc->error)
-        {
-            QMessageBox::critical(this,CLIENT_TITLE_NAME,tr("连接到服务器时发生错误\nps.很可能是服务器挂了"));
-            cancel();
-            return;
-        }
-
-    }
-
-    cc->uptime=0;
-    cc->msgAskTime();
-    while(!cc->uptime)
-        cc->app->processEvents();
-    cc->msgLogin(uname,pwd);
 
 }
