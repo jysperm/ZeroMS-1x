@@ -10,7 +10,8 @@ TEMPLATE= app
 SOURCES	+= \
     main.cpp \
     oclientcore.cpp \
-    oclientcoreex.cpp
+    oclientcoreex.cpp \
+    login.cpp
 
 HEADERS	+= \
     const.h \
@@ -18,11 +19,16 @@ HEADERS	+= \
     p1.h \
     opacket.h \
     oclientcore.h \
-    oclientcoreex.h
+    oclientcoreex.h \
+    login.h
 
-FORMS	+=
+FORMS	+= \
+    login.ui
 
 RESOURCES +=
+
+
+
 
 
 
