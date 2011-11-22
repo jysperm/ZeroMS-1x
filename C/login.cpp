@@ -27,13 +27,8 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
-/*
-    QImage image("/cahce/logo/%1.png");
-    image=image.scaled(60,60);
-    ui->MyLogo->setPixmap(QPixmap::fromImage(image));
-    ui->MyLogo->adjustSize();
-     */
-    ui->Banner->setStyleSheet("border-image: url(:/images/banner.png)");
+
+    ui->Banner->setStyleSheet("border-image:url(:/images/banner.png)");
 }
 
 Login::~Login()

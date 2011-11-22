@@ -1,5 +1,6 @@
 *.pro.user
 *.qm
+*.autosave
 /S-build/*
 /C-build/*
 
