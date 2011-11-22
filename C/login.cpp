@@ -2,6 +2,7 @@
 #include <QDesktopWidget>
 #include <QMessageBox>
 #include <QString>
+#include <QTcpSocket>
 #include <QUrl>
 #include <QWidget>
 #include "const.h"
@@ -12,7 +13,7 @@
 extern OClientCoreEx *cc;
 
 //public:
-Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
+Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
 {
     ui->setupUi(this);
 
@@ -24,6 +25,8 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
     //绑定QLable点击信号的槽
     connect(ui->RegLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
+    //绑定OClientCoreEx的信号槽
+    connect(cc,SIGNAL(onError(QString)),this,SLOT(socketError(QString)));
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
@@ -53,7 +56,31 @@ void Login::QLable_linkActivated(const QString &link)
     QDesktopServices::openUrl(QUrl(link));
 }
 
+void Login::socketError(QString msg)
+{
+    QMessageBox::critical(0,"错误",msg);
+    exitLogin=1;
+}
+
 void Login::on_DoLogin_clicked()
 {
+    ui->DoLogin->setEnabled(0);
+    exitLogin=0;
 
+    QString uname=ui->UserInput->text();
+    QString pwd=ui->PassWordInput->text();
+
+    cc->connectTo(SERVER_ADDRESS,SERVER_PORT);
+
+    while(!(cc->conn->state()==QTcpSocket::ConnectedState))
+    {
+        qApp->processEvents();
+        if(exitLogin)
+        {
+            cancel();
+            return;
+        }
+    }
+
+    QMessageBox::about(0,"","成功连接到服务器");
 }
