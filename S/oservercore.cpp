@@ -329,7 +329,7 @@ void OServerCore::onNewConn()
 	}
         else
         {
-            DELETE(conn);
+            conn->abort();
             log(tr("over of connections up limit:%1").arg(CLIENT_MAX));
         }
     }
