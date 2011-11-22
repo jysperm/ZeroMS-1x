@@ -327,7 +327,11 @@ void OServerCore::onNewConn()
 	    cl.insert(uname,pc);
 	    log(tr("%1 connected").arg(uname));
 	}
-	log(tr("over of connections up limit:%1").arg(CLIENT_MAX));
+        else
+        {
+            DELETE(conn);
+            log(tr("over of connections up limit:%1").arg(CLIENT_MAX));
+        }
     }
 }
 
