@@ -20,6 +20,9 @@ const int CLIENT_MAX = 100;
 //客户端监听端口
 const int CLIENT_PORT = 4321;
 
+//客户端多长时间不发送消息判定为掉线，单位秒
+const int Time_OffLine = 200;
+
 //用于登陆的api接口文件
 const QString LOGIN_APIURL = "http://jybox.net/0-ms/api/login.php?mode=post";
 
