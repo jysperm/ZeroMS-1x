@@ -28,7 +28,8 @@ public:
     }
     ~OClient()
     {
-        conn->abort();
+        if(conn)
+            conn->abort();
 	DELETE(databuf);
     }
     int isLoged;//是否已经登录成功

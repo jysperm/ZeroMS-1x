@@ -5,6 +5,7 @@
 #include "oclientcore.h"
 class QApplication;
 class Login;
+class MainWidget;
 
 class OClientCoreEx:public OClientCore
 {
@@ -16,7 +17,10 @@ public:
     ~OClientCoreEx();
     void init();
 
+    void msgLoginOk(QByteArray *data,unsigned int time);
+
     Login *login;
+    MainWidget *mainwidget;
 public slots:
     void cbTimeChange(unsigned int time);
 };

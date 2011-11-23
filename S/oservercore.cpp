@@ -123,6 +123,7 @@ void OServerCore::msgTime(QString uname)
     OPacket packet(msgData,M_Time);
     QTcpSocket *conn=cl[uname]->conn;
     conn->write(packet.exec());
+    log(tr("send time to %1 :%2").arg(uname).arg(QDateTime::currentDateTime().toTime_t()));
 }
 
 void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
@@ -184,6 +185,7 @@ void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
+    log(tr("%1 loging").arg(uname));
     if(cl[uname]->isLoged)
     {
         //如果已经登陆，则向客户端发送解析错误
@@ -217,6 +219,7 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 
 void OServerCore::msgLoginOk(QString uname)
 {
+    log(tr("%1 loged").arg(uname));
     OPacket packet(M_LoginOk);
     QTcpSocket *conn=cl[uname]->conn;
     conn->write(packet.exec());
@@ -298,7 +301,9 @@ void OServerCore::LoginResult()
         pc->isLoged=1;
         pc->clientver=result[UAPI_CLIENTVER].toInt();
         pc->clientname=result[UAPI_CLIENTNAME];
-        msgChangeUList(cl.keys());
+        QList<QString> users=cl.keys();
+        users.removeOne(result[UAPI_UNAME]);
+        msgChangeUList(users);
         msgLoginOk(result[UAPI_UNAME]);
     }
     else

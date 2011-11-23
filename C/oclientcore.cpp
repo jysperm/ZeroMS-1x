@@ -29,6 +29,7 @@ void OClientCore::init()
 
 void OClientCore::connectTo(QString ip,int port)
 {
+    abort();
     conn=new QTcpSocket;
     databuf=new QByteArray;
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(socketError(QAbstractSocket::SocketError)));
@@ -39,9 +40,11 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
-    conn->abort();
-    conn->waitForDisconnected();
-    DELETE(conn);
+    if(conn)
+    {
+        conn->abort();
+        conn->waitForDisconnected();
+    }
     DELETE(databuf);
     emit onAborted();
 }

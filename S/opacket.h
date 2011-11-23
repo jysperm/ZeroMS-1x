@@ -25,7 +25,7 @@ public:
         QByteArray tData;
         QDataStream DSdata(&tData,QIODevice::WriteOnly);
         unsigned int time=QDateTime::currentDateTime().toTime_t();
-        DSdata<<P_VER<<packetData.size()<<packetType<<time;
+        DSdata<<P_VER<<(packetData.size())<<packetType<<time;
         tData.append(packetData);
         return tData;
     }

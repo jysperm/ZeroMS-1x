@@ -21,7 +21,6 @@ public:
 public slots:
     //取消登陆
     void cancel();
-    void LoginError();
 private:
     Ui::Login *ui;
     //用于on_DoLogin_clicked()，为1时代表发生了错误
@@ -31,6 +30,7 @@ private:
 private slots:
     void QLable_linkActivated(const QString &link);
     void socketError(QString msg);
+    void LoginError();
     void on_DoLogin_clicked();
 };
 

@@ -28,6 +28,7 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     //绑定OClientCoreEx的信号槽
     connect(cc,SIGNAL(onError(QString)),this,SLOT(socketError(QString)));
+    connect(cc,SIGNAL(onLoginError()),this,SLOT(LoginError()));
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
@@ -46,11 +47,6 @@ void Login::cancel()
     ui->DoLogin->setEnabled(1);
 }
 
-void Login::LoginError()
-{
-    QMessageBox::information(this,tr("登录"),tr("登录失败"));
-}
-
 //private slots:
 void Login::QLable_linkActivated(const QString &link)
 {
@@ -59,8 +55,15 @@ void Login::QLable_linkActivated(const QString &link)
 
 void Login::socketError(QString msg)
 {
-    QMessageBox::critical(0,"错误",msg);
+    QMessageBox::critical(this,tr("错误"),msg);
     exitLogin=1;
+    cancel();
+}
+
+void Login::LoginError()
+{
+    QMessageBox::critical(this,tr("登录错误"),tr("可能是你的密码输入错误\n如果你确认你的密码没有错误，请重试"));
+    cancel();
 }
 
 void Login::on_DoLogin_clicked()
@@ -79,18 +82,13 @@ void Login::on_DoLogin_clicked()
     {
         qApp->processEvents();
         if(exitLogin)
-        {
-            cancel();
             return;
-        }
     }
 
     timeuped=0;
     cc->msgAskTime();
-    while(timeuped)
+    while(!timeuped)
             qApp->processEvents();
 
     cc->msgLogin(uname,pwd);
-
-    QMessageBox::about(0,"","成功连接到服务器");
 }
