@@ -17,6 +17,8 @@ public:
     void init();
 
     Login *login;
+public slots:
+    void cbTimeChange(unsigned int time);
 };
 
 #endif // CLIENTCOREEX_H

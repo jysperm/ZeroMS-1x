@@ -22,14 +22,16 @@ public slots:
     //取消登陆
     void cancel();
     void LoginError();
-private slots:
-    void QLable_linkActivated(const QString &link);
-    void socketError(QString msg);
-    void on_DoLogin_clicked();
 private:
     Ui::Login *ui;
     //用于on_DoLogin_clicked()，为1时代表发生了错误
     int exitLogin;
+    //用于OCleientCoreEx，为1时代表时间被更新
+    int timeuped;
+private slots:
+    void QLable_linkActivated(const QString &link);
+    void socketError(QString msg);
+    void on_DoLogin_clicked();
 };
 
 #endif // LOGIN_H

@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QMessageBox>
@@ -64,6 +65,8 @@ void Login::socketError(QString msg)
 
 void Login::on_DoLogin_clicked()
 {
+    //其实这里设计的不大好，用了一堆乱七八糟的"标识变量"来控制阻塞
+    //重构之前的代码也是这样的，我也实在想不到什么好主意了
     ui->DoLogin->setEnabled(0);
     exitLogin=0;
 
@@ -81,6 +84,13 @@ void Login::on_DoLogin_clicked()
             return;
         }
     }
+
+    timeuped=0;
+    cc->msgAskTime();
+    while(timeuped)
+            qApp->processEvents();
+
+    cc->msgLogin(uname,pwd);
 
     QMessageBox::about(0,"","成功连接到服务器");
 }

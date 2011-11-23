@@ -18,3 +18,10 @@ void OClientCoreEx::init()
     login=new Login;
     login->show();
 }
+
+void OClientCoreEx::cbTimeChange(unsigned int time)
+{
+    //cb为回调的意思
+    login->timeuped=1;
+}
+
