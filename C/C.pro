@@ -11,7 +11,8 @@ SOURCES	+= \
     main.cpp \
     oclientcore.cpp \
     oclientcoreex.cpp \
-    login.cpp
+    login.cpp \
+    mainwidget.cpp
 
 HEADERS	+= \
     const.h \
@@ -20,13 +21,24 @@ HEADERS	+= \
     opacket.h \
     oclientcore.h \
     oclientcoreex.h \
-    login.h
+    login.h \
+    mainwidget.h
 
 FORMS	+= \
-    login.ui
+    login.ui \
+    mainwidget.ui
 
 RESOURCES += \
     res.qrc
+
+
+
+
+
+
+
+
+
 
 
 

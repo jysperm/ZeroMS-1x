@@ -2,4 +2,7 @@
     <qresource prefix="/">
         <file>images/banner.png</file>
     </qresource>
+    <qresource prefix="/Act">
+        <file>images/web.png</file>
+    </qresource>
 </RCC>

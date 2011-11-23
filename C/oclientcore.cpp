@@ -159,6 +159,7 @@ void OClientCore::Error(QString msg)
 //private slots:
 void OClientCore::dataCome()
 {
+    emit onData();
     databuf->append(conn->readAll());
     if(databuf->size()<P_HEADLEN)
         return;
@@ -238,7 +239,6 @@ void OClientCore::dataCome()
         if(databuf)
             databuf->remove(0,P_HEADLEN+len);
     }
-    emit onData();
 }
 
 void OClientCore::socketError(QAbstractSocket::SocketError s)
