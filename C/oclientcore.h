@@ -42,14 +42,6 @@ protected:
     virtual void msgUList(QByteArray *data,unsigned int time);
 
     QByteArray *databuf;//数据缓冲
-private:
-//不可重载消息回调函数:
-    virtual void msgError(QByteArray *data,unsigned int time);
-    virtual void msgTime(QByteArray *data,unsigned int time);
-    virtual void msgChangeUList(QByteArray *data,unsigned int time);
-    //发生错误(会被socketError调用)
-    //该函数中会断开连接
-    virtual void Error(QString msg="");
 signals:
     void onSMsg(QString objName,QString from,QString uname,QString msg);
     void onLoginOk();
@@ -62,6 +54,14 @@ signals:
     void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接
     void onTimeChange(unsigned int time);//服务器时间被更新
+private:
+//不可重载消息回调函数:
+    virtual void msgError(QByteArray *data,unsigned int time);
+    virtual void msgTime(QByteArray *data,unsigned int time);
+    virtual void msgChangeUList(QByteArray *data,unsigned int time);
+    //发生错误(会被socketError调用)
+    //该函数中会断开连接
+    virtual void Error(QString msg="");
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发
     void dataCome();
