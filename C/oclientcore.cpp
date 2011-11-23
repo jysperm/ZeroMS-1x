@@ -11,7 +11,7 @@
 #include "opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timeDiff(0),databuf(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),isLoged(0),databuf(0)
 {
 
 }
@@ -78,6 +78,7 @@ void OClientCore::msgLogin(QString uname,QString pwd)
     //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
     unsigned int serTime=curTime+timeDiff;
+    myname=uname;
     //下面这句就是等到离下次密码更新时间大于5秒的时候
     //....总之很绕口，大家看一下通讯协议
     while((serTime%(unsigned int)10)>5)
@@ -150,6 +151,7 @@ void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
 
 void OClientCore::Error(QString msg)
 {
+    isLoged=0;
     abort();
     emit onError(msg);
 }
@@ -179,6 +181,8 @@ void OClientCore::dataCome()
                 msgError(msgData,time);
                 break;
             case M_SMsg:
+                if(!isLoged)
+                    break;
                 msgSMsg(msgData,time);
                 //可重载的消息回调函数都是在函数外来发射信号
                 //否则的话，重载后将无法发射信号
@@ -199,14 +203,23 @@ void OClientCore::dataCome()
                 msgTime(msgData,time);
                 break;
             case M_LoginOk:
+                if(isLoged)
+                    break;
                 msgLoginOk(msgData,time);
+            {
+                isLoged=1;
                 emit onLoginOk();
+            }
                 break;
             case M_LoginError:
+                if(isLoged)
+                    break;
                 msgLoginError(msgData,time);
                 emit onLoginError();
                 break;
             case M_UList:
+                if(!isLoged)
+                    break;
                 msgUList(msgData,time);
             {
                 QStringList users=QString(*msgData).split(",");
@@ -214,6 +227,8 @@ void OClientCore::dataCome()
             }
                 break;
             case M_ChangeUList:
+                if(!isLoged)
+                    break;
                 msgChangeUList(msgData,time);
                 break;
             default:

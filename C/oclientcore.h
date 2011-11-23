@@ -17,17 +17,15 @@ public:
     virtual ~OClientCore();
     //初始化，因为有些工作不能在构造函数里完成（好像在构造函数里没法往自己身上绑定信号槽）
     virtual void init();
-    //连接到服务器
-    virtual void connectTo(QString ip,int port);
-    //中断连接
-    virtual void abort();
+    virtual void connectTo(QString ip,int port);//连接到服务器
+    virtual void abort();//中断连接
 
-    //Socket连接对象
-    QTcpSocket *conn;
+
+    QTcpSocket *conn;//Socket连接对象
     //服务器时间与本地时间差值，服务器时间-本地时间
     unsigned int timeDiff;
-    //用户名
-    QString myname;
+    QString myname;//用户名
+    int isLoged;//是否已经登陆
 //消息发送函数:
     virtual void msgAskTime();
     virtual void msgPing();
@@ -43,8 +41,7 @@ protected:
     //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是解析后的QStringList
     virtual void msgUList(QByteArray *data,unsigned int time);
 
-    //数据缓冲
-    QByteArray *databuf;
+    QByteArray *databuf;//数据缓冲
 private:
 //不可重载消息回调函数:
     virtual void msgError(QByteArray *data,unsigned int time);
