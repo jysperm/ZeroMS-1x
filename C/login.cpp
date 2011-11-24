@@ -27,7 +27,7 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
     connect(ui->RegLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     //绑定OClientCoreEx的信号槽
-    connect(cc,SIGNAL(onError(QString)),this,SLOT(socketError(QString)));
+    connect(cc,SIGNAL(onError(ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(socketError(ErrorType,QString,QAbstractSocket::SocketError)));
     connect(cc,SIGNAL(onLoginError()),this,SLOT(LoginError()));
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
@@ -53,7 +53,7 @@ void Login::QLable_linkActivated(const QString &link)
     QDesktopServices::openUrl(QUrl(link));
 }
 
-void Login::socketError(QString msg)
+void Login::socketError(OClientCoreEx::ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
     QMessageBox::critical(this,tr("错误"),msg);
     exitLogin=1;

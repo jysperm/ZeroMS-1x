@@ -1,8 +1,10 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
+#include <QAbstractSocket>
 #include <QWidget>
 #include "const.h"
+#include "oclientcoreex.h"
 class QString;
 class OClientCoreEx;
 
@@ -29,7 +31,7 @@ private:
     int timeuped;
 private slots:
     void QLable_linkActivated(const QString &link);
-    void socketError(QString msg);
+    void socketError(OClientCoreEx::ErrorType e,QString msg,QAbstractSocket::SocketError s);
     void LoginError();
     void on_DoLogin_clicked();
 };
