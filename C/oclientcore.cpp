@@ -25,6 +25,7 @@ OClientCore::~OClientCore()
 void OClientCore::init()
 {
     emit onInit();
+    connect(this,SIGNAL(onError(ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(Error(ErrorType,QString,QAbstractSocket::SocketError)));
 }
 
 void OClientCore::connectTo(QString ip,int port)
@@ -47,6 +48,21 @@ void OClientCore::abort()
     }
     DELETE(databuf);
     emit onAborted();
+}
+
+QString OClientCore::errorString(ErrorType e)
+{
+    int lastError=this->lastError;
+    if(e!=-2)
+        lastError=e;
+    const QString Description[4]={tr("未知错误"),
+                                  tr("未发现错误"),
+                                  tr("无法理解服务器发来的命令，可能是协议过期"),
+                                  tr("服务器无法理解客户端发送的命令，可能是协议过期")};
+    if(lastError<3)
+        return Description[lastError-1];
+    else
+        return conn->errorString();
 }
 
 //消息发送函数:
@@ -131,13 +147,6 @@ void OClientCore::msgUList(QByteArray *data,unsigned int time)
 
 //private:
 //不可重载消息回调函数:
-void OClientCore::msgError(QByteArray *data,unsigned int time)
-{
-    //这里的表述不太严谨，应该是服务器不支持该版本的协议
-    //但是考虑到一般用户的理解，先这么写
-    Error(tr("服务器不支持该版本客户端，可能是客户端已经过期"));
-}
-
 void OClientCore::msgTime(QByteArray *data,unsigned int time)
 {
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
@@ -152,11 +161,13 @@ void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
     emit onChangeUList();
 }
 
-void OClientCore::Error(QString msg)
+void OClientCore::Error(ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
-    isLoged=0;
-    abort();
-    emit onError(msg);
+    if(s>=3)
+    {
+        isLoged=0;
+        abort();
+    }
 }
 
 //private slots:
@@ -169,7 +180,7 @@ void OClientCore::dataCome()
     int ver=QBtoint(databuf->mid(0,4));
     if(!checkVer(ver))
     {
-        Error(tr("不支持的协议版本，可能是客户端已经过期"));
+        emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
         return;
     }
     int len=QBtoint(databuf->mid(4,4));
@@ -182,7 +193,7 @@ void OClientCore::dataCome()
         switch(type)
         {
             case M_Error:
-                msgError(msgData,time);
+                emit onError(lastError=MsgError,*msgData,(QAbstractSocket::SocketError)0);
                 break;
             case M_SMsg:
                 if(!isLoged)
@@ -236,7 +247,7 @@ void OClientCore::dataCome()
                 msgChangeUList(msgData,time);
                 break;
             default:
-                Error(tr("不支持的协议版本，可能是客户端已经过期"));
+                emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
         }
         DELETE(msgData);
         if(databuf)
@@ -246,5 +257,15 @@ void OClientCore::dataCome()
 
 void OClientCore::socketError(QAbstractSocket::SocketError s)
 {
-    Error(conn->errorString());
+    if(s==0)
+    {
+        emit onError(lastError=SocketCantConnect,conn->errorString(),s);
+        return;
+    }
+    if(s==1)
+    {
+        emit onError(lastError=SocketConnectionAbort,conn->errorString(),s);
+        return;
+    }
+    emit onError(lastError=SocketOthers,conn->errorString(),s);
 }
