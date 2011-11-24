@@ -31,6 +31,7 @@ public:
     unsigned int timeDiff;
     QString myname;//用户名
     int isLoged;//是否已经登陆
+    ErrorType lastError;
 //消息发送函数:
     virtual void msgAskTime();
     virtual void msgPing();
@@ -49,7 +50,7 @@ protected:
     QByteArray *databuf;//数据缓冲
 protected slots:
     //默认的错误处理函数，如果发生连接错误会断开连接;如不希望断开连接请重载
-    virtual void Error(ErrorType e,QString msg,QAbstractSocket::SocketError s);
+    virtual void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 signals:
     void onSMsg(QString objName,QString from,QString uname,QString msg);
     void onLoginOk();
@@ -57,7 +58,7 @@ signals:
     void onUList(QStringList &users);
     void onChangeUList();
     void onData();//收到数据
-    void onError(ErrorType e,QString msg,QAbstractSocket::SocketError s);//遇到错误
+    void onError(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);//遇到错误
     void onConnected();//已连接到服务器
     void onInit();//当init函数被调用时，该信号被发射，可以用来初始化一些数据
     void onAborted();//断开连接
@@ -66,8 +67,6 @@ private:
 //不可重载消息回调函数:
     virtual void msgTime(QByteArray *data,unsigned int time);
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
-
-    ErrorType lastError;
 private slots:
     //收到数据，是conn发出的，该函数还会进行消息分发
     void dataCome();
