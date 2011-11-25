@@ -262,7 +262,7 @@ void OServerCore::msgUList(QString uname)
 
 void OServerCore::msgChangeUList(QStringList users)
 {
-    log(tr("0-ms UList changed"));
+    log(tr("UList changed"));
     foreach(QString i,users)
     {
         if(cl[i]->isLoged)
@@ -361,7 +361,7 @@ void OServerCore::onData()
 
 void OServerCore::onError(QAbstractSocket::SocketError s)
 {
-    for(it i=cl.begin();i!=cl.end();i++)
+    /*for(it i=cl.begin();i!=cl.end();i++)
     {
 	QTcpSocket *conn=i.value()->conn;
 	if(conn->error()==s)
@@ -375,6 +375,24 @@ void OServerCore::onError(QAbstractSocket::SocketError s)
 	    if(isLoged)
                 msgChangeUList(cl.keys());
 	}
+    }*/
+    //TODO,不知道为什么，上面的代码在QTcpSocket *conn=i.value()->conn;一行出现内存异常
+    //ps.下面的代码实在有点垃圾
+    QStringList users=cl.keys();
+    for(int i=0;i<users.size();i++)
+    {
+        QTcpSocket *conn=cl[users[i]]->conn;
+        if(conn->error()==s)
+        {
+            //如果这个连接对象的上一个错误和接收到的错误号一样，
+            //说明是它出错，输出错误信息并断开连接
+            log(tr("%1 connect error：%2").arg(users[i]).arg(conn->errorString()));
+            int isLoged=cl[users[i]]->isLoged;
+            DELETE(cl[users[i]]);
+            cl.remove(users[i]);
+            if(isLoged)
+                msgChangeUList(cl.keys());
+        }
     }
 }
 
