@@ -186,7 +186,7 @@ void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
-    log(tr("%1 loging").arg(uname));
+    log(tr("%1 logging").arg(uname));
     if(cl[uname]->isLoged)
     {
         //如果已经登陆，则向客户端发送解析错误
