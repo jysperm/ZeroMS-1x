@@ -34,6 +34,8 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
     DELETE(login);
     mainwidget=new MainWidget;
+    connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
     mainwidget->show();
+    msgAskUList();
 }
 

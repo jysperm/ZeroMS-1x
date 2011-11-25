@@ -24,6 +24,7 @@ public:
     void closeEvent(QCloseEvent *event);
 public slots:
     void logoChange();
+    void onUList(QStringList &users);
 private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;

@@ -11,6 +11,7 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QString>
+#include <QStringList>
 #include <QSystemTrayIcon>
 #include <QUrl>
 #include <QWidget>
@@ -71,6 +72,15 @@ void MainWidget::logoChange()
     image=image.scaled(60,60);
     ui->MyLogo->setPixmap(QPixmap::fromImage(image));
     ui->MyLogo->adjustSize();
+}
+
+void MainWidget::onUList(QStringList &users)
+{
+    ui->UListWidget->clear();
+    foreach(QString i,users)
+    {
+        ui->UListWidget->addItem(i);
+    }
 }
 
 //private slots:
