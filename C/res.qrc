@@ -5,4 +5,7 @@
     <qresource prefix="/Act">
         <file>images/web.png</file>
     </qresource>
+    <qresource prefix="/Text">
+        <file>members.html</file>
+    </qresource>
 </RCC>

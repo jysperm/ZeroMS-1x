@@ -14,7 +14,7 @@ namespace Ui
     class MainWidget;
 }
 
-class MainWidget : public QMainWindow
+class MainWidget:public QMainWindow
 {
     Q_OBJECT
     friend class ClientCoreEx;
@@ -24,6 +24,10 @@ public:
     void closeEvent(QCloseEvent *event);
 public slots:
     void logoChange();
+private:
+    QSystemTrayIcon *trayIcon;
+    QMenu *trayMenu;
+    Ui::MainWidget *ui;
 private slots:
     void onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
     void on_ActABoutQt_triggered();
@@ -38,10 +42,6 @@ private slots:
     void on_ActVer_triggered();
     void on_ActMember_triggered();
     void on_ActRefresh_triggered();
-private:
-    QSystemTrayIcon *trayIcon;
-    QMenu *trayMenu;
-    Ui::MainWidget *ui;
 };
 
 #endif // MAINWIDGET_H

@@ -3,6 +3,7 @@
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QImage>
 #include <QPixmap>
@@ -136,11 +137,9 @@ void MainWidget::on_ActVer_triggered()
 
 void MainWidget::on_ActMember_triggered()
 {
-    QMessageBox::information(0,tr("合作开发人员名单"),CLIENT_NAME+CLIENT_VER_NAME+tr("开发人员名单\n")+
-                             tr("精英王子(m@jybox.net)-主要编码、策划\n")+
-                             tr("电脑 liker！(suihanchao@126.com)-美工\n")+
-                             tr("whtsky(whtsky@vip.qq.com)-策划")+
-                             tr("Kevin(liyanbowen@126.com)-策划"));
+    QFile file(":/Text/members.html");
+    file.open(QFile::ReadOnly);
+    QMessageBox::information(0,tr("合作开发人员名单"),file.readAll());
 }
 
 void MainWidget::on_ActRefresh_triggered()

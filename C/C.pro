@@ -31,6 +31,15 @@ FORMS	+= \
 RESOURCES += \
     res.qrc
 
+OTHER_FILES += \
+    images/web.png \
+    images/banner.png \
+    members.html
+
+
+
+
+
 
 
 
