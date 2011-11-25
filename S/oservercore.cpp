@@ -25,6 +25,7 @@ OServerCore::OServerCore():manager(0),reply(0)
 
 OServerCore::~OServerCore()
 {
+    log(tr("0-ms exit"));
     DELETE(manager);
     stop();
 }
@@ -261,6 +262,7 @@ void OServerCore::msgUList(QString uname)
 
 void OServerCore::msgChangeUList(QStringList users)
 {
+    log(tr("0-ms UList changed"));
     foreach(QString i,users)
     {
         if(cl[i]->isLoged)
