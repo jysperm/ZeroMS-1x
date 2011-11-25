@@ -4,12 +4,16 @@
 #include <QDesktopWidget>
 #include <QDir>
 #include <QFile>
-#include <QFileDialog>
+#include <QIcon>
 #include <QImage>
-#include <QPixmap>
-#include <QSystemTrayIcon>
+#include <QMainWindow>
+#include <QMenu>
 #include <QMessageBox>
+#include <QPixmap>
+#include <QString>
+#include <QSystemTrayIcon>
 #include <QUrl>
+#include <QWidget>
 #include "const.h"
 #include "inline.h"
 #include "mainwidget.h"
@@ -28,11 +32,11 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
 
     ui->LMyName->setText(cc->myname);
-    setWindowTitle(cc->myname+"  "+CLIENT_TITLE_NAME);
+    setWindowTitle(QString("%1  %2").arg(cc->myname).arg(CLIENT_TITLE_NAME));
 
     //托盘
     trayIcon=new QSystemTrayIcon(this);
-    QIcon icon(":/Act/images/40_0ms.png");
+    QIcon icon(":/images/40_0ms.png");
     trayMenu=new QMenu(this);
     trayMenu->addAction(ui->ActQuit);
     trayMenu->addSeparator();
