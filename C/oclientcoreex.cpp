@@ -19,6 +19,8 @@ void OClientCoreEx::init()
 {
     connect(this,SIGNAL(onTimeChange(uint)),this,SLOT(cbTimeChange(uint)));
     login=new Login;
+    connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),login,SLOT(socketError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
+    connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
     login->show();
 }
 

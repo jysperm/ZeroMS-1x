@@ -26,9 +26,6 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
     //绑定QLable点击信号的槽
     connect(ui->RegLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
-    //绑定OClientCoreEx的信号槽
-    connect(cc,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(socketError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
-    connect(cc,SIGNAL(onLoginError()),this,SLOT(LoginError()));
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
