@@ -25,7 +25,7 @@ OClientCore::~OClientCore()
 void OClientCore::init()
 {
     emit onInit();
-    connect(this,SIGNAL(onError(ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(Error(ErrorType,QString,QAbstractSocket::SocketError)));
+    connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(Error(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
 }
 
 void OClientCore::connectTo(QString ip,int port)
@@ -161,7 +161,7 @@ void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
     emit onChangeUList();
 }
 
-void OClientCore::Error(ErrorType e,QString msg,QAbstractSocket::SocketError s)
+void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
     if(s>=3)
     {

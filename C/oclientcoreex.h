@@ -18,7 +18,7 @@ public:
     void init();
 
     void msgLoginOk(QByteArray *data,unsigned int time);
-    void Error(ErrorType e,QString msg,QAbstractSocket::SocketError s);
+    void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 
     Login *login;
     MainWidget *mainwidget;

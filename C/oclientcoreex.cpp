@@ -18,6 +18,7 @@ OClientCoreEx::~OClientCoreEx()
 
 void OClientCoreEx::init()
 {
+    OClientCore::init();
     connect(this,SIGNAL(onTimeChange(uint)),this,SLOT(cbTimeChange(uint)));
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
@@ -39,7 +40,7 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
     msgAskUList();
 }
 
-void OClientCoreEx::Error(ErrorType e,QString msg,QAbstractSocket::SocketError s)
+void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
     QMessageBox::critical(0,tr("错误"),msg);
     if(login)
