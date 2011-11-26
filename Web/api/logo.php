@@ -1,4 +1,10 @@
 <?php
+
+/*
+你不觉得在这里 require 这些文件很蛋疼么？
+你要么把这些类的定义直接写在这个文件里，要么把这些文件拷到当前目录然后 require_once('class/SafeSQL.class.php') 等
+*/
+
 require("../../lp-class/SafeSQL.class.php");
 require("../../lp-class/SQLRs.class.php");
 require("../../lp-class/MySQL.class.php");
