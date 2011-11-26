@@ -50,13 +50,6 @@ void Login::QLable_linkActivated(const QString &link)
     QDesktopServices::openUrl(QUrl(link));
 }
 
-void Login::socketError(OClientCoreEx::ErrorType e,QString msg,QAbstractSocket::SocketError s)
-{
-    QMessageBox::critical(this,tr("错误"),msg);
-    exitLogin=1;
-    cancel();
-}
-
 void Login::LoginError()
 {
     QMessageBox::critical(this,tr("登录错误"),tr("可能是你的密码输入错误\n如果你确认你的密码没有错误，请重试"));

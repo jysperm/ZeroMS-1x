@@ -1,4 +1,5 @@
 #include <QByteArray>
+#include <QMessageBox>
 #include "const.h"
 #include "oclientcoreex.h"
 #include "login.h"
@@ -19,7 +20,6 @@ void OClientCoreEx::init()
 {
     connect(this,SIGNAL(onTimeChange(uint)),this,SLOT(cbTimeChange(uint)));
     login=new Login;
-    connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),login,SLOT(socketError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
     login->show();
 }
@@ -37,5 +37,20 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
     connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
     mainwidget->show();
     msgAskUList();
+}
+
+void OClientCoreEx::Error(ErrorType e,QString msg,QAbstractSocket::SocketError s)
+{
+    QMessageBox::critical(0,tr("错误"),msg);
+    if(login)
+    {
+        login->exitLogin=1;
+        login->cancel();
+    }
+    if(mainwidget)
+    {
+        delete mainwidget;
+        init();
+    }
 }
 

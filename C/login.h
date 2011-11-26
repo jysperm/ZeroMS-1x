@@ -31,7 +31,6 @@ private:
     int timeuped;
 private slots:
     void QLable_linkActivated(const QString &link);
-    void socketError(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
     void LoginError();
     void on_DoLogin_clicked();
 };
