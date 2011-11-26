@@ -28,6 +28,8 @@ FORMS	+= \
     login.ui \
     mainwidget.ui
 
+TRANSLATIONS = ZeroMS_C_EN.ts
+
 RESOURCES += \
     res.qrc
 
