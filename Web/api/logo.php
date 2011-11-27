@@ -1,7 +1,7 @@
 <?php
-require("../../lp-class/SafeSQL.class.php");
-require("../../lp-class/SQLRs.class.php");
-require("../../lp-class/MySQL.class.php");
+require("lp-class/SafeSQL.class.php");
+require("lp-class/SQLRs.class.php");
+require("lp-class/MySQL.class.php");
 
 $uname=$_GET["uname"];
 $root="http://jybox.net/bbs/";
@@ -29,6 +29,5 @@ if($rs->read())
 else
 	$url=$root."images/face/none.gif";
 
-header('content-Type:image/jpeg');
-echo file_get_contents($url); 
+header("Location:".$url);
 ?>
