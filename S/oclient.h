@@ -32,6 +32,7 @@ public:
         {
             conn->abort();
             conn->disconnect();
+            conn->deleteLater();
         }
 	DELETE(databuf);
     }
