@@ -1,8 +1,10 @@
 #ifndef CLIENTCOREEX_H
 #define CLIENTCOREEX_H
 
+#include <QMap>
 #include "const.h"
 #include "oclientcore.h"
+#include "chatwidget.h"
 class QApplication;
 class Login;
 class MainWidget;
@@ -22,6 +24,8 @@ public:
 
     Login *login;
     MainWidget *mainwidget;
+    //已经打开的聊天窗口列表
+    QMap<QString,ChatWidget*> widgets;
 public slots:
     void cbTimeChange(unsigned int time);
 };

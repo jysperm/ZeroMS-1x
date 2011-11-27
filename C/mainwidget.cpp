@@ -20,6 +20,8 @@
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include "oclientcoreex.h"
+#include "chatwidget.h"
+#include "ui_chatwidget.h"
 
 extern OClientCoreEx *cc;
 
@@ -159,4 +161,18 @@ void MainWidget::on_ActMember_triggered()
 void MainWidget::on_ActRefresh_triggered()
 {
     cc->msgAskUList();
+}
+
+void MainWidget::on_UListWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    if(cc->widgets.contains(item->text()))
+    {
+        cc->widgets[item->text()]->activateWindow();
+    }
+    else
+    {
+        ChatWidget *cp=new ChatWidget(item->text());
+        cc->widgets.insert(item->text(),cp);
+        cp->show();
+    }
 }

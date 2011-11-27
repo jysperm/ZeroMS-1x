@@ -4,10 +4,11 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include "const.h"
+class ClientCoreEx;
 class QCloseEvent;
+class QListWidgetItem;
 class QMenu;
 class QWidget;
-class ClientCoreEx;
 
 namespace Ui
 {
@@ -43,6 +44,7 @@ private slots:
     void on_ActVer_triggered();
     void on_ActMember_triggered();
     void on_ActRefresh_triggered();
+    void on_UListWidget_itemDoubleClicked(QListWidgetItem *item);
 };
 
 #endif // MAINWIDGET_H
