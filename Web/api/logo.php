@@ -29,6 +29,5 @@ if($rs->read())
 else
 	$url=$root."images/face/none.gif";
 
-header('content-Type:image/jpeg');
-echo file_get_contents($url); 
+header("Location:".$url);
 ?>
