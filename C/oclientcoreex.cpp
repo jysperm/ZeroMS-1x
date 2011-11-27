@@ -42,6 +42,7 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 
 void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
+    OClientCore::Error(e,msg,s);
     QMessageBox::critical(0,tr("错误"),msg);
     if(login)
     {
@@ -50,7 +51,7 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
     }
     if(mainwidget)
     {
-        delete mainwidget;
+        DELETE(mainwidget);
         init();
     }
 }
