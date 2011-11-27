@@ -12,7 +12,8 @@ SOURCES	+= \
     oclientcore.cpp \
     oclientcoreex.cpp \
     login.cpp \
-    mainwidget.cpp
+    mainwidget.cpp \
+    chatwidget.cpp
 
 HEADERS	+= \
     const.h \
@@ -22,11 +23,13 @@ HEADERS	+= \
     oclientcore.h \
     oclientcoreex.h \
     login.h \
-    mainwidget.h
+    mainwidget.h \
+    chatwidget.h
 
 FORMS	+= \
     login.ui \
-    mainwidget.ui
+    mainwidget.ui \
+    chatwidget.ui
 
 TRANSLATIONS = ZeroMS_C_EN.ts
 
@@ -37,6 +40,9 @@ OTHER_FILES += \
     images/web.png \
     images/banner.png \
     members.html
+
+
+
 
 
 
