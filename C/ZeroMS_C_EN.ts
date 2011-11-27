@@ -6,7 +6,7 @@
     <message utf8="true">
         <location filename="login.ui" line="49"/>
         <source>用户名</source>
-        <translation>UserName</translation>
+        <translation>Username</translation>
     </message>
     <message>
         <location filename="login.ui" line="56"/>
@@ -98,7 +98,7 @@ p, li { white-space: pre-wrap; }
         <location filename="mainwidget.ui" line="98"/>
         <location filename="mainwidget.ui" line="239"/>
         <source>发送消息</source>
-        <translation type="unfinished"></translation>
+        <translation type="Send"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="147"/>
@@ -108,32 +108,32 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="156"/>
         <source>好友</source>
-        <translation type="unfinished"></translation>
+        <translation type="Friends"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="165"/>
         <source>聊天</source>
-        <translation type="unfinished"></translation>
+        <translation type="chat"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="172"/>
         <source>开发人员</source>
-        <translation type="unfinished"></translation>
+        <translation type="developers"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="183"/>
         <source>帮助|关于</source>
-        <translation type="unfinished"></translation>
+        <translation type="help|about"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="203"/>
         <source>最小化</source>
-        <translation type="unfinished"></translation>
+        <translation type="Minimization"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="211"/>
         <source>隐藏到任务栏</source>
-        <translation type="unfinished"></translation>
+        <translation type="hide to taskbar"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="214"/>
@@ -143,12 +143,12 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="219"/>
         <source>退出</source>
-        <translation type="unfinished"></translation>
+        <translation type="exit"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="224"/>
         <source>刷新在线列表</source>
-        <translation type="unfinished"></translation>
+        <translation type="reload the online-users list"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="229"/>
@@ -158,27 +158,27 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="234"/>
         <source>查看选中好友的资料</source>
-        <translation type="unfinished"></translation>
+        <translation type="view the information"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="244"/>
         <source>清屏</source>
-        <translation type="unfinished"></translation>
+        <translation type="clean the screen"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="249"/>
         <source>打开调试输出</source>
-        <translation type="unfinished"></translation>
+        <translation type="DEBUG ON"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="254"/>
         <source>配置文件</source>
-        <translation type="unfinished"></translation>
+        <translation type="configuration file"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="263"/>
         <source>项目开发主页(源代码)</source>
-        <translation type="unfinished"></translation>
+        <translation type="Get the Source"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="275"/>
@@ -188,12 +188,12 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="287"/>
         <source>开发人员论坛</source>
-        <translation type="unfinished"></translation>
+        <translation type="BBS for developers"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="299"/>
         <source>零毫秒是什么？</source>
-        <translation type="unfinished"></translation>
+        <translation type="What is Zero MS?"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="307"/>
@@ -203,7 +203,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="312"/>
         <source>感谢Qt</source>
-        <translation type="unfinished"></translation>
+        <translation type="About QT"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="317"/>
@@ -213,17 +213,17 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="mainwidget.ui" line="326"/>
         <source>精英盒子主页</source>
-        <translation type="unfinished"></translation>
+        <translation type="JYBOX.NET"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="338"/>
         <source>检查新版本</source>
-        <translation type="unfinished"></translation>
+        <translation type="update"></translation>
     </message>
     <message utf8="true">
         <location filename="mainwidget.ui" line="350"/>
         <source>用户论坛</source>
-        <translation type="unfinished"></translation>
+        <translation type="BBS for users"></translation>
     </message>
     <message>
         <location filename="mainwidget.cpp" line="103"/>
@@ -269,7 +269,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="const.h" line="19"/>
         <source>零毫秒</source>
-        <translation type="unfinished"></translation>
+        <translation type="Zero MS"></translation>
     </message>
     <message utf8="true">
         <location filename="const.h" line="21"/>
