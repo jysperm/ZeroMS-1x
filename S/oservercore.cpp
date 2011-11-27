@@ -156,6 +156,8 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
     QString objUName=msg.left(msg.indexOf(" "));
     msg.remove(0,objUName.length()+1);
 
+    log(tr("%1 send msg to %2 :%3").arg(uname).arg(objUName).arg(msg));
+
     if(objUName==MAIN_GROUP)
     {
         for(it i=cl.begin();i!=cl.end();i++)

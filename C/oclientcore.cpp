@@ -88,7 +88,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
 {
     QByteArray msgData;
     msgData.append(QString("%1 %2").arg(objname).arg(msg));
-    OPacket packet(msgData,M_Error);
+    OPacket packet(msgData,M_CMsg);
     conn->write(packet.exec());
 }
 
@@ -208,10 +208,8 @@ void OClientCore::dataCome()
                 msg.remove(0,objName.length()+1);
                 QString from=msg.left(msg.indexOf(" "));
                 msg.remove(0,from.length()+1);
-                QString uname=msg.left(msg.indexOf(" "));
-                msg.remove(0,uname.length()+1);
-                QString msgMsg=msg.left(msg.indexOf(" "));
-                emit onSMsg(objName,from,uname,msgMsg);
+                QString msgMsg=msg;
+                emit onSMsg(objName,from,msgMsg);
             }
                 break;
             case M_Time:

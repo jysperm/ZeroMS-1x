@@ -26,6 +26,7 @@ public:
 public slots:
     void logoChange();
     void onUList(QStringList &users);
+    void onSMsg(QString objName,QString from,QString msg);
 private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;
@@ -45,6 +46,7 @@ private slots:
     void on_ActMember_triggered();
     void on_ActRefresh_triggered();
     void on_UListWidget_itemDoubleClicked(QListWidgetItem *item);
+    void on_DoSend_clicked();
 };
 
 #endif // MAINWIDGET_H

@@ -85,6 +85,14 @@ void MainWidget::onUList(QStringList &users)
     }
 }
 
+void MainWidget::onSMsg(QString objName,QString from,QString msg)
+{
+    if(objName==MAIN_GROUP)
+    {
+        ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
+    }
+}
+
 //private slots:
 void MainWidget::onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reason)
 {
@@ -175,4 +183,10 @@ void MainWidget::on_UListWidget_itemDoubleClicked(QListWidgetItem *item)
         cc->widgets.insert(item->text(),cp);
         cp->show();
     }
+}
+
+void MainWidget::on_DoSend_clicked()
+{
+    cc->msgCMsg(MAIN_GROUP,ui->MsgEdit->toPlainText());
+    ui->MsgEdit->setPlainText(tr(""));
 }

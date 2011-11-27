@@ -4,6 +4,7 @@
 #include "oclientcoreex.h"
 #include "login.h"
 #include "mainwidget.h"
+#include "ui_mainwidget.h"
 
 //public:
 OClientCoreEx::OClientCoreEx():login(0)
@@ -36,6 +37,7 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
     DELETE(login);
     mainwidget=new MainWidget;
     connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
+    connect(this,SIGNAL(onSMsg(QString,QString,QString)),mainwidget,SLOT(onSMsg(QString,QString,QString)));
     mainwidget->show();
     msgAskUList();
 }
@@ -55,4 +57,3 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
         init();
     }
 }
-
