@@ -1,7 +1,7 @@
 <?php
-require("../../lp-class/SafeSQL.class.php");
-require("../../lp-class/SQLRs.class.php");
-require("../../lp-class/MySQL.class.php");
+require("lp-class/SafeSQL.class.php");
+require("lp-class/SQLRs.class.php");
+require("lp-class/MySQL.class.php");
 
 $uname=$_GET["uname"];
 $root="http://jybox.net/bbs/";
