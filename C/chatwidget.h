@@ -16,8 +16,9 @@ public:
     explicit ChatWidget(QString uname,QWidget *parent = 0);
     ~ChatWidget();
     void closeEvent(QCloseEvent *event);
-private:
     Ui::ChatWidget *ui;
+private slots:
+    void on_DoSend_clicked();
 };
 
 #endif // CHATWIDGET_H

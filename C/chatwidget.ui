@@ -58,7 +58,7 @@
     <item>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextBrowser" name="MsgSrea"/>
+       <widget class="QTextBrowser" name="MsgArea"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
