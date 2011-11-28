@@ -19,6 +19,7 @@ using namespace P1;
 const QString CLIENT_TITLE_NAME = QObject::trUtf8("零毫秒");
 //客户的名称字符串，用于通知服务器
 const QString CLIENT_NAME = QObject::trUtf8("零毫秒官方客户端");
+
 //版本顺序号
 const int CLIENT_VER_NUM = 2;
 //版本描述性字符串(每次编译发布版的时候再修改就可以)
