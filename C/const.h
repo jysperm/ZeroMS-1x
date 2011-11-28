@@ -23,7 +23,7 @@ const QString CLIENT_NAME = QObject::trUtf8("零毫秒官方客户端");
 //版本顺序号
 const int CLIENT_VER_NUM = 2;
 //版本描述性字符串(每次编译发布版的时候再修改就可以)
-const QString CLIENT_VER_NAME = QObject::trUtf8("0.0.2.%1-2011.11.28 bbf9517e23147b82e3333646626f297229fc493c").arg(CLIENT_VER_NUM);
+const QString CLIENT_VER_NAME = QObject::trUtf8("0.0.2.%1-2011.11.28 6388987f75").arg(CLIENT_VER_NUM);
 
 //注册帐号的网址
 const QString REG_URL = "http://jybox.net/bbs/register.php";
