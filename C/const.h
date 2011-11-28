@@ -31,8 +31,8 @@ const QString REG_URL = "http://jybox.net/bbs/register.php";
 const QString FORGET_URL = "http://jybox.net/bbs/sendpwd.php";
 
 //服务器ip和端口
-//const QString SERVER_ADDRESS = "173.212.235.252";
-const QString SERVER_ADDRESS = "127.0.0.1";
+const QString SERVER_ADDRESS = "173.212.235.252";
+//const QString SERVER_ADDRESS = "127.0.0.1";
 const int SERVER_PORT = 4321;
 
 //主群群号
