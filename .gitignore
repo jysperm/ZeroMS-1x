@@ -1,7 +1,11 @@
 *.pro.user
 *.qm
 *.autosave
-/S2-build/*
 /S-build/*
 /C-build/*
-
+/C/debug
+/C/release
+/C/ui_*
+/C/Makefile*
+/C/object_script*
+/C/*.pro.user
