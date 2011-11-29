@@ -41,6 +41,9 @@ OTHER_FILES += \
     images/banner.png \
     members.html
 
+win32{
+    RC_FILE += resource/icon.rc
+}
 
 
 
