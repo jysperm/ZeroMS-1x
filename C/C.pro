@@ -42,7 +42,7 @@ OTHER_FILES += \
     members.html
 
 win32{
-    RC_FILE += icon.rc
+    RC_FILE += resource/icon.rc
 }
 
 
