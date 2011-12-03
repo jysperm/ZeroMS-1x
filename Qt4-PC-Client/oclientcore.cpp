@@ -6,7 +6,7 @@
 #include <QString>
 #include <QTcpSocket>
 #include "const.h"
-#include "../public/inline.h"
+#include "inline.h"
 #include "oclientcore.h"
 #include "opacket.h"
 

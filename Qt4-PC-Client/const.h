@@ -7,12 +7,9 @@
 //尽量减少包含头文件，尽可能使用前置声明
 #include <QObject>
 #include <QString>
+#include "../public/const.h"
 #include "../public/p1.h"
 using namespace P1;
-
-//该宏几乎每个文件都要用到，考虑性能问题，不放在inline.h里
-//注意，如果要操作的指针是只读的，不要使用这个宏，直接用delete关键字就行
-#define DELETE(p) if(p)delete (p);(p)=0;
 
 //客户端名称字符串,用于窗口标题
 //因为到这里，main函数还没被执行，没有设置默认编码,所以要用trUtf8
@@ -34,9 +31,5 @@ const QString FORGET_URL = "http://jybox.net/bbs/sendpwd.php";
 //服务器ip和端口
 const QString SERVER_ADDRESS = "173.212.235.252";
 //const QString SERVER_ADDRESS = "127.0.0.1";
-const int SERVER_PORT = 4321;
-
-//主群群号
-const QString MAIN_GROUP = "*0";
 
 #endif // CONST_H

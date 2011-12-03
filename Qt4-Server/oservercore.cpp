@@ -10,7 +10,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 #include "const.h"
-#include "../public/inline.h"
+#include "inline.h"
 #include "oservercore.h"
 #include "opacket.h"
 #include "oclient.h"
@@ -32,12 +32,12 @@ OServerCore::~OServerCore()
 
 void OServerCore::run()
 {
-    listen(QHostAddress::Any,CLIENT_PORT);
+    listen(QHostAddress::Any,SERVER_PORT);
     connect(this,SIGNAL(newConnection()),this,SLOT(onNewConn()));
     timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
     timer->start(60*1000);
-    log(tr("listening,port %1").arg(QString::number(CLIENT_PORT)));
+    log(tr("listening,port %1").arg(SERVER_PORT));
 }
 
 void OServerCore::stop()

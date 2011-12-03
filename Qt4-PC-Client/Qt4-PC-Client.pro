@@ -1,7 +1,7 @@
 
 QT	= core gui network
 
-TARGET	= C
+TARGET	= Qt4-PC-Client
 
 CONFIG	+= thread
 
@@ -18,13 +18,14 @@ SOURCES	+= \
 HEADERS	+= \
     const.h \
     ../public/p1.h \
-    ../public/inline.h \
+    inline.h \
     opacket.h \
     oclientcore.h \
     oclientcoreex.h \
     login.h \
     mainwidget.h \
-    chatwidget.h
+    chatwidget.h \
+    ../public/const.h
 
 FORMS	+= \
     login.ui \
@@ -44,6 +45,7 @@ OTHER_FILES += \
 win32{
     RC_FILE += icon.rc
 }
+
 
 
 
