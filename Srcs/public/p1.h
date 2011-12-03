@@ -1,9 +1,10 @@
 #ifndef P1_H
 #define P1_H
 
+//--该文件是1版通讯协议的常量定义文件
+
 namespace P1
 {
-//--该文件是1版通讯协议的常量定义文件
 const int P_VER = 1;
 
 //头部长度
@@ -35,9 +36,9 @@ const int UAPI_CLIENTNAME   = 4;
 inline int checkVer(int n)
 {
     if(n==1)
-	return 1;
+        return 1;
     else
-	return 0;
+        return 0;
 }
 
 }	//namespace P1
