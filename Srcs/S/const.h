@@ -7,7 +7,7 @@
 //尽量减少包含头文件，尽可能使用前置声明
 #include <QObject>
 #include <QString>
-#include "p1.h"
+#include "../public/p1.h"
 using namespace P1;
 
 //该宏几乎每个文件都要用到，考虑性能问题，不放在inline.h里

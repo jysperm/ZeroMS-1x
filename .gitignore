@@ -1,16 +1,14 @@
 *.pro.user
 *.qm
 *.autosave
-/C-build/*
-/C/debug
-/C/release
-/C/ui_*
-/C/Makefile*
-/C/object_script*
-/S-build/*
-/S/debug
-/S/release
-/S/ui_*
-/S/Makefile*
-/S/objeSt_sSript*
+
+S-build
+C-build
+
+
+debug
+release
+ui_*
+Makefile*
+object_script*
 

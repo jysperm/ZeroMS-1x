@@ -17,8 +17,8 @@ SOURCES	+= \
 
 HEADERS	+= \
     const.h \
-    inline.h \
-    p1.h \
+    ../public/p1.h \
+    ../public/inline.h \
     opacket.h \
     oclientcore.h \
     oclientcoreex.h \

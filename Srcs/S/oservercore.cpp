@@ -10,7 +10,7 @@
 #include <QTcpSocket>
 #include <QTimer>
 #include "const.h"
-#include "inline.h"
+#include "../public/inline.h"
 #include "oservercore.h"
 #include "opacket.h"
 #include "oclient.h"

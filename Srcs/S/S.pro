@@ -8,8 +8,8 @@ TEMPLATE = app
 
 HEADERS += \
     const.h \
-    p1.h \
-    inline.h \
+    ../public/p1.h \
+    ../public/inline.h \
     oclient.h \
     opacket.h \
     oservercore.h
