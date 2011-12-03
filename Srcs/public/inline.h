@@ -4,7 +4,6 @@
 #include <QByteArray>
 #include <QCryptographicHash>
 #include <QString>
-#include "const.h"
 
 inline int QBtoint(QByteArray b)
 {
