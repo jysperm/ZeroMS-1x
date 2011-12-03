@@ -1,19 +1,15 @@
 *.pro.user
 *.qm
 *.autosave
-<<<<<<< HEAD
-
-S-build
-C-build
 
 
-=======
 *.exe
 /C-build/*
 /S-build/*
 /build/*
 /build*/*
->>>>>>> f94dd68c5ce0aa5d316316253c6fbb5d1ac8904d
+
+
 debug
 release
 ui_*
