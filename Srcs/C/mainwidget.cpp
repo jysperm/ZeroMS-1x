@@ -16,7 +16,7 @@
 #include <QUrl>
 #include <QWidget>
 #include "const.h"
-#include "inline.h"
+#include "../public/inline.h"
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
 #include "oclientcoreex.h"
