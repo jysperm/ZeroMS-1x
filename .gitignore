@@ -2,6 +2,10 @@
 *.qm
 *.autosave
 
+S-build
+C-build
+
+
 debug
 release
 ui_*
