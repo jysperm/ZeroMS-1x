@@ -1,5 +1,5 @@
-#ifndef P1_H
-#define P1_H
+#ifndef PUBLIC_P1_H
+#define PUBLIC_P1_H
 
 //--该文件是1版通讯协议的常量定义文件
 
@@ -43,4 +43,4 @@ inline int checkVer(int n)
 
 }	//namespace P1
 
-#endif // P1_H
+#endif // PUBLIC_P1_H
