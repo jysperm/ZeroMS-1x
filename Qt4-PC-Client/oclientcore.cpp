@@ -8,7 +8,7 @@
 #include "const.h"
 #include "inline.h"
 #include "oclientcore.h"
-#include "opacket.h"
+#include "../public/opacket.h"
 
 //public:
 OClientCore::OClientCore():conn(0),timeDiff(0),isLoged(0),databuf(0)
