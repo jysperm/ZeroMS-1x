@@ -18,8 +18,8 @@ SOURCES	+= \
 HEADERS	+= \
     const.h \
     ../public/p1.h \
+    ../public/opacket.h \
     inline.h \
-    opacket.h \
     oclientcore.h \
     oclientcoreex.h \
     login.h \
@@ -45,6 +45,7 @@ OTHER_FILES += \
 win32{
     RC_FILE += icon.rc
 }
+
 
 
 

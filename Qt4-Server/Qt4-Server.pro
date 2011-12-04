@@ -10,13 +10,14 @@ HEADERS += \
     const.h \
     ../public/p1.h \
     oclient.h \
-    opacket.h \
     oservercore.h \
+    ../public/opacket.h \
     ../public/const.h
 
 SOURCES += main.cpp \
     oservercore.cpp
 
 TRANSLATIONS = ZeroMS_S_zh_CN.ts
+
 
 

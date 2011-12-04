@@ -12,7 +12,7 @@
 #include "const.h"
 #include "inline.h"
 #include "oservercore.h"
-#include "opacket.h"
+#include "../public/opacket.h"
 #include "oclient.h"
 
 extern QTextStream cout;
