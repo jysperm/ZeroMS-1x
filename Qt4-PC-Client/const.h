@@ -32,4 +32,10 @@ const QString FORGET_URL = "http://jybox.net/bbs/sendpwd.php";
 const QString SERVER_ADDRESS = "173.212.235.252";
 //const QString SERVER_ADDRESS = "127.0.0.1";
 
+//服务器端口
+const int SERVER_PORT = 4321;
+
+//主群群号
+const QString MAIN_GROUP = "*0";
+
 #endif // CONST_H

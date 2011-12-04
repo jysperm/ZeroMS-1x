@@ -12,12 +12,22 @@ HEADERS += \
     oclient.h \
     oservercore.h \
     ../public/opacket.h \
-    ../public/const.h
+    ../public/const.h \
+    settings.h
 
 SOURCES += main.cpp \
     oservercore.cpp
 
 TRANSLATIONS = ZeroMS_S_zh_CN.ts
+
+OTHER_FILES += \
+    config.ini
+
+RESOURCES += \
+    res.qrc
+
+
+
 
 
 

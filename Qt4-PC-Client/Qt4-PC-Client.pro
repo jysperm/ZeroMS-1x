@@ -37,7 +37,7 @@ TRANSLATIONS = ZeroMS_C_EN.ts
 RESOURCES += \
     res.qrc
 
-OTHER_FILES += \
+OTHER_FILES += res.qrc\
     images/web.png \
     images/banner.png \
     members.html
@@ -45,49 +45,4 @@ OTHER_FILES += \
 win32{
     RC_FILE += icon.rc
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

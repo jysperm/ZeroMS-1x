@@ -11,10 +11,4 @@
 //注意，如果要操作的指针是只读的，不要使用这个宏，直接用delete关键字就行
 #define DELETE(p) {if(p)delete (p);(p)=0;};
 
-//服务器端口
-const int SERVER_PORT = 4321;
-
-//主群群号
-const QString MAIN_GROUP = "*0";
-
 #endif // PUBLIC_CONST_H

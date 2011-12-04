@@ -10,17 +10,20 @@
 #include <QTcpSocket>
 #include <QTimer>
 #include "const.h"
+#include "settings.h"
 #include "inline.h"
 #include "oservercore.h"
 #include "../public/opacket.h"
 #include "oclient.h"
 
+using namespace OMS;
 extern QTextStream cout;
 
 //public:
 OServerCore::OServerCore():manager(0),reply(0)
 {
     log(tr("0-ms start"));
+    loadConfig();
 }
 
 OServerCore::~OServerCore()
@@ -32,12 +35,12 @@ OServerCore::~OServerCore()
 
 void OServerCore::run()
 {
-    listen(QHostAddress::Any,SERVER_PORT);
+    listen(QHostAddress::Any,config->value("SERVER_PORT").toInt());
     connect(this,SIGNAL(newConnection()),this,SLOT(onNewConn()));
     timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
     timer->start(60*1000);
-    log(tr("listening,port %1").arg(SERVER_PORT));
+    log(tr("listening,port %1").arg(config->value("SERVER_PORT").toInt()));
 }
 
 void OServerCore::stop()
@@ -105,7 +108,7 @@ void OServerCore::checkMsg(QString uname)
 void OServerCore::msgError(QString uname)
 {
     QByteArray msgData;
-    msgData.append(ERROR_STR);
+    msgData.append(config->value("ERROR_STR").toString());
     OPacket packet(msgData,M_Error);
     QTcpSocket *conn=cl[uname]->conn;
     conn->write(packet.exec());
@@ -157,12 +160,12 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
 
     log(tr("%1 send msg to %2 :%3").arg(uname).arg(objUName).arg(msg));
 
-    if(objUName==MAIN_GROUP)
+    if(objUName==config->value("MAIN_GROUP").toString())
     {
         for(it i=cl.begin();i!=cl.end();i++)
         {
             if(i.value()->isLoged)
-                msgSMsg(i.key(),MAIN_GROUP,uname,msg);
+                msgSMsg(i.key(),config->value("MAIN_GROUP").toString(),uname,msg);
         }
     }
 
@@ -207,14 +210,14 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     QString msgClientName=msg.left(msg.indexOf(" "));
 
     unsigned int stime=QDateTime::currentDateTime().toTime_t();
-    QString dpwd=md5(API_KEY+msgPwd);
+    QString dpwd=md5(config->value("API_KEY").toString()+msgPwd);
     QByteArray content;
     content.append(QString("do=login&uname=%1&listname=%2&pwd=%3&time=%4&clientver=%5&clientname=%6")
                    .arg(msgUName).arg(uname).arg(dpwd).arg(QString::number(stime)).arg(msgClientVer).arg(msgClientName));
     if(!manager)
         manager=new QNetworkAccessManager(this);
     QNetworkRequest request ;
-    request.setUrl(QUrl(LOGIN_APIURL));
+    request.setUrl(QUrl(config->value("LOGIN_APIURL").toString()));
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
     request.setHeader(QNetworkRequest::ContentLengthHeader,content.length());
     reply=manager->post(request,content);
@@ -283,7 +286,7 @@ void OServerCore::checkTimeOut()
 {
     for(it i=cl.begin();i!=cl.end();i++)
     {
-        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>Time_OffLine)
+        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>config->value("TIME_OFFLINE").toInt())
         {
             delete i.value();
             cl.erase(i);
@@ -324,7 +327,7 @@ void OServerCore::onNewConn()
     {
 	QTcpSocket *conn=nextPendingConnection();
 	QString uname=QString("#%1:%2").arg(conn->peerAddress().toString()).arg(conn->peerPort());
-	if(cl.size()<CLIENT_MAX)
+        if(cl.size()<config->value("CLIENT_MAX").toInt())
 	{
 	    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 	    connect(conn,SIGNAL(readyRead()),this,SLOT(onData()));
@@ -341,7 +344,7 @@ void OServerCore::onNewConn()
         else
         {
             conn->abort();
-            log(tr("over of connections up limit:%1").arg(CLIENT_MAX));
+            log(tr("over of connections up limit:%1").arg(config->value("CLIENT_MAX").toInt()));
         }
     }
 }
