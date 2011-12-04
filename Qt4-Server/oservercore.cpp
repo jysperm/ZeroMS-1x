@@ -139,8 +139,7 @@ void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
 
 void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
 {
-    delete cl[uname];
-    cl.remove(uname);
+    cl[uname]->isLoged=0;
 }
 
 void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
@@ -188,6 +187,8 @@ void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
+    cl[uname]->ping();
+
     log(tr("%1 logging").arg(uname));
     if(cl[uname]->isLoged)
     {
@@ -230,6 +231,7 @@ void OServerCore::msgLoginOk(QString uname)
 
 void OServerCore::msgLoginError(QString uname)
 {
+    log(tr("%1 loging error").arg(uname));
     OPacket packet(M_LoginError);
     QTcpSocket *conn=cl[uname]->conn;
     conn->write(packet.exec());
@@ -281,7 +283,7 @@ void OServerCore::checkTimeOut()
 {
     for(it i=cl.begin();i!=cl.end();i++)
     {
-        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>Time_OffLine*1000)
+        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>Time_OffLine)
         {
             delete i.value();
             cl.erase(i);
@@ -368,7 +370,7 @@ void OServerCore::onError(QAbstractSocket::SocketError s)
 	QTcpSocket *conn=i.value()->conn;
 	if(conn->error()==s)
 	{
-	    //如果这个连接对象的上一个错误和接收到的错误号一样，
+            //如果这个连接对象的上一个错误和接收到的错误号一样，
 	    //说明是它出错，输出错误信息并断开连接
 	    log(tr("%1 connect error：%2").arg(i.key()).arg(conn->errorString()));
 	    int isLoged=i.value()->isLoged;
