@@ -1,11 +1,13 @@
-#ifndef OPACKET_H
-#define OPACKET_H
+#ifndef PUBLIC_OPACKET_H
+#define PUBLIC_OPACKET_H
 
 #include <QByteArray>
 #include <QDataStream>
 #include <QDateTime>
 #include <QObject>
 #include "const.h"
+#include "p1.h"
+using namespace P1;
 
 class OPacket:public QObject
 {
@@ -25,19 +27,19 @@ public:
         QByteArray tData;
         QDataStream DSdata(&tData,QIODevice::WriteOnly);
         unsigned int time=QDateTime::currentDateTime().toTime_t();
-        DSdata<<P_VER<<(packetData.size())<<packetType<<time;
+        DSdata<<P_VER<<packetData.size()<<packetType<<time;
         tData.append(packetData);
         return tData;
     }
     inline OPacket &append(QByteArray &data)
     {
-	//把数据追加到数据包的尾部，事实上只是一个简写形式
-	packetData.append(data);
-	return *this;
+        //把数据追加到数据包的尾部，事实上只是一个简写形式
+        packetData.append(data);
+        return *this;
     }
 
     unsigned int packetType;
     QByteArray packetData;
 };
 
-#endif // OPACKET_H
+#endif // PUBLIC_OPACKET_H

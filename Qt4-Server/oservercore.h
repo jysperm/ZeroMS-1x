@@ -4,7 +4,7 @@
 #include <QTcpServer>
 #include <QMap>
 #include "const.h"
-#include "opacket.h"
+#include "../public/opacket.h"
 class OClient;
 class QNetworkAccessManager;
 class QNetworkReply;
