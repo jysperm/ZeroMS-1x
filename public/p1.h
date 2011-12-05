@@ -1,6 +1,8 @@
 #ifndef PUBLIC_P1_H
 #define PUBLIC_P1_H
 
+class QString;
+
 //--该文件是1版通讯协议的常量定义文件
 
 namespace P1
@@ -31,6 +33,9 @@ const int UAPI_UNAME	    = 1;
 const int UAPI_LISTNAME	    = 2;
 const int UAPI_CLIENTVER    = 3;
 const int UAPI_CLIENTNAME   = 4;
+
+//唯一的主群的群号
+const QString MAIN_GROUP="*0";
 
 //验证是否兼容该协议版本
 inline int checkVer(int n)

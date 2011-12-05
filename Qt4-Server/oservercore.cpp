@@ -159,12 +159,12 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
 
     log(tr("%1 send msg to %2 :%3").arg(uname).arg(objUName).arg(msg));
 
-    if(objUName==config->value("MAIN_GROUP").toString())
+    if(objUName==MAIN_GROUP)
     {
         for(it i=cl.begin();i!=cl.end();i++)
         {
             if(i.value()->isLoged)
-                msgSMsg(i.key(),config->value("MAIN_GROUP").toString(),uname,msg);
+                msgSMsg(i.key(),MAIN_GROUP,uname,msg);
         }
     }
 
