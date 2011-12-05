@@ -109,8 +109,7 @@ void OServerCore::msgError(QString uname)
     QByteArray msgData;
     msgData.append(config->value("ERROR_STR").toString());
     OPacket packet(msgData,M_Error);
-    QTcpSocket *conn=cl[uname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
 }
 
 void OServerCore::msgAskTime(QString uname,QByteArray *data,unsigned int time)
@@ -124,8 +123,7 @@ void OServerCore::msgTime(QString uname)
     //注意，这里的时间戳是字符串的形式
     msgData.append(QString::number(QDateTime::currentDateTime().toTime_t()));
     OPacket packet(msgData,M_Time);
-    QTcpSocket *conn=cl[uname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
     log(tr("send time to %1 :%2").arg(uname).arg(QDateTime::currentDateTime().toTime_t()));
 }
 
@@ -183,8 +181,7 @@ void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg
     //注意，这里的时间戳是字符串的形式
     msgData.append(QString("%1 %2 %3").arg(from).arg(uname).arg(msg));
     OPacket packet(msgData,M_SMsg);
-    QTcpSocket *conn=cl[objname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
@@ -227,16 +224,14 @@ void OServerCore::msgLoginOk(QString uname)
 {
     log(tr("%1 loged").arg(uname));
     OPacket packet(M_LoginOk);
-    QTcpSocket *conn=cl[uname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
 }
 
 void OServerCore::msgLoginError(QString uname)
 {
     log(tr("%1 loging error").arg(uname));
     OPacket packet(M_LoginError);
-    QTcpSocket *conn=cl[uname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
 }
 
 void OServerCore::msgAskUList(QString uname,QByteArray *data,unsigned int time)
@@ -262,8 +257,7 @@ void OServerCore::msgUList(QString uname)
     QByteArray msgData;
     msgData.append(users.join(","));
     OPacket packet(msgData,M_UList);
-    QTcpSocket *conn=cl[uname]->conn;
-    conn->write(packet.exec());
+    cl[uname]->send(packet);
 }
 
 void OServerCore::msgChangeUList(QStringList users)
@@ -274,8 +268,7 @@ void OServerCore::msgChangeUList(QStringList users)
         if(cl[i]->isLoged)
         {
             OPacket packet(M_ChangeUList);
-            QTcpSocket *conn=cl[i]->conn;
-            conn->write(packet.exec());
+            cl[i]->send(packet);
         }
     }
 }

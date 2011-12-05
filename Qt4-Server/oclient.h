@@ -7,6 +7,7 @@
 #include <QString>
 #include <QTcpSocket>
 #include "const.h"
+#include "../public/opacket.h"
 
 class OClient:public QObject
 {
@@ -25,6 +26,10 @@ public:
     {
         //将最后登陆时间改为当前时间
         return lasttime=QDateTime::currentDateTime().toTime_t();
+    }
+    void send(OPacket &packet)
+    {
+        conn->write(packet.exec());
     }
     ~OClient()
     {
