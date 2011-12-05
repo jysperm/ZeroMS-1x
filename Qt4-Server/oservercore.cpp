@@ -5,18 +5,17 @@
 #include <QHostAddress>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTimer>
 #include "const.h"
-#include "settings.h"
 #include "inline.h"
 #include "oservercore.h"
 #include "../public/opacket.h"
 #include "oclient.h"
 
-using namespace OMS;
 extern QTextStream cout;
 
 //public:

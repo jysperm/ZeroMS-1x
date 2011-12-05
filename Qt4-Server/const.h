@@ -10,7 +10,12 @@
 #include "../public/const.h"
 #include "../public/p1.h"
 using namespace P1;
+class QSettings;
 
-
+//配置文件路径
+const QString CONFIG_FILE = QObject::trUtf8("./config.ini");
+//配置文件相关
+extern QSettings *config;
+void loadConfig(QString file=CONFIG_FILE);
 
 #endif // CONST_H

@@ -1,21 +1,12 @@
-#ifndef SETTINGS_H
-#define SETTINGS_H
-
 #include <QCoreApplication>
 #include <QSettings>
 #include <QString>
 #include <QFile>
 #include "const.h"
 
-namespace OMS
-{
-
-//配置文件路径
-const QString CONFIG_FILE = QObject::trUtf8("./config.ini");
-
 QSettings *config;
 
-void loadConfig(QString file=CONFIG_FILE)
+void loadConfig(QString file)
 {
     //如果没有配置文件,输出默认配置文件
     if(!QFile::exists(CONFIG_FILE))
@@ -32,6 +23,3 @@ void loadConfig(QString file=CONFIG_FILE)
 
 }
 
-}      // namespace OMS
-
-#endif // SETTINGS_H
