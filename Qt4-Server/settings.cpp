@@ -5,6 +5,7 @@
 #include "const.h"
 
 QSettings *config;
+QSettings *defaultConfig;
 
 void loadConfig(QString file)
 {
@@ -20,6 +21,9 @@ void loadConfig(QString file)
     if(config)
         DELETE(config);
     config=new QSettings(CONFIG_FILE,QSettings::IniFormat,qApp);
-
 }
 
+QVariant configValue(QString key)
+{
+    return config->value(key,defaultConfig->value(key));
+}
