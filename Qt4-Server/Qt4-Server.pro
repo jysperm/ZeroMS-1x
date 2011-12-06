@@ -16,7 +16,7 @@ HEADERS += \
 
 SOURCES += main.cpp \
     oservercore.cpp \
-    settings.cpp
+    ../public/settings.cpp
 
 TRANSLATIONS = ZeroMS_S_zh_CN.ts
 
