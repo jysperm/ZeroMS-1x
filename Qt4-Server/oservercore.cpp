@@ -22,7 +22,6 @@ extern QTextStream cout;
 OServerCore::OServerCore():manager(0),reply(0)
 {
     log(tr("0-ms start"));
-    loadConfig();
 }
 
 OServerCore::~OServerCore()
@@ -34,12 +33,12 @@ OServerCore::~OServerCore()
 
 void OServerCore::run()
 {
-    listen(QHostAddress::Any,configValue("SERVER_PORT").toInt());
+    listen(QHostAddress::Any,config["SERVER_PORT"].toInt());
     connect(this,SIGNAL(newConnection()),this,SLOT(onNewConn()));
     timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
     timer->start(60*1000);
-    log(tr("listening,port %1").arg(configValue("SERVER_PORT").toInt()));
+    log(tr("listening,port %1").arg(config["SERVER_PORT"].toInt()));
 }
 
 void OServerCore::stop()
@@ -107,7 +106,7 @@ void OServerCore::checkMsg(QString uname)
 void OServerCore::msgError(QString uname)
 {
     QByteArray msgData;
-    msgData.append(configValue("ERROR_STR").toString());
+    msgData.append(config["ERROR_STR"].toString());
     OPacket packet(msgData,M_Error);
     cl[uname]->send(packet);
 }
@@ -206,14 +205,14 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     QString msgClientName=msg.left(msg.indexOf(" "));
 
     unsigned int stime=QDateTime::currentDateTime().toTime_t();
-    QString dpwd=md5(configValue("API_KEY").toString()+msgPwd);
+    QString dpwd=md5(config["API_KEY"].toString()+msgPwd);
     QByteArray content;
     content.append(QString("do=login&uname=%1&listname=%2&pwd=%3&time=%4&clientver=%5&clientname=%6")
                    .arg(msgUName).arg(uname).arg(dpwd).arg(QString::number(stime)).arg(msgClientVer).arg(msgClientName));
     if(!manager)
         manager=new QNetworkAccessManager(this);
     QNetworkRequest request ;
-    request.setUrl(QUrl(configValue("LOGIN_APIURL").toString()));
+    request.setUrl(QUrl(config["LOGIN_APIURL"].toString()));
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
     request.setHeader(QNetworkRequest::ContentLengthHeader,content.length());
     reply=manager->post(request,content);
@@ -278,7 +277,7 @@ void OServerCore::checkTimeOut()
 {
     for(it i=cl.begin();i!=cl.end();i++)
     {
-        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>configValue("TIME_OFFLINE").toInt())
+        if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>config["TIME_OFFLINE"].toInt())
         {
             delete i.value();
             cl.erase(i);
@@ -319,7 +318,7 @@ void OServerCore::onNewConn()
     {
 	QTcpSocket *conn=nextPendingConnection();
 	QString uname=QString("#%1:%2").arg(conn->peerAddress().toString()).arg(conn->peerPort());
-        if(cl.size()<configValue("CLIENT_MAX").toInt())
+        if(cl.size()<config["CLIENT_MAX"].toInt())
 	{
 	    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 	    connect(conn,SIGNAL(readyRead()),this,SLOT(onData()));
@@ -336,7 +335,7 @@ void OServerCore::onNewConn()
         else
         {
             conn->abort();
-            log(tr("over of connections up limit:%1").arg(configValue("CLIENT_MAX").toInt()));
+            log(tr("over of connections up limit:%1").arg(config["CLIENT_MAX"].toInt()));
         }
     }
 }

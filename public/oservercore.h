@@ -5,7 +5,6 @@
 #include <QMap>
 #include "const.h"
 #include "../public/opacket.h"
-#include "../public/osettings.h"
 class OClient;
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -50,8 +49,6 @@ private:
     QNetworkReply *reply;
     //定时器，用于定时剔除长时间未相应的用户
     QTimer *timer;
-    //配置文件读取器
-    OSettings config;
 private slots:
     //timer的槽
     void checkTimeOut();

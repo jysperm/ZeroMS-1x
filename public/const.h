@@ -13,12 +13,7 @@ class QVariant;
 //注意，如果要操作的指针是只读的，不要使用这个宏，直接用delete关键字就行
 #define DELETE(p) {if(p)delete (p);(p)=0;};
 
-//配置文件相关
-extern QSettings *config;
-extern QSettings *defaultConfig;
-void loadConfig();
-QVariant configValue(QString key);
-//配置文件路径
-const QString CONFIG_FILE = QObject::trUtf8("./config.ini");
+//全局默认配置文件路径
+const QString PUBLIC_CONFIG_FILE = QObject::trUtf8("./config.ini");
 
 #endif // PUBLIC_CONST_H
