@@ -65,11 +65,12 @@ void OServerCore::log(QString msg)
         logFile=new QFile(config["LOG_OUT"].toString());
         logFile->open(QFile::Append);
     }
+    QString stime=QDateTime::currentDateTime().toString(tr("yyyy-MM-dd hh:mm:ss.zzz"));
     QByteArray bMsg;
-    bMsg.append(msg+"\n");
+    bMsg.append(tr("%1>%2\n").arg(stime).arg(msg));
     logFile->write(bMsg);
     logFile->flush();
-    cout<<msg<<endl;
+    cout<<tr("%1>%2").arg(stime).arg(msg)<<endl;
 }
 
 void OServerCore::checkMsg(QString uname)
