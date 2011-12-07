@@ -11,6 +11,7 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QStringList;
 class QTimer;
+class QFile;
 
 class OServerCore:public QTcpServer
 {
@@ -52,6 +53,8 @@ private:
     QTimer *timer;
     //配置文件读取器
     OSettings config;
+    //日志文件指针
+    QFile *logFile;
 private slots:
     //timer的槽
     void checkTimeOut();

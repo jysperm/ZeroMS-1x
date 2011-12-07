@@ -2,6 +2,7 @@
 #include <QByteArray>
 #include <QDataStream>
 #include <QDateTime>
+#include <QFile>
 #include <QHostAddress>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -19,7 +20,7 @@
 extern QTextStream cout;
 
 //public:
-OServerCore::OServerCore():manager(0),reply(0)
+OServerCore::OServerCore():manager(0),reply(0),logFile(0)
 {
     log(tr("0-ms start"));
 }
@@ -28,6 +29,7 @@ OServerCore::~OServerCore()
 {
     log(tr("0-ms exit"));
     DELETE(manager);
+    DELETE(logFile);
     stop();
 }
 
@@ -57,8 +59,16 @@ void OServerCore::stop()
 //private:
 void OServerCore::log(QString msg)
 {
-    //负责打印日志，目前是输出到标准输出
-    //建立这个函数的目的是为了方便今后修改输出的位置
+    //负责打印日志
+    if(!logFile)
+    {
+        logFile=new QFile(config["LOG_OUT"].toString());
+        logFile->open(QFile::Append);
+    }
+    QByteArray bMsg;
+    bMsg.append(msg+"\n");
+    logFile->write(bMsg);
+    logFile->flush();
     cout<<msg<<endl;
 }
 
