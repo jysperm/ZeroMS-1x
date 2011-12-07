@@ -9,12 +9,17 @@ class OSettings
 public:
     OSettings(QString file=PUBLIC_CONFIG_FILE);
     virtual ~OSettings();
-    QVariant operator[](QString key);
+    inline QVariant operator[](QString key);
     void load();
 
     QSettings *config;
     QSettings *defaultConfig;
     QString configFile;
 };
+
+inline QVariant OSettings::operator[](QString key)
+{
+    return config->value(key,defaultConfig->value(key));
+}
 
 #endif // PUBLIC_OSETTINGS_H

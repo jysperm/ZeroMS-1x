@@ -24,9 +24,3 @@ QByteArray OPacket::exec()
     tData.append(packetData);
     return tData;
 }
-
-inline OPacket &OPacket::append(QByteArray &data)
-{
-    packetData.append(data);
-    return *this;
-}

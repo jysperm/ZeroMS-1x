@@ -26,4 +26,10 @@ public:
     QByteArray packetData;
 };
 
+inline OPacket &OPacket::append(QByteArray &data)
+{
+    packetData.append(data);
+    return *this;
+}
+
 #endif // PUBLIC_OPACKET_H

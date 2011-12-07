@@ -17,11 +17,6 @@ OSettings::~OSettings()
     DELETE(defaultConfig);
 }
 
-QVariant OSettings::operator[](QString key)
-{
-    return config->value(key,defaultConfig->value(key));
-}
-
 void OSettings::load()
 {
     //如果没有配置文件,输出默认配置文件
