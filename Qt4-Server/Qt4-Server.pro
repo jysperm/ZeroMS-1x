@@ -17,7 +17,8 @@ HEADERS += \
 
 SOURCES += main.cpp \
     oservercore.cpp \
-    ../public/osettings.cpp
+    ../public/osettings.cpp \
+    ../public/opacket.cpp
 
 TRANSLATIONS = ZeroMS_S_zh_CN.ts
 
@@ -26,6 +27,7 @@ OTHER_FILES += \
 
 RESOURCES += \
     res.qrc
+
 
 
 

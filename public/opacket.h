@@ -2,8 +2,6 @@
 #define PUBLIC_OPACKET_H
 
 #include <QByteArray>
-#include <QDataStream>
-#include <QDateTime>
 #include <QObject>
 #include "const.h"
 #include "p1.h"
@@ -17,26 +15,12 @@ class OPacket:public QObject
     //内容不多,所以不单独使用实现文件了
     Q_OBJECT
 public:
-    OPacket(QByteArray &data,unsigned int type):packetType(type),packetData(data){}
-    OPacket(unsigned int type):packetType(type){}
+    OPacket(QByteArray &data,unsigned int type);
+    OPacket(unsigned int type);
     //返回一个可以用于发送的完整的数据包
-    QByteArray exec()
-    {
-        if(!packetType)
-            return 0;
-        QByteArray tData;
-        QDataStream DSdata(&tData,QIODevice::WriteOnly);
-        unsigned int time=QDateTime::currentDateTime().toTime_t();
-        DSdata<<P_VER<<packetData.size()<<packetType<<time;
-        tData.append(packetData);
-        return tData;
-    }
-    inline OPacket &append(QByteArray &data)
-    {
-        //把数据追加到数据包的尾部，事实上只是一个简写形式
-        packetData.append(data);
-        return *this;
-    }
+    QByteArray exec();
+    //把数据追加到数据包的尾部，事实上只是一个简写形式
+    inline OPacket &append(QByteArray &data);
 
     unsigned int packetType;
     QByteArray packetData;
