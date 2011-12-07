@@ -13,7 +13,6 @@ class OPacket:public QObject
     //因为只是简单的封装，所以所有成员共有
 
     //内容不多,所以不单独使用实现文件了
-    Q_OBJECT
 public:
     OPacket(QByteArray &data,unsigned int type);
     OPacket(unsigned int type);

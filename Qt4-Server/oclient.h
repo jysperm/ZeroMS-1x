@@ -15,7 +15,6 @@ class OClient:public QObject
     //事实上该类只是添加了一些数据成员，用来为连接对象提供一些额外的信息
 
     //只是简单的添加了几个共有成员变量,所以不单独使用实现文件了
-    Q_OBJECT
 public:
     OClient();
     virtual ~OClient();
