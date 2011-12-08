@@ -29,15 +29,3 @@ OTHER_FILES += \
 RESOURCES += \
     res.qrc
 
-
-
-
-
-
-
-
-
-
-
-
-
