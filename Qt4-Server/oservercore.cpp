@@ -23,6 +23,7 @@ extern QTextStream cout;
 OServerCore::OServerCore():manager(0),reply(0),logFile(0)
 {
     log(tr("0-ms start"));
+    log(tr("ZeroMS Qt4-Server %1").arg(SERVER_VER_NAME));
 }
 
 OServerCore::~OServerCore()
@@ -65,7 +66,7 @@ void OServerCore::log(QString msg)
         logFile=new QFile(config["LOG_OUT"].toString());
         logFile->open(QFile::Append);
     }
-    QString stime=QDateTime::currentDateTime().toString(tr("yyyy-MM-dd hh:mm:ss.zzz"));
+    QString stime=QDateTime::currentDateTime().toString(config["LOG_TIME_FORMAT"].toString());
     QByteArray bMsg;
     bMsg.append(tr("%1>%2\n").arg(stime).arg(msg));
     logFile->write(bMsg);
