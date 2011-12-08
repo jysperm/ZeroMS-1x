@@ -13,6 +13,6 @@
 using namespace P1;
 
 //版本描述性字符串(每次编译发布版的时候再修改就可以)
-const QString SERVER_VER_NAME = QObject::trUtf8("%1.0.0-2011.12.8 0000000000").arg(P_VER);
+const QString SERVER_VER_NAME = QObject::trUtf8("%1.0.0-2011.12.8 c2e247905e").arg(P_VER);
 
 #endif // CONST_H
