@@ -22,13 +22,13 @@ extern QTextStream cout;
 //public:
 OServerCore::OServerCore():manager(0),reply(0),logFile(0)
 {
-    log(tr("0-ms start"));
-    log(tr("ZeroMS Qt4-Server %1").arg(SERVER_VER_NAME));
+    log(tr("ZeroMS Server running"));
+    log(tr("ZeroMS Server in Qt4 %1").arg(SERVER_VER_NAME));
 }
 
 OServerCore::~OServerCore()
 {
-    log(tr("0-ms exit"));
+    log(tr("ZeroMS Server Exit.."));
     DELETE(manager);
     DELETE(logFile);
     stop();
@@ -41,7 +41,7 @@ void OServerCore::run()
     timer=new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
     timer->start(60*1000);
-    log(tr("listening,port %1").arg(config["SERVER_PORT"].toInt()));
+    log(tr("Listening at %1").arg(config["SERVER_PORT"].toInt()));
 }
 
 void OServerCore::stop()
@@ -54,7 +54,7 @@ void OServerCore::stop()
         delete i.value();
 	cl.erase(i);
     }
-    log(tr("0-ms stop listening"));
+    log(tr("ZeroMS Server STOP listening"));
 }
 
 //private:
@@ -135,7 +135,7 @@ void OServerCore::msgTime(QString uname)
     msgData.append(QString::number(QDateTime::currentDateTime().toTime_t()));
     OPacket packet(msgData,M_Time);
     cl[uname]->send(packet);
-    log(tr("send time to %1 :%2").arg(uname).arg(QDateTime::currentDateTime().toTime_t()));
+    log(tr("Send time to %1").arg(uname));
 }
 
 void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
@@ -166,7 +166,7 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
     QString objUName=msg.left(msg.indexOf(" "));
     msg.remove(0,objUName.length()+1);
 
-    log(tr("%1 send msg to %2 :%3").arg(uname).arg(objUName).arg(msg));
+    log(tr("%1 send %2 to %3").arg(uname).arg(msg).arg(objUName));
 
     if(objUName==MAIN_GROUP)
     {
@@ -199,7 +199,7 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 {
     cl[uname]->ping();
 
-    log(tr("%1 logging").arg(uname));
+    log(tr("%1 is trying to log in...").arg(uname));
     if(cl[uname]->isLoged)
     {
         //如果已经登陆，则向客户端发送解析错误
@@ -233,14 +233,14 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
 
 void OServerCore::msgLoginOk(QString uname)
 {
-    log(tr("%1 loged").arg(uname));
+    log(tr("%1 has already logged in").arg(uname));
     OPacket packet(M_LoginOk);
     cl[uname]->send(packet);
 }
 
 void OServerCore::msgLoginError(QString uname)
 {
-    log(tr("%1 loging error").arg(uname));
+    log(tr("%1 didn't log sucessfully").arg(uname));
     OPacket packet(M_LoginError);
     cl[uname]->send(packet);
 }
@@ -273,7 +273,7 @@ void OServerCore::msgUList(QString uname)
 
 void OServerCore::msgChangeUList(QStringList users)
 {
-    log(tr("UList changed"));
+    log(tr("UserList changed"));
     foreach(QString i,users)
     {
         if(cl[i]->isLoged)
@@ -291,7 +291,7 @@ void OServerCore::checkTimeOut()
     {
         if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>config["TIME_OFFLINE"].toInt())
         {
-            log(tr("kill client %1").arg(i.key()));
+            log(tr("%1 is not alive.Stop serving it.").arg(i.key()));
             delete i.value();
             cl.erase(i);
         }
@@ -348,7 +348,7 @@ void OServerCore::onNewConn()
         else
         {
             conn->abort();
-            log(tr("over of connections up limit:%1").arg(config["CLIENT_MAX"].toInt()));
+            log(tr("Ran out of connections upper limit:%1").arg(config["CLIENT_MAX"].toInt()));
         }
     }
 }
@@ -397,7 +397,7 @@ void OServerCore::onError(QAbstractSocket::SocketError s)
         {
             //如果这个连接对象的上一个错误和接收到的错误号一样，
             //说明是它出错，输出错误信息并断开连接
-            log(tr("%1 connect error：%2").arg(users[i]).arg(conn->errorString()));
+            log(tr("%1 connected error：%2").arg(users[i]).arg(conn->errorString()));
             int isLoged=cl[users[i]]->isLoged;
             DELETE(cl[users[i]]);
             cl.remove(users[i]);
