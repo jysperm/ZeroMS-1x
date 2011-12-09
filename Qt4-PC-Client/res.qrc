@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>images/banner.png</file>
         <file>images/40_0ms.png</file>
+        <file>config.ini</file>
     </qresource>
     <qresource prefix="/Act">
         <file>images/web.png</file>

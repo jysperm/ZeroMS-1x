@@ -27,8 +27,8 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
     connect(ui->RegLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     //设置网址
-    ui->RegLink->setText(ui->RegLink->text().arg(REG_URL));
-    ui->ForgetLink->setText(ui->ForgetLink->text().arg(FORGET_URL));
+    ui->RegLink->setText(ui->RegLink->text().arg((cc->config)["REG_URL"].toString()));
+    ui->ForgetLink->setText(ui->ForgetLink->text().arg((cc->config)["FORGET_URL"].toString()));
 
     ui->Banner->setStyleSheet("border-image:url(:/images/banner.png)");
 }
@@ -66,7 +66,7 @@ void Login::on_DoLogin_clicked()
     QString uname=ui->UserInput->text();
     QString pwd=ui->PassWordInput->text();
 
-    cc->connectTo(SERVER_ADDRESS,SERVER_PORT);
+    cc->connectTo((cc->config)["SERVER_ADDRESS"].toString(),(cc->config)["SERVER_PORT"].toInt());
 
     while(!(cc->conn->state()==QTcpSocket::ConnectedState))
     {

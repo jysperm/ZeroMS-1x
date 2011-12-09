@@ -22,17 +22,4 @@ const int CLIENT_VER_NUM = 2;
 //版本描述性字符串(每次编译发布版的时候再修改就可以)
 const QString CLIENT_VER_NAME = QObject::trUtf8("0.0.2.%1-2011.11.28 6388987f75").arg(CLIENT_VER_NUM);
 
-//注册帐号的网址
-const QString REG_URL = "http://jybox.net/bbs/register.php";
-
-//找回密码的网址
-const QString FORGET_URL = "http://jybox.net/bbs/sendpwd.php";
-
-//服务器ip和端口
-//const QString SERVER_ADDRESS = "173.212.235.252";
-const QString SERVER_ADDRESS = "127.0.0.1";
-
-//服务器端口
-const int SERVER_PORT = 4321;
-
 #endif // CONST_H
