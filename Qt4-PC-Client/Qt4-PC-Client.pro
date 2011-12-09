@@ -12,7 +12,6 @@ HEADERS += \
     oclientcore.h \
     mainwidget.h \
     login.h \
-    inline.h \
     const.h \
     chatwidget.h \
     ../public/p1.h \
@@ -52,5 +51,6 @@ OTHER_FILES += \
 win32{
     RC_FILE += icon.rc
 }
+
 
 

@@ -3,7 +3,6 @@
 #include "chatwidget.h"
 #include "ui_chatwidget.h"
 #include "const.h"
-#include "inline.h"
 #include "oclientcoreex.h"
 
 extern OClientCoreEx *cc;
