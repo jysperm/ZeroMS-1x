@@ -15,7 +15,14 @@ class OClientCore:public QObject
 public:
     enum ErrorType
     {
-        Unknown=-1,NoError,CantUnderstand,MsgError,SocketCantConnect,SocketConnectionAbort,SocketOthers
+        //解释请参见errorString()中的注释
+        Unknown=-1,
+        NoError,
+        CantUnderstand,
+        MsgError,
+        SocketCantConnect,
+        SocketConnectionAbort,
+        SocketOthers
     };
 
     explicit OClientCore();

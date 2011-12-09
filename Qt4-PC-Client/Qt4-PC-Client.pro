@@ -7,25 +7,28 @@ CONFIG	+= thread
 
 TEMPLATE= app
 
-SOURCES	+= \
-    main.cpp \
-    oclientcore.cpp \
-    oclientcoreex.cpp \
-    login.cpp \
-    mainwidget.cpp \
-    chatwidget.cpp
-
-HEADERS	+= \
-    const.h \
-    ../public/p1.h \
-    ../public/opacket.h \
-    inline.h \
-    oclientcore.h \
+HEADERS += \
     oclientcoreex.h \
-    login.h \
+    oclientcore.h \
     mainwidget.h \
+    login.h \
+    inline.h \
+    const.h \
     chatwidget.h \
+    ../public/p1.h \
+    ../public/osettings.h \
+    ../public/opacket.h \
     ../public/const.h
+
+SOURCES += \
+    oclientcoreex.cpp \
+    oclientcore.cpp \
+    mainwidget.cpp \
+    main.cpp \
+    login.cpp \
+    chatwidget.cpp \
+    ../public/osettings.cpp \
+    ../public/opacket.cpp
 
 FORMS	+= \
     login.ui \
@@ -37,10 +40,13 @@ TRANSLATIONS = ZeroMS_C_EN.ts
 RESOURCES += \
     res.qrc
 
-OTHER_FILES += res.qrc\
+OTHER_FILES += \
     images/web.png \
     images/banner.png \
-    members.html
+    members.html \
+    icon.rc \
+    images/40_0ms.png \
+    images/0ms.ico
 
 win32{
     RC_FILE += icon.rc
