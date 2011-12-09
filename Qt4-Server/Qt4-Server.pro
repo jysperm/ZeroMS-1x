@@ -13,8 +13,7 @@ HEADERS += \
     oservercore.h \
     ../public/opacket.h \
     ../public/const.h \
-    ../public/osettings.h \
-    inline.h
+    ../public/osettings.h
 
 SOURCES += main.cpp \
     oservercore.cpp \
@@ -29,5 +28,6 @@ OTHER_FILES += \
 
 RESOURCES += \
     res.qrc
+
 
 

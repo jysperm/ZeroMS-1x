@@ -3,6 +3,9 @@
 
 #include <QTcpServer>
 #include <QMap>
+#include <QByteArray>
+#include <QCryptographicHash>
+#include <QString>
 #include "const.h"
 #include "../public/opacket.h"
 #include "../public/osettings.h"
@@ -27,6 +30,11 @@ private:
     void log(QString msg);
     //分发消息
     void checkMsg(QString uname);
+
+    //几个工具函数
+    inline static int QBtoint(QByteArray b);//从QByteArray向int转换
+    inline static QByteArray inttoQB(int i);//从int向QByteArray转换
+    inline static QString md5(QString s);//简写MD5操作
 
     void msgError(QString uname);
     void msgAskTime(QString uname,QByteArray *data,unsigned int time);
@@ -67,5 +75,26 @@ private slots:
     //错误信息，是cl中各连接对象发出的
     void onError(QAbstractSocket::SocketError s);
 };
+
+inline int OServerCore::QBtoint(QByteArray b)
+{
+    QDataStream d(b);
+    int i;
+    d>>i;
+    return i;
+}
+
+inline QByteArray OServerCore::inttoQB(int i)
+{
+    QByteArray b;
+    QDataStream d(b);
+    d<<i;
+    return b;
+}
+
+inline QString OServerCore::md5(QString s)
+{
+    return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
+}
 
 #endif // OSERVERCORE_H
