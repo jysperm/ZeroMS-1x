@@ -291,6 +291,7 @@ void OServerCore::checkTimeOut()
     {
         if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>config["TIME_OFFLINE"].toInt())
         {
+            log(tr("kill client %1").arg(i.key()));
             delete i.value();
             cl.erase(i);
         }
