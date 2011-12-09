@@ -192,7 +192,7 @@ void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg
     //注意，这里的时间戳是字符串的形式
     msgData.append(QString("%1 %2 %3").arg(from).arg(uname).arg(msg));
     OPacket packet(msgData,M_SMsg);
-    cl[uname]->send(packet);
+    cl[objname]->send(packet);
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
