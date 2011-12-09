@@ -4,10 +4,11 @@
 #include <QAbstractSocket>
 #include <QObject>
 #include <QStringList>
+#include <QTcpSocket>
 #include "const.h"
+#include "../public/opacket.h"
 class QByteArray;
 class QString;
-class QTcpSocket;
 
 class OClientCore:public QObject
 {
@@ -32,6 +33,7 @@ public:
     virtual void connectTo(QString ip,int port);//连接到服务器
     virtual void abort();//中断连接
     virtual QString errorString(ErrorType e=(ErrorType)-2);//获得消息的文本描述
+    inline virtual void send(OPacket &packet);
 
     QTcpSocket *conn;//Socket连接对象
     //服务器时间与本地时间差值，服务器时间-本地时间
@@ -80,5 +82,10 @@ private slots:
     //Socket错误，是conn发出的
     void socketError(QAbstractSocket::SocketError s);
 };
+
+inline void OClientCore::send(OPacket &packet)
+{
+    conn->write(packet.exec());
+}
 
 #endif // CLIENTCORE_H
