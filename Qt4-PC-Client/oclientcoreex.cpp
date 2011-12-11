@@ -25,10 +25,21 @@ void OClientCoreEx::init()
 
 void OClientCoreEx::showLogin()
 {
+    //调用该函数之前应该检查登陆窗口是否已经显示
     DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
     login->show();
+}
+
+void OClientCoreEx::showMainWidget()
+{
+    //调用该函数之前应该检查主窗口是否已经显示
+    DELETE(login);
+    DELETE(mainwidget);
+    mainwidget=new MainWidget;
+    //绑定信号槽
+    mainwidget->show();
 }
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
