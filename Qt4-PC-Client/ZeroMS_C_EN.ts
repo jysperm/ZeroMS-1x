@@ -161,6 +161,11 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Options</translation>
     </message>
     <message>
+        <location filename="login.cpp" line="22"/>
+        <source>%1-ç»å½  æå¡å¨ %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="login.cpp" line="23"/>
         <source>çæ¬ %1</source>
         <translation type="unfinished"></translation>
