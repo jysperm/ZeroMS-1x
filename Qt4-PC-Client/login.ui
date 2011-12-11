@@ -45,6 +45,18 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="LUser">
+         <property name="minimumSize">
+          <size>
+           <width>45</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>45</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="text">
           <string>用户名</string>
          </property>
@@ -52,6 +64,18 @@
        </item>
        <item row="0" column="1">
         <widget class="QLineEdit" name="UserInput">
+         <property name="minimumSize">
+          <size>
+           <width>261</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>261</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="text">
           <string>zeroms</string>
          </property>
@@ -59,6 +83,18 @@
        </item>
        <item row="0" column="2">
         <widget class="QLabel" name="RegLink">
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="text">
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -70,6 +106,18 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="LPassWord">
+         <property name="minimumSize">
+          <size>
+           <width>45</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>45</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="text">
           <string>密码</string>
          </property>
@@ -77,6 +125,18 @@ p, li { white-space: pre-wrap; }
        </item>
        <item row="1" column="1">
         <widget class="QLineEdit" name="PassWordInput">
+         <property name="minimumSize">
+          <size>
+           <width>261</width>
+           <height>27</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>261</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="text">
           <string>123123</string>
          </property>
@@ -102,6 +162,18 @@ p, li { white-space: pre-wrap; }
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QCheckBox" name="Remember">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>90</width>
+           <height>22</height>
+          </size>
+         </property>
          <property name="text">
           <string>记住密码</string>
          </property>
@@ -123,6 +195,12 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QPushButton" name="DoLogin">
          <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
           <size>
            <width>100</width>
            <height>40</height>
@@ -152,10 +230,16 @@ p, li { white-space: pre-wrap; }
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QPushButton" name="Options">
+         <property name="minimumSize">
+          <size>
+           <width>71</width>
+           <height>27</height>
+          </size>
+         </property>
          <property name="maximumSize">
           <size>
            <width>71</width>
-           <height>16777215</height>
+           <height>27</height>
           </size>
          </property>
          <property name="text">
