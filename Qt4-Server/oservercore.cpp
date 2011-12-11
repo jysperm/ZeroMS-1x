@@ -321,8 +321,7 @@ void OServerCore::LoginResult()
     {
         if(!cl.contains(result[UAPI_LISTNAME]))
         {
-            //为我蛋痛的英语做个翻译：“警告！！可能受到了恶意的攻击”
-            log(tr("warning!! it maybe have a deceive attack: uname:%1").arg(result[UAPI_LISTNAME]));
+            log(tr("warning!! the user %1 attempted to send a abnormal package").arg(result[UAPI_LISTNAME]));
             return;
         }
         msgLoginError(result[UAPI_LISTNAME]);
