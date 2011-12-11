@@ -7,7 +7,7 @@
 #include "ui_mainwidget.h"
 
 //public:
-OClientCoreEx::OClientCoreEx():login(0)
+OClientCoreEx::OClientCoreEx():login(0),mainwidget(0)
 {
 
 }
@@ -20,16 +20,15 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
-    connect(this,SIGNAL(onTimeChange(uint)),this,SLOT(cbTimeChange(uint)));
+    showLogin();
+}
+
+void OClientCoreEx::showLogin()
+{
+    DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
     login->show();
-}
-
-void OClientCoreEx::cbTimeChange(unsigned int time)
-{
-    //cb为回调的意思,为了放置和基类重名，只好用这个蛋疼的前缀
-    login->timeuped=1;
 }
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
@@ -45,15 +44,41 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
 {
     OClientCore::Error(e,msg,s);
-    QMessageBox::critical(0,tr("错误"),msg);
-    if(login)
+    QString msgStr;
+    switch(e)
     {
-        login->exitLogin=1;
-        login->cancel();
+        case Unknown:
+        case NoError:
+            msgStr=tr("未知错误");
+            break;
+        case CantUnderstand:
+            msgStr=tr("无法理解服务器发来的命令，可能是您的客户端已经过时");
+            break;
+        case MsgError:
+            msgStr=msg;
+            break;
+        case SocketCantConnect:
+            msgStr=tr("无法连接到服务器，有可能是服务器挂掉了...");
+            break;
+        case SocketConnectionAbort:
+            msgStr=tr("连接被服务器中断");
+            break;
+        case SocketOthers:
+            msgStr=errorString(e);
     }
-    if(mainwidget)
+    QMessageBox::critical(0,tr("错误 %1").arg(e),msgStr);
+    if(e>3 && !login)
     {
+        //如果是Socket错误，而且当前不在登陆窗体
+        //则销毁其他所有窗体，并显示登陆窗体
         DELETE(mainwidget);
-        init();
+
+        for(QMap<QString,ChatWidget*>::Iterator i=widgets.begin();i!=widgets.end();++i)
+        {
+            delete i.value();
+            widgets.erase(i);
+        }
+
+        showLogin();
     }
 }

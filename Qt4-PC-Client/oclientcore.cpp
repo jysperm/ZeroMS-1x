@@ -6,7 +6,6 @@
 #include <QString>
 #include <QTcpSocket>
 #include "const.h"
-#include "inline.h"
 #include "oclientcore.h"
 #include "../public/opacket.h"
 
@@ -46,6 +45,7 @@ void OClientCore::abort()
         conn->abort();
         conn->waitForDisconnected();
     }
+    DELETE(conn);
     DELETE(databuf);
     emit onAborted();
 }
@@ -62,7 +62,7 @@ QString OClientCore::errorString(ErrorType e)
     if(lastError<3)
         return Description[lastError-1];
     else
-        return conn->errorString();
+        return conn?conn->errorString():QString();
 }
 
 //消息发送函数:

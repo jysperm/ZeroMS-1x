@@ -4,10 +4,12 @@
 #include <QAbstractSocket>
 #include <QObject>
 #include <QStringList>
+#include <QByteArray>
+#include <QCryptographicHash>
+#include <QString>
+#include <QTcpSocket>
 #include "const.h"
-class QByteArray;
-class QString;
-class QTcpSocket;
+#include "../public/opacket.h"
 
 class OClientCore:public QObject
 {
@@ -32,6 +34,12 @@ public:
     virtual void connectTo(QString ip,int port);//连接到服务器
     virtual void abort();//中断连接
     virtual QString errorString(ErrorType e=(ErrorType)-2);//获得消息的文本描述
+    inline virtual void send(OPacket &packet);//发送数据包
+
+    //几个工具函数
+    inline static int QBtoint(QByteArray b);//从QByteArray向int转换
+    inline static QByteArray inttoQB(int i);//从int向QByteArray转换
+    inline static QString md5(QString s);//简写MD5操作
 
     QTcpSocket *conn;//Socket连接对象
     //服务器时间与本地时间差值，服务器时间-本地时间
@@ -80,5 +88,31 @@ private slots:
     //Socket错误，是conn发出的
     void socketError(QAbstractSocket::SocketError s);
 };
+
+inline void OClientCore::send(OPacket &packet)
+{
+    conn->write(packet.exec());
+}
+
+inline int OClientCore::QBtoint(QByteArray b)
+{
+    QDataStream d(b);
+    int i;
+    d>>i;
+    return i;
+}
+
+inline QByteArray OClientCore::inttoQB(int i)
+{
+    QByteArray b;
+    QDataStream d(b);
+    d<<i;
+    return b;
+}
+
+inline QString OClientCore::md5(QString s)
+{
+    return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
+}
 
 #endif // CLIENTCORE_H
