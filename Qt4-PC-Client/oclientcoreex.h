@@ -20,6 +20,8 @@ public:
     ~OClientCoreEx();
     void init();
 
+    void showLogin();
+
     void msgLoginOk(QByteArray *data,unsigned int time);
     void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 
@@ -31,6 +33,7 @@ public:
     OSettings config;
 public slots:
     void cbTimeChange(unsigned int time);
+    void cbLoginError(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 };
 
 #endif // CLIENTCOREEX_H

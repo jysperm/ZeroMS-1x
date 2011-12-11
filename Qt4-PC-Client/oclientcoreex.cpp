@@ -7,7 +7,7 @@
 #include "ui_mainwidget.h"
 
 //public:
-OClientCoreEx::OClientCoreEx():login(0)
+OClientCoreEx::OClientCoreEx():login(0),mainwidget(0)
 {
 
 }
@@ -21,8 +21,15 @@ void OClientCoreEx::init()
 {
     OClientCore::init();
     connect(this,SIGNAL(onTimeChange(uint)),this,SLOT(cbTimeChange(uint)));
+    showLogin();
+}
+
+void OClientCoreEx::showLogin()
+{
+    DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
+    connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(cbLoginError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
     login->show();
 }
 
@@ -40,6 +47,11 @@ void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
     connect(this,SIGNAL(onSMsg(QString,QString,QString)),mainwidget,SLOT(onSMsg(QString,QString,QString)));
     mainwidget->show();
     msgAskUList();
+}
+
+void OClientCoreEx::cbLoginError(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
+{
+
 }
 
 void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
