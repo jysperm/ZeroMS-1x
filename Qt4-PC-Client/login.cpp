@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QDesktopServices>
+#include <QEventLoop>
 #include <QDesktopWidget>
 #include <QMessageBox>
 #include <QString>
@@ -14,11 +15,11 @@
 extern OClientCoreEx *cc;
 
 //public:
-Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),exitLogin(0)
+Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
 {
     ui->setupUi(this);
 
-    this->setWindowTitle(tr("%1-登录").arg(CLIENT_TITLE_NAME));
+    this->setWindowTitle(tr("%1-登录  服务器 %2").arg(CLIENT_TITLE_NAME).arg((cc->config)["SERVER_ADDRESS"].toString()));
     ui->LVer->setText(tr("版本 %1").arg(CLIENT_VER_NAME));
     //窗口居中
     QDesktopWidget* desktop = QApplication::desktop();
@@ -58,27 +59,31 @@ void Login::LoginError()
 
 void Login::on_DoLogin_clicked()
 {
-    //其实这里设计的不大好，用了一堆乱七八糟的"标识变量"来控制阻塞
-    //重构之前的代码也是这样的，我也实在想不到什么好主意了
     ui->DoLogin->setEnabled(0);
-    exitLogin=0;
 
     QString uname=ui->UserInput->text();
     QString pwd=ui->PassWordInput->text();
 
+    QEventLoop waitConnected;
+    connect(cc,SIGNAL(onConnected()),&waitConnected,SLOT(quit()));
+    connect(cc,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),&waitConnected,SLOT(quit()));
     cc->connectTo((cc->config)["SERVER_ADDRESS"].toString(),(cc->config)["SERVER_PORT"].toInt());
-
-    while(!(cc->conn->state()==QTcpSocket::ConnectedState))
+    waitConnected.exec();
+    if(cc->conn->state()!=QTcpSocket::ConnectedState)
     {
-        qApp->processEvents();
-        if(exitLogin)
-            return;
+        cancel();
+        return;
     }
 
-    timeuped=0;
+    QEventLoop waitTimeUp;
+    connect(cc,SIGNAL(onTimeChange(uint)),&waitTimeUp,SLOT(quit()));
     cc->msgAskTime();
-    while(!timeuped)
-            qApp->processEvents();
+    waitTimeUp.exec();
 
     cc->msgLogin(uname,pwd);
+}
+
+void Login::on_Options_clicked()
+{
+    QDesktopServices::openUrl(QUrl(PUBLIC_CONFIG_FILE));
 }

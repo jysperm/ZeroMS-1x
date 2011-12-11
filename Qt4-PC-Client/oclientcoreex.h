@@ -20,10 +20,11 @@ public:
     ~OClientCoreEx();
     void init();
 
-    void showLogin();
-
     void msgLoginOk(QByteArray *data,unsigned int time);
     void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
+
+    //新函数
+    void showLogin();//显示登陆窗口
 
     Login *login;
     MainWidget *mainwidget;
@@ -32,8 +33,6 @@ public:
     //配置文件读取器
     OSettings config;
 public slots:
-    void cbTimeChange(unsigned int time);
-    void cbLoginError(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 };
 
 #endif // CLIENTCOREEX_H

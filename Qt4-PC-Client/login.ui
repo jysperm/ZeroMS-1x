@@ -154,12 +154,12 @@ p, li { white-space: pre-wrap; }
         <widget class="QPushButton" name="Options">
          <property name="maximumSize">
           <size>
-           <width>40</width>
+           <width>71</width>
            <height>16777215</height>
           </size>
          </property>
          <property name="text">
-          <string>选项</string>
+          <string>配置文件</string>
          </property>
         </widget>
        </item>
@@ -192,4 +192,3 @@ p, li { white-space: pre-wrap; }
  <resources/>
  <connections/>
 </ui>
-
