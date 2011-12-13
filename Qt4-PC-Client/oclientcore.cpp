@@ -204,12 +204,12 @@ void OClientCore::dataCome()
             {
                 QString msg=*msgData;
                 //下面就是提取msgData中的各个字段
-                QString objName=msg.left(msg.indexOf(" "));
-                msg.remove(0,objName.length()+1);
-                QString from=msg.left(msg.indexOf(" "));
-                msg.remove(0,from.length()+1);
+                QString user=msg.left(msg.indexOf(" "));
+                msg.remove(0,user.length()+1);
+                QString view=msg.left(msg.indexOf(" "));
+                msg.remove(0,view.length()+1);
                 QString msgMsg=msg;
-                emit onSMsg(objName,from,msgMsg);
+                emit onSMsg(user,view,msgMsg);
             }
                 break;
             case M_Time:

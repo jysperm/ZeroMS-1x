@@ -67,7 +67,7 @@ protected slots:
     //默认的错误处理函数，如果发生连接错误会断开连接;如不希望断开连接请重载
     virtual void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 signals:
-    void onSMsg(QString objName,QString from,QString msg);
+    void onSMsg(QString user,QString view,QString msg);
     void onLoginOk();
     void onLoginError();
     void onUList(QStringList &users);

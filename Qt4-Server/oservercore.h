@@ -42,7 +42,7 @@ private:
     void msgPing(QString uname,QByteArray *data,unsigned int time);
     void msgExit(QString uname,QByteArray *data,unsigned int time);
     void msgCMsg(QString uname,QByteArray *data,unsigned int time);
-    void msgSMsg(QString objname,QString from,QString uname,QString msg);
+    void msgSMsg(QString user,QString view,QString uname,QString msg);
     void msgLogin(QString uname,QByteArray *data,unsigned int time);
     void msgLoginOk(QString);
     void msgLoginError(QString);
