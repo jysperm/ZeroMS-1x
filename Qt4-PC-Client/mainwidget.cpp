@@ -84,27 +84,9 @@ void MainWidget::onUList(QStringList &users)
     }
 }
 
-void MainWidget::onSMsg(QString objName,QString from,QString msg)
+void MainWidget::onMsg(QString uname,QString msg)
 {
-    if(objName==MAIN_GROUP)
-    {
-        ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-    }
-    else
-    {
-        if(cc->widgets.contains(objName))
-        {
-            cc->widgets[objName]->activateWindow();
-            cc->widgets[objName]->ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-        }
-        else
-        {
-            ChatWidget *cp=new ChatWidget(objName);
-            cc->widgets.insert(objName,cp);
-            cp->show();
-            cp->ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-        }
-    }
+    ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(msg));
 }
 
 //private slots:

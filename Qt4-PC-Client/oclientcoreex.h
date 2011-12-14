@@ -34,6 +34,10 @@ public:
     //配置文件读取器
     OSettings config;
 public slots:
+    //这里为了省去解析消息，没有重载函数，而是使用槽函数接收信号
+    void onMsg(QString user,QString view,QString msg);
+signals:
+    void onGroupMsg(QString uname,QString msg);
 };
 
 #endif // CLIENTCOREEX_H

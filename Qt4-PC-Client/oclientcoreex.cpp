@@ -20,6 +20,7 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
+    connect(this,SIGNAL(onSMsg(QString,QString,QString)),this,SLOT(onMsg(QString,QString,QString)));
     showLogin();
 }
 
@@ -38,17 +39,13 @@ void OClientCoreEx::showMainWidget()
     DELETE(login);
     DELETE(mainwidget);
     mainwidget=new MainWidget;
-    //绑定信号槽
+    connect(this,SIGNAL(onGroupMsg(QString,QString)),mainwidget,SLOT(onMsg(QString,QString)));
     mainwidget->show();
 }
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
-    DELETE(login);
-    mainwidget=new MainWidget;
-    connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
-    connect(this,SIGNAL(onSMsg(QString,QString,QString)),mainwidget,SLOT(onSMsg(QString,QString,QString)));
-    mainwidget->show();
+    showMainWidget();
     msgAskUList();
 }
 
@@ -63,7 +60,7 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
             msgStr=tr("未知错误");
             break;
         case CantUnderstand:
-            msgStr=tr("无法理解服务器发来的命令，可能是您的客户端已经过时");
+            msgStr=tr("无法理解服务器发来的命令，可能是您的客户端版本过旧");
             break;
         case MsgError:
             msgStr=msg;
@@ -91,5 +88,17 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
         }
 
         showLogin();
+    }
+}
+
+void OClientCoreEx::onMsg(QString user,QString view,QString msg)
+{
+    if(view==MAIN_GROUP)
+    {
+        emit onGroupMsg(user,msg);
+    }
+    else
+    {
+
     }
 }

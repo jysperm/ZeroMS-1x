@@ -56,6 +56,7 @@ public:
     virtual void msgAskUList();
 protected:
 //可重载消息回调函数:
+    //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是已经解析后的消息
     virtual void msgSMsg(QByteArray *data,unsigned int time);
     virtual void msgLoginOk(QByteArray *data,unsigned int time);
     virtual void msgLoginError(QByteArray *data,unsigned int time);
