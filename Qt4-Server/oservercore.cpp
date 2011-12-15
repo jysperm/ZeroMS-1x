@@ -145,6 +145,7 @@ void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
         return;
     }
     cl[uname]->ping();
+    log(tr("%1 ping server").arg(uanme));
 }
 
 void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
