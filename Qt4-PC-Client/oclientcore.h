@@ -90,7 +90,7 @@ private:
     virtual void msgTime(QByteArray *data,unsigned int time);
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
     //定时器，用于定时与服务器保持相应
-    QTimer pingTimer;
+    QTimer *pingTimer;
 private slots:
     //pingTimer的槽
     void pingTimeOut();

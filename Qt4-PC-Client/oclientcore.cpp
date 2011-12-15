@@ -10,21 +10,20 @@
 #include "../public/opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0),pingTimer(0)
 {
 
 }
 
 OClientCore::~OClientCore()
 {
+    DELETE(pingTimer);
     DELETE(conn);
     DELETE(databuf);
 }
 
 void OClientCore::init()
 {
-    connect(&pingTimer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
-    pingTimer.start(10*1000);
     emit onInit();
     connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(Error(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
 }
@@ -42,7 +41,7 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
-    pingTimer.stop();
+    DELETE(pingTimer);
     if(conn)
     {
         conn->abort();
@@ -180,7 +179,8 @@ void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::So
 //private slots:
 void OClientCore::pingTimeOut()
 {
-    if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-10))
+    qDebug()<<(QDateTime::currentDateTime().toTime_t()-lastMsg)<<(timeOffLine-pingTimer->interval()*0.002f);
+    if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-pingTimer->interval()*0.002f))
         msgPing();
 }
 
@@ -233,6 +233,9 @@ void OClientCore::dataCome()
                     break;
                 msgLoginOk(msgData,time);
             {
+                pingTimer=new QTimer;
+                connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
+                pingTimer->start(10*1000);
                 isLoged=1;
                 emit onLoginOk();
             }
