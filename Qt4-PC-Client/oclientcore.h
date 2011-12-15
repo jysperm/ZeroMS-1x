@@ -8,6 +8,8 @@
 #include <QCryptographicHash>
 #include <QString>
 #include <QTcpSocket>
+#include <QDateTime>
+#include <QTimer>
 #include "const.h"
 #include "../public/opacket.h"
 
@@ -41,12 +43,16 @@ public:
     inline static QByteArray inttoQB(int i);//从int向QByteArray转换
     inline static QString md5(QString s);//简写MD5操作
 
+    inline void pingUpdate();//更新上次发送消息的时间
+
     QTcpSocket *conn;//Socket连接对象
     //服务器时间与本地时间差值，服务器时间-本地时间
     unsigned int timeDiff;
+    unsigned int lastMsg;//上次发送消息的时间，用于计算何时向服务器发送相应消息
     QString myname;//用户名
     int isLoged;//是否已经登陆
     ErrorType lastError;
+    int timeOffLine;//客户端多长时间向服务器发送在线相应消息
 //消息发送函数:
     virtual void msgAskTime();
     virtual void msgPing();
@@ -83,7 +89,11 @@ private:
 //不可重载消息回调函数:
     virtual void msgTime(QByteArray *data,unsigned int time);
     virtual void msgChangeUList(QByteArray *data,unsigned int time);
+    //定时器，用于定时与服务器保持相应
+    QTimer pingTimer;
 private slots:
+    //pingTimer的槽
+    void pingTimeOut();
     //收到数据，是conn发出的，该函数还会进行消息分发
     void dataCome();
     //Socket错误，是conn发出的
@@ -114,6 +124,11 @@ inline QByteArray OClientCore::inttoQB(int i)
 inline QString OClientCore::md5(QString s)
 {
     return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Md5).toHex());
+}
+
+inline void OClientCore::pingUpdate()
+{
+    lastMsg=QDateTime::currentDateTime().toTime_t();
 }
 
 #endif // CLIENTCORE_H

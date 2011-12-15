@@ -10,7 +10,7 @@
 #include "../public/opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timeDiff(0),isLoged(0),databuf(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0)
 {
 
 }
@@ -23,6 +23,8 @@ OClientCore::~OClientCore()
 
 void OClientCore::init()
 {
+    connect(&pingTimer,SIGNAL(timeout()),this,SLOT(checkTimeOut()));
+    pingTimer.start(10*1000);
     emit onInit();
     connect(this,SIGNAL(onError(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)),this,SLOT(Error(OClientCore::ErrorType,QString,QAbstractSocket::SocketError)));
 }
@@ -40,6 +42,7 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
+    pingTimer.stop();
     if(conn)
     {
         conn->abort();
@@ -74,6 +77,7 @@ void OClientCore::msgAskTime()
 
 void OClientCore::msgPing()
 {
+    pingUpdate();
     OPacket packet(M_Ping);
     conn->write(packet.exec());
 }
@@ -86,6 +90,7 @@ void OClientCore::msgExit()
 
 void OClientCore::msgCMsg(QString objname,QString msg)
 {
+    pingUpdate();
     QByteArray msgData;
     msgData.append(QString("%1 %2").arg(objname).arg(msg));
     OPacket packet(msgData,M_CMsg);
@@ -94,6 +99,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
 
 void OClientCore::msgLogin(QString uname,QString pwd)
 {
+    pingUpdate();
     //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
     unsigned int serTime=curTime+timeDiff;
@@ -118,6 +124,7 @@ void OClientCore::msgLogin(QString uname,QString pwd)
 
 void OClientCore::msgAskUList()
 {
+    pingUpdate();
     OPacket packet(M_AskUList);
     conn->write(packet.exec());
 }
@@ -171,6 +178,12 @@ void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::So
 }
 
 //private slots:
+void OClientCore::pingTimeOut()
+{
+    if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-10))
+        msgPing();
+}
+
 void OClientCore::dataCome()
 {
     emit onData();
