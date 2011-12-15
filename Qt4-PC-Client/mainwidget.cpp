@@ -86,7 +86,7 @@ void MainWidget::onUList(QStringList &users)
 
 void MainWidget::onMsg(QString uname,QString msg)
 {
-    ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(msg));
+    ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(Qt::escape(msg)));
 }
 
 //private slots:

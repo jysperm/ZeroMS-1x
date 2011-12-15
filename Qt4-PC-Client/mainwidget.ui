@@ -63,7 +63,11 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QTextBrowser" name="MsgArea"/>
+         <widget class="QTextBrowser" name="MsgArea">
+          <property name="acceptRichText">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
