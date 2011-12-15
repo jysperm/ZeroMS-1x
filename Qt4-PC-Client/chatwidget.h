@@ -17,6 +17,7 @@ public:
     ~ChatWidget();
     void closeEvent(QCloseEvent *event);
     Ui::ChatWidget *ui;
+    void onMsg(QString msg);
 private slots:
     void on_DoSend_clicked();
 };

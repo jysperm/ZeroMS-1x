@@ -40,7 +40,22 @@ void OClientCoreEx::showMainWidget()
     DELETE(mainwidget);
     mainwidget=new MainWidget;
     connect(this,SIGNAL(onGroupMsg(QString,QString)),mainwidget,SLOT(onMsg(QString,QString)));
+    connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
     mainwidget->show();
+}
+
+void OClientCoreEx::showChatWidget(QString uname)
+{
+    if(widgets.contains(uname))
+    {
+        widgets[uname]->activateWindow();
+    }
+    else
+    {
+        ChatWidget *cp=new ChatWidget(uname);
+        widgets.insert(uname,cp);
+        cp->show();
+    }
 }
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
@@ -99,6 +114,7 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
     }
     else
     {
-
+        showChatWidget(user);
+        widgets[user]->onMsg(msg);
     }
 }

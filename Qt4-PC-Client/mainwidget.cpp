@@ -111,6 +111,7 @@ void MainWidget::on_ActABoutQt_triggered()
 
 void MainWidget::on_ActQuit_triggered()
 {
+    qApp->closeAllWindows();
     qApp->quit();
 }
 
@@ -169,16 +170,7 @@ void MainWidget::on_ActRefresh_triggered()
 
 void MainWidget::on_UListWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    if(cc->widgets.contains(item->text()))
-    {
-        cc->widgets[item->text()]->activateWindow();
-    }
-    else
-    {
-        ChatWidget *cp=new ChatWidget(item->text());
-        cc->widgets.insert(item->text(),cp);
-        cp->show();
-    }
+    cc->showChatWidget(item->text());
 }
 
 void MainWidget::on_DoSend_clicked()

@@ -26,6 +26,7 @@ public:
     //新函数
     void showLogin();//显示登陆窗口
     void showMainWidget();//显示主窗口
+    void showChatWidget(QString uname);
 
     Login *login;
     MainWidget *mainwidget;
