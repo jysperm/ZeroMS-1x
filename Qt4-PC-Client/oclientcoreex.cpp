@@ -102,6 +102,7 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
             widgets.erase(i);
         }
 
+        isLoged=0;
         showLogin();
     }
 }

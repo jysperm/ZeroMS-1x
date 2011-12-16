@@ -179,7 +179,6 @@ void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::So
 //private slots:
 void OClientCore::pingTimeOut()
 {
-    qDebug()<<(QDateTime::currentDateTime().toTime_t()-lastMsg)<<(timeOffLine-pingTimer->interval()*0.002f);
     if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-pingTimer->interval()*0.002f))
         msgPing();
 }
