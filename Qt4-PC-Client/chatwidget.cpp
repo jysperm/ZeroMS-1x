@@ -28,12 +28,17 @@ ChatWidget::~ChatWidget()
 
 void ChatWidget::closeEvent(QCloseEvent *event)
 {
-    delete this;
+    this->~ChatWidget();
+}
+
+void ChatWidget::onMsg(QString msg)
+{
+    ui->MsgArea->append(tr("%1 : %2").arg(ui->LPeerName->text()).arg(Qt::escape(msg)));
 }
 
 void ChatWidget::on_DoSend_clicked()
 {
     cc->msgCMsg(ui->LPeerName->text(),ui->MsgEdit->toPlainText());
-    ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(ui->MsgEdit->toPlainText()));
-    ui->MsgEdit->setPlainText(tr(""));
+    ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(Qt::escape(ui->MsgEdit->toPlainText())));
+    ui->MsgEdit->clear();
 }

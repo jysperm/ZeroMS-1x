@@ -84,27 +84,9 @@ void MainWidget::onUList(QStringList &users)
     }
 }
 
-void MainWidget::onSMsg(QString objName,QString from,QString msg)
+void MainWidget::onMsg(QString uname,QString msg)
 {
-    if(objName==MAIN_GROUP)
-    {
-        ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-    }
-    else
-    {
-        if(cc->widgets.contains(objName))
-        {
-            cc->widgets[objName]->activateWindow();
-            cc->widgets[objName]->ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-        }
-        else
-        {
-            ChatWidget *cp=new ChatWidget(objName);
-            cc->widgets.insert(objName,cp);
-            cp->show();
-            cp->ui->MsgArea->append(tr("%1 : %2").arg(from).arg(msg));
-        }
-    }
+    ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(Qt::escape(msg)));
 }
 
 //private slots:
@@ -129,6 +111,7 @@ void MainWidget::on_ActABoutQt_triggered()
 
 void MainWidget::on_ActQuit_triggered()
 {
+    qApp->closeAllWindows();
     qApp->quit();
 }
 
@@ -187,16 +170,7 @@ void MainWidget::on_ActRefresh_triggered()
 
 void MainWidget::on_UListWidget_itemDoubleClicked(QListWidgetItem *item)
 {
-    if(cc->widgets.contains(item->text()))
-    {
-        cc->widgets[item->text()]->activateWindow();
-    }
-    else
-    {
-        ChatWidget *cp=new ChatWidget(item->text());
-        cc->widgets.insert(item->text(),cp);
-        cp->show();
-    }
+    cc->showChatWidget(item->text());
 }
 
 void MainWidget::on_DoSend_clicked()

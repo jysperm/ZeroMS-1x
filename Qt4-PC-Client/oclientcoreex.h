@@ -25,6 +25,8 @@ public:
 
     //新函数
     void showLogin();//显示登陆窗口
+    void showMainWidget();//显示主窗口
+    void showChatWidget(QString uname);
 
     Login *login;
     MainWidget *mainwidget;
@@ -33,6 +35,10 @@ public:
     //配置文件读取器
     OSettings config;
 public slots:
+    //这里为了省去解析消息，没有重载函数，而是使用槽函数接收信号
+    void onMsg(QString user,QString view,QString msg);
+signals:
+    void onGroupMsg(QString uname,QString msg);
 };
 
 #endif // CLIENTCOREEX_H

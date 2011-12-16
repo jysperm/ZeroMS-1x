@@ -20,24 +20,47 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
+    connect(this,SIGNAL(onSMsg(QString,QString,QString)),this,SLOT(onMsg(QString,QString,QString)));
     showLogin();
 }
 
 void OClientCoreEx::showLogin()
 {
+    //调用该函数之前应该检查登陆窗口是否已经显示
     DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
     login->show();
 }
 
+void OClientCoreEx::showMainWidget()
+{
+    //调用该函数之前应该检查主窗口是否已经显示
+    DELETE(login);
+    DELETE(mainwidget);
+    mainwidget=new MainWidget;
+    connect(this,SIGNAL(onGroupMsg(QString,QString)),mainwidget,SLOT(onMsg(QString,QString)));
+    connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
+    mainwidget->show();
+}
+
+void OClientCoreEx::showChatWidget(QString uname)
+{
+    if(widgets.contains(uname))
+    {
+        widgets[uname]->activateWindow();
+    }
+    else
+    {
+        ChatWidget *cp=new ChatWidget(uname);
+        widgets.insert(uname,cp);
+        cp->show();
+    }
+}
+
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
-    DELETE(login);
-    mainwidget=new MainWidget;
-    connect(this,SIGNAL(onUList(QStringList&)),mainwidget,SLOT(onUList(QStringList&)));
-    connect(this,SIGNAL(onSMsg(QString,QString,QString)),mainwidget,SLOT(onSMsg(QString,QString,QString)));
-    mainwidget->show();
+    showMainWidget();
     msgAskUList();
 }
 
@@ -52,7 +75,7 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
             msgStr=tr("未知错误");
             break;
         case CantUnderstand:
-            msgStr=tr("无法理解服务器发来的命令，可能是您的客户端已经过时");
+            msgStr=tr("无法理解服务器发来的命令，可能是您的客户端版本过旧");
             break;
         case MsgError:
             msgStr=msg;
@@ -79,6 +102,20 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
             widgets.erase(i);
         }
 
+        isLoged=0;
         showLogin();
+    }
+}
+
+void OClientCoreEx::onMsg(QString user,QString view,QString msg)
+{
+    if(view==MAIN_GROUP)
+    {
+        emit onGroupMsg(user,msg);
+    }
+    else
+    {
+        showChatWidget(user);
+        widgets[user]->onMsg(msg);
     }
 }

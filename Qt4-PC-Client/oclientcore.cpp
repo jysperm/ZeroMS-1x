@@ -10,13 +10,14 @@
 #include "../public/opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timeDiff(0),isLoged(0),databuf(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0),pingTimer(0)
 {
 
 }
 
 OClientCore::~OClientCore()
 {
+    DELETE(pingTimer);
     DELETE(conn);
     DELETE(databuf);
 }
@@ -40,6 +41,7 @@ void OClientCore::connectTo(QString ip,int port)
 
 void OClientCore::abort()
 {
+    DELETE(pingTimer);
     if(conn)
     {
         conn->abort();
@@ -74,6 +76,7 @@ void OClientCore::msgAskTime()
 
 void OClientCore::msgPing()
 {
+    pingUpdate();
     OPacket packet(M_Ping);
     conn->write(packet.exec());
 }
@@ -86,6 +89,7 @@ void OClientCore::msgExit()
 
 void OClientCore::msgCMsg(QString objname,QString msg)
 {
+    pingUpdate();
     QByteArray msgData;
     msgData.append(QString("%1 %2").arg(objname).arg(msg));
     OPacket packet(msgData,M_CMsg);
@@ -94,6 +98,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
 
 void OClientCore::msgLogin(QString uname,QString pwd)
 {
+    pingUpdate();
     //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
     unsigned int serTime=curTime+timeDiff;
@@ -118,6 +123,7 @@ void OClientCore::msgLogin(QString uname,QString pwd)
 
 void OClientCore::msgAskUList()
 {
+    pingUpdate();
     OPacket packet(M_AskUList);
     conn->write(packet.exec());
 }
@@ -171,6 +177,12 @@ void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::So
 }
 
 //private slots:
+void OClientCore::pingTimeOut()
+{
+    if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-pingTimer->interval()*0.002f))
+        msgPing();
+}
+
 void OClientCore::dataCome()
 {
     emit onData();
@@ -204,12 +216,12 @@ void OClientCore::dataCome()
             {
                 QString msg=*msgData;
                 //下面就是提取msgData中的各个字段
-                QString objName=msg.left(msg.indexOf(" "));
-                msg.remove(0,objName.length()+1);
-                QString from=msg.left(msg.indexOf(" "));
-                msg.remove(0,from.length()+1);
+                QString user=msg.left(msg.indexOf(" "));
+                msg.remove(0,user.length()+1);
+                QString view=msg.left(msg.indexOf(" "));
+                msg.remove(0,view.length()+1);
                 QString msgMsg=msg;
-                emit onSMsg(objName,from,msgMsg);
+                emit onSMsg(user,view,msgMsg);
             }
                 break;
             case M_Time:
@@ -220,6 +232,9 @@ void OClientCore::dataCome()
                     break;
                 msgLoginOk(msgData,time);
             {
+                pingTimer=new QTimer;
+                connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
+                pingTimer->start(10*1000);
                 isLoged=1;
                 emit onLoginOk();
             }

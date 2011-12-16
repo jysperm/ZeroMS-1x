@@ -26,7 +26,7 @@ public:
 public slots:
     void logoChange();
     void onUList(QStringList &users);
-    void onSMsg(QString objName,QString from,QString msg);
+    void onMsg(QString uname,QString msg);
 private:
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;

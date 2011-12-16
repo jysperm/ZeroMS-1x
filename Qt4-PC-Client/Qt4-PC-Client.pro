@@ -46,7 +46,8 @@ OTHER_FILES += \
     icon.rc \
     images/40_0ms.png \
     images/0ms.ico \
-    config.ini
+    config.ini \
+    ZeroMS_C_EN.ts
 
 win32{
     RC_FILE += icon.rc

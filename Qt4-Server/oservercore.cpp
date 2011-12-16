@@ -145,6 +145,7 @@ void OServerCore::msgPing(QString uname,QByteArray *data,unsigned int time)
         return;
     }
     cl[uname]->ping();
+    log(tr("%1 ping server").arg(uname));
 }
 
 void OServerCore::msgExit(QString uname,QByteArray *data,unsigned int time)
@@ -162,12 +163,12 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
     cl[uname]->ping();
 
     QString msg=*data;
-    QString objUName=msg.left(msg.indexOf(" "));
-    msg.remove(0,objUName.length()+1);
+    QString view=msg.left(msg.indexOf(" "));
+    msg.remove(0,view.length()+1);
 
-    log(tr("%1 send msg to %2 :%3").arg(uname).arg(objUName).arg(msg));
+    log(tr("%1 send msg to %2 :%3").arg(uname).arg(view).arg(msg));
 
-    if(objUName==MAIN_GROUP)
+    if(view==MAIN_GROUP)
     {
         for(it i=cl.begin();i!=cl.end();i++)
         {
@@ -176,22 +177,22 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
         }
     }
 
-    if(cl.contains(objUName))
+    if(cl.contains(view))
     {
-        msgSMsg(objUName,uname,uname,msg);
+        msgSMsg(view,uname,uname,msg);
     }
 }
 
-void OServerCore::msgSMsg(QString objname,QString from,QString uname,QString msg)
+void OServerCore::msgSMsg(QString user,QString view,QString uname,QString msg)
 {
     //注意这里的参数
-    //objname是要发送的目标用户，from是来自的目标(私聊同uname，群聊同MAIN_GROUP)
+    //user是要发送的目标用户，view是来自的视图(私聊同uname，群聊同MAIN_GROUP)
     //uname是发送者用户名，msg是消息内容
     QByteArray msgData;
     //注意，这里的时间戳是字符串的形式
-    msgData.append(QString("%1 %2 %3").arg(from).arg(uname).arg(msg));
+    msgData.append(QString("%1 %2 %3").arg(uname).arg(view).arg(msg));
     OPacket packet(msgData,M_SMsg);
-    cl[uname]->send(packet);
+    cl[user]->send(packet);
 }
 
 void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
