@@ -50,6 +50,10 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
 
     //菜单栏信号槽
     connect(ui->ActRefresh,SIGNAL(triggered()),cc,SLOT(msgAskUList()));
+
+    //回车发送
+    statusBar()->addWidget(new QLabel(tr("回车键发送，Ctrl+回车换行哦~"),this));
+    ui->MsgEdit->installEventFilter(this);
 }
 
 MainWidget::~MainWidget()
@@ -90,6 +94,27 @@ void MainWidget::onUList(QStringList &users)
 void MainWidget::onMsg(QString uname,QString msg)
 {
     ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(Qt::escape(msg)));
+}
+
+bool MainWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched==ui->MsgEdit && event->type()==QEvent::KeyPress)
+    {
+        int key=(static_cast<QKeyEvent*>(event))->key();
+        if(key==Qt::Key_Return || key==Qt::Key_Enter)
+        {
+            if(!((static_cast<QKeyEvent*>(event))->modifiers() & Qt::ControlModifier))
+            {
+                on_DoSend_clicked();
+                return 1;
+            }
+            else
+            {
+                ui->MsgEdit->insertPlainText(tr("\n"));
+            }
+        }
+    }
+    return QMainWindow::eventFilter(watched, event);
 }
 
 //private slots:

@@ -28,6 +28,7 @@ public slots:
     void onUList(QStringList &users);
     void onMsg(QString uname,QString msg);
 private:
+    bool eventFilter(QObject *watched, QEvent *event);
     QSystemTrayIcon *trayIcon;
     QMenu *trayMenu;
     Ui::MainWidget *ui;
