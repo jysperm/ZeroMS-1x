@@ -50,6 +50,8 @@ private slots:
     void on_DoSend_clicked();
     void on_ActChat_triggered();
     void on_ActUserInfo_triggered();
+    void on_ActDebugOut_triggered();
+    void on_ActOptionFile_triggered();
 };
 
 #endif // MAINWIDGET_H

@@ -226,3 +226,13 @@ void MainWidget::on_ActUserInfo_triggered()
         QDesktopServices::openUrl(QUrl((cc->config)["USERINFO_URL"].toString().arg((*i)->text())));
     }
 }
+
+void MainWidget::on_ActDebugOut_triggered()
+{
+    QMessageBox::information(0,tr("调试输出"),tr("该版本不提供调试输出功能"));
+}
+
+void MainWidget::on_ActOptionFile_triggered()
+{
+    QDesktopServices::openUrl(QUrl(PUBLIC_CONFIG_FILE));
+}
