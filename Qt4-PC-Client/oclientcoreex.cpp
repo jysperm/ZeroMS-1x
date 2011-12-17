@@ -1,3 +1,4 @@
+#include <QApplication>
 #include <QByteArray>
 #include <QMessageBox>
 #include "const.h"
@@ -30,6 +31,7 @@ void OClientCoreEx::showLogin()
     DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
+    connect(login,SIGNAL(destroyed()),qApp,SLOT(quit()));
     login->show();
 }
 
