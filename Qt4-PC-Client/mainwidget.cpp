@@ -205,8 +205,13 @@ void MainWidget::on_UListWidget_itemDoubleClicked(QListWidgetItem *item)
 
 void MainWidget::on_DoSend_clicked()
 {
+    if(ui->MsgEdit->toPlainText().isEmpty())
+    {
+        ui->MsgArea->append(tr(">>提示:请不要发送空消息"));
+        return;
+    }
     cc->msgCMsg(MAIN_GROUP,ui->MsgEdit->toPlainText());
-    ui->MsgEdit->setPlainText(tr(""));
+    ui->MsgEdit->clear();
 }
 
 void MainWidget::on_ActChat_triggered()
