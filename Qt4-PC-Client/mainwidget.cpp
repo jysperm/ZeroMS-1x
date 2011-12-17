@@ -192,3 +192,12 @@ void MainWidget::on_ActChat_triggered()
         cc->showChatWidget((*i)->text());
     }
 }
+
+void MainWidget::on_ActUserInfo_triggered()
+{
+    QList<QListWidgetItem*> users=ui->UListWidget->selectedItems();
+    for(QList<QListWidgetItem*>::Iterator i=users.begin();i!=users.end();++i)
+    {
+        QDesktopServices::openUrl(QUrl((cc->config)["USERINFO_URL"].toString().arg((*i)->text())));
+    }
+}
