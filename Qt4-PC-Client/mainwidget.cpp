@@ -47,6 +47,9 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
     trayIcon->setToolTip(CLIENT_TITLE_NAME);
     trayIcon->setContextMenu(trayMenu);
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason)));
+
+    //菜单栏信号槽
+    connect(ui->ActRefresh,SIGNAL(triggered()),cc,SLOT(msgAskUList()));
 }
 
 MainWidget::~MainWidget()
@@ -179,4 +182,13 @@ void MainWidget::on_DoSend_clicked()
 {
     cc->msgCMsg(MAIN_GROUP,ui->MsgEdit->toPlainText());
     ui->MsgEdit->setPlainText(tr(""));
+}
+
+void MainWidget::on_ActChat_triggered()
+{
+    QList<QListWidgetItem*> users=ui->UListWidget->selectedItems();
+    for(QList<QListWidgetItem*>::Iterator i=users.begin();i!=users.end();++i)
+    {
+        cc->showChatWidget((*i)->text());
+    }
 }

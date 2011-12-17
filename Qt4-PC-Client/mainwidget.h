@@ -47,6 +47,7 @@ private slots:
     void on_ActRefresh_triggered();
     void on_UListWidget_itemDoubleClicked(QListWidgetItem *item);
     void on_DoSend_clicked();
+    void on_ActChat_triggered();
 };
 
 #endif // MAINWIDGET_H

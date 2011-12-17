@@ -59,6 +59,7 @@ public:
     virtual void msgExit();
     virtual void msgCMsg(QString objname,QString msg);
     virtual void msgLogin(QString uname,QString pwd);
+public slots:
     virtual void msgAskUList();
 protected:
 //可重载消息回调函数:
