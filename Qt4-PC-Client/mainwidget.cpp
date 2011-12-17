@@ -111,7 +111,9 @@ void MainWidget::on_ActABoutQt_triggered()
 
 void MainWidget::on_ActQuit_triggered()
 {
+    //加这句是为了调用各个聊天窗体的析构函数
     qApp->closeAllWindows();
+    this->~MainWidget();
     qApp->quit();
 }
 
