@@ -9,6 +9,9 @@ OClientCoreEx *cc;
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    a.setQuitOnLastWindowClosed(0);
+
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
