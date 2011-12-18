@@ -37,7 +37,6 @@ private:
     QLabel *LEnterToSend;//提示回车发送的QLabel
 private slots:
     void onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
-    void on_ActABoutQt_triggered();
     void on_ActQuit_triggered();
     void on_ActTray_triggered();
     void on_ActSource_triggered();

@@ -121,5 +121,6 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
     {
         showChatWidget(user);
         widgets[user]->onMsg(msg);
+        qApp->alert(widgets[user]);
     }
 }

@@ -51,6 +51,7 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
     connect(ui->ActUserBBS, SIGNAL(triggered()), ui->ActDevBBS, SLOT(trigger()));
     connect(ui->ActSend, SIGNAL(triggered()), ui->DoSend, SLOT(click()));
     connect(ui->ActClear, SIGNAL(triggered()), ui->MsgArea, SLOT(clear()));
+    connect(ui->ActABoutQt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
 
     //回车发送
     LEnterToSend=new QLabel(this);
@@ -106,6 +107,9 @@ void MainWidget::onUList(QStringList &users)
 void MainWidget::onMsg(QString uname,QString msg)
 {
     ui->MsgArea->append(tr("%1 : %2").arg(uname).arg(Qt::escape(msg)));
+    show();
+    activateWindow();
+    qApp->alert(this);
 }
 
 bool MainWidget::eventFilter(QObject *watched, QEvent *event)
@@ -143,15 +147,11 @@ void MainWidget::onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reaso
         case QSystemTrayIcon::DoubleClick:
             show();
             activateWindow();
+            qApp->alert(this);
             break;
         default:
             break;
     }
-}
-
-void MainWidget::on_ActABoutQt_triggered()
-{
-    QMessageBox::aboutQt(0,tr("感谢Qt"));
 }
 
 void MainWidget::on_ActQuit_triggered()
@@ -200,7 +200,7 @@ void MainWidget::on_ActCheckNew_triggered()
 
 void MainWidget::on_ActVer_triggered()
 {
-    QMessageBox::information(0,CLIENT_TITLE_NAME,CLIENT_NAME+"\n"+CLIENT_VER_NAME);
+    QMessageBox::information(0,CLIENT_TITLE_NAME,tr("%\n%2").arg(CLIENT_NAME).arg(CLIENT_VER_NAME));
 }
 
 void MainWidget::on_ActMember_triggered()
