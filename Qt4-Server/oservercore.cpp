@@ -101,9 +101,9 @@ void OServerCore::checkMsg(QString uname)
             case M_CMsg:
                 msgCMsg(uname,msgData,time);break;
             case M_Login:
-                msgLogin(uname,msgData,time);break;
+                msgLogin(uname,msgData,time,"LOGIN_APIURL");break;
             case M_LoginNoTimeVerify:
-                msgLoginNoTimeVerify(uname,msgData,time);break;
+                msgLogin(uname,msgData,time,"LOGIN_APIURL_NOTIME");break;
             case M_AskUList:
                 msgAskUList(uname,msgData,time);break;
             default:
@@ -203,7 +203,7 @@ void OServerCore::msgSMsg(QString user,QString view,QString uname,QString msg)
     cl[user]->send(packet);
 }
 
-void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
+void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time,QString API)
 {
     cl[uname]->ping();
 
@@ -232,43 +232,7 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time)
     if(!manager)
         manager=new QNetworkAccessManager(this);
     QNetworkRequest request ;
-    request.setUrl(QUrl(config["LOGIN_APIURL"].toString()));
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
-    request.setHeader(QNetworkRequest::ContentLengthHeader,content.length());
-    reply=manager->post(request,content);
-    connect(reply, SIGNAL(finished()), this, SLOT(LoginResult()));
-}
-
-void OServerCore::msgLoginNoTimeVerify(QString uname,QByteArray *data,unsigned int time)
-{
-    cl[uname]->ping();
-
-    log(tr("%1 logging").arg(uname));
-    if(cl[uname]->isLoged)
-    {
-        //如果已经登陆，则向客户端发送解析错误
-        msgError(uname);
-        return;
-    }
-    QString msg=*data;
-    //下面几句比较乱，总之是为了从数据部分(msg)里拆分出各个字段
-    QString msgUName=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgUName.length()+1);
-    QString msgPwd=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgPwd.length()+1);
-    QString msgClientVer=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgClientVer.length()+1);
-    QString msgClientName=msg.left(msg.indexOf(" "));
-
-    unsigned int stime=QDateTime::currentDateTime().toTime_t();
-    QString dpwd=md5(config["API_KEY"].toString()+msgPwd);
-    QByteArray content;
-    content.append(QString("do=login&uname=%1&listname=%2&pwd=%3&time=%4&clientver=%5&clientname=%6")
-                   .arg(msgUName).arg(uname).arg(dpwd).arg(QString::number(stime)).arg(msgClientVer).arg(msgClientName));
-    if(!manager)
-        manager=new QNetworkAccessManager(this);
-    QNetworkRequest request ;
-    request.setUrl(QUrl(config["LOGIN_APIURL_NOTIME"].toString()));
+    request.setUrl(QUrl(config[API].toString()));
     request.setHeader(QNetworkRequest::ContentTypeHeader,"application/x-www-form-urlencoded");
     request.setHeader(QNetworkRequest::ContentLengthHeader,content.length());
     reply=manager->post(request,content);
