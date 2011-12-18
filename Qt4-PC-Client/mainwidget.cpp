@@ -195,6 +195,7 @@ void MainWidget::on_DoSend_clicked()
 
 void MainWidget::on_ActChat_triggered()
 {
+    //这里是要打开所有选中的聊天窗体，下同
     QList<QListWidgetItem*> users=ui->UListWidget->selectedItems();
     for(QList<QListWidgetItem*>::Iterator i=users.begin();i!=users.end();++i)
     {

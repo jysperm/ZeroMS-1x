@@ -26,6 +26,7 @@ signals:
     void onDelete(QString uname);
 private slots:
     void on_DoSend_clicked();
+    void on_ActPeerInfo_triggered();
 };
 
 #endif // CHATWIDGET_H

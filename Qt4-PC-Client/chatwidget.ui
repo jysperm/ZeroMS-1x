@@ -138,6 +138,8 @@
     </property>
     <addaction name="ActSend"/>
     <addaction name="ActClear"/>
+    <addaction name="separator"/>
+    <addaction name="ActChatLog"/>
    </widget>
    <widget class="QMenu" name="menu_guanyu">
     <property name="title">
@@ -236,6 +238,11 @@
    </property>
    <property name="text">
     <string>用户论坛</string>
+   </property>
+  </action>
+  <action name="ActChatLog">
+   <property name="text">
+    <string>聊天记录</string>
    </property>
   </action>
  </widget>

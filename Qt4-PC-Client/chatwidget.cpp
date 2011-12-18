@@ -1,6 +1,7 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 #include "mainwidget.h"
 #include "chatwidget.h"
 #include "ui_chatwidget.h"
@@ -20,6 +21,8 @@ ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),ui(new
     ui->LPeerName->setText(uname);
 
     //菜单栏信号槽
+    connect(ui->ActMinSize, SIGNAL(triggered()), this, SLOT(showMinimized()));
+    connect(ui->ActClose,SIGNAL(triggered()),this,SLOT(close()));
     connect(ui->ActAbout,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActAbout_triggered()));
     connect(ui->ActMember,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActMember_triggered()));
     connect(ui->ActABoutQt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
@@ -92,4 +95,9 @@ void ChatWidget::on_DoSend_clicked()
     cc->msgCMsg(peerName,ui->MsgEdit->toPlainText());
     ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(Qt::escape(ui->MsgEdit->toPlainText())));
     ui->MsgEdit->clear();
+}
+
+void ChatWidget::on_ActPeerInfo_triggered()
+{
+    QDesktopServices::openUrl(QUrl((cc->config)["USERINFO_URL"].toString().arg(peerName)));
 }
