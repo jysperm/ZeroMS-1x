@@ -20,7 +20,6 @@
 #include "ui_mainwidget.h"
 #include "oclientcoreex.h"
 #include "chatwidget.h"
-#include "ui_chatwidget.h"
 
 extern OClientCoreEx *cc;
 

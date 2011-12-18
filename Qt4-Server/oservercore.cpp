@@ -102,7 +102,7 @@ void OServerCore::checkMsg(QString uname)
                 msgCMsg(uname,msgData,time);break;
             case M_Login:
                 msgLogin(uname,msgData,time);break;
-            case M_LoginNoTimeVerify;
+            case M_LoginNoTimeVerify:
                 msgLoginNoTimeVerify(uname,msgData,time);break;
             case M_AskUList:
                 msgAskUList(uname,msgData,time);break;
