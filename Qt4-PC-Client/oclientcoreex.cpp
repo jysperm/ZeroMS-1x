@@ -121,6 +121,7 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
     {
         showChatWidget(user);
         widgets[user]->onMsg(msg);
+        widgets[user]->activateWindow();
         qApp->alert(widgets[user]);
     }
 }
