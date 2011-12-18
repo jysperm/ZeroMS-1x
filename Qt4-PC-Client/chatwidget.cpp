@@ -1,16 +1,14 @@
-#include <QKeyEvent>
-#include <QApplication>
 #include <QDesktopWidget>
 #include <QDesktopServices>
-#include "mainwidget.h"
-#include "chatwidget.h"
-#include "ui_chatwidget.h"
-#include "const.h"
+#include <QKeyEvent>
 #include "oclientcoreex.h"
+#include "mainwidget.h"
+#include "ui_chatwidget.h"
 
 extern OClientCoreEx *cc;
 
-ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),ui(new Ui::ChatWidget),peerName(uname)
+//public:
+ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),peerName(uname),ui(new Ui::ChatWidget)
 {
     ui->setupUi(this);
 
@@ -39,9 +37,27 @@ ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),ui(new
     reSetUi();
 }
 
+ChatWidget::~ChatWidget()
+{
+    emit onDelete(peerName);
+    DELETE(ui);
+}
+
 void ChatWidget::reSetUi()
 {
     setWindowTitle(tr("与%1聊天-%2").arg(peerName).arg(CLIENT_TITLE_NAME));
+}
+
+void ChatWidget::onMsg(QString msg)
+{
+    ui->MsgArea->append(tr("%1 : %2").arg(ui->LPeerName->text()).arg(Qt::escape(msg)));
+}
+
+//private:
+void ChatWidget::closeEvent(QCloseEvent *event)
+{
+    //不知为何，如果不在这里显式调用析构函数，窗口就不会被关闭
+    this->~ChatWidget();
 }
 
 bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
@@ -70,23 +86,7 @@ bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
     return QMainWindow::eventFilter(watched, event);
 }
 
-ChatWidget::~ChatWidget()
-{
-    emit onDelete(peerName);
-    DELETE(ui);
-}
-
-void ChatWidget::closeEvent(QCloseEvent *event)
-{
-    //不知为何，如果不在这里显式调用析构函数，窗口就不会被关闭
-    this->~ChatWidget();
-}
-
-void ChatWidget::onMsg(QString msg)
-{
-    ui->MsgArea->append(tr("%1 : %2").arg(ui->LPeerName->text()).arg(Qt::escape(msg)));
-}
-
+//private slots:
 void ChatWidget::on_DoSend_clicked()
 {
     if(ui->MsgEdit->toPlainText().isEmpty())
