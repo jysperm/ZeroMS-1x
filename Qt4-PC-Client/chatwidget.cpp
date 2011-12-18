@@ -1,6 +1,7 @@
 #include <QKeyEvent>
 #include <QApplication>
 #include <QDesktopWidget>
+#include "mainwidget.h"
 #include "chatwidget.h"
 #include "ui_chatwidget.h"
 #include "const.h"
@@ -17,6 +18,15 @@ ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),ui(new
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
 
     ui->LPeerName->setText(uname);
+
+    //菜单栏信号槽
+    connect(ui->ActAbout,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActAbout_triggered()));
+    connect(ui->ActMember,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActMember_triggered()));
+    connect(ui->ActABoutQt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
+    connect(ui->ActVer,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActVer_triggered()));
+    connect(ui->ActJyboxIndex,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActJyboxIndex_triggered()));
+    connect(ui->ActCheckNew,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActCheckNew_triggered()));
+    connect(ui->ActUserBBS,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActDevBBS_triggered()));
 
     //为消息输入框安装用于回车发送的事件过滤器
     ui->MsgEdit->installEventFilter(this);

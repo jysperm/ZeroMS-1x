@@ -22,6 +22,13 @@ public slots:
     void logoChange();
     void onUList(QStringList &users);
     void onMsg(QString uname,QString msg);
+    //下面这些是供ChatWidget绑定的
+    void on_ActAbout_triggered();
+    void on_ActMember_triggered();
+    void on_ActVer_triggered();
+    void on_ActJyboxIndex_triggered();
+    void on_ActCheckNew_triggered();
+    void on_ActDevBBS_triggered();
 private:
     void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *watched, QEvent *event);//事件过滤器，用于处理回车发送
@@ -36,18 +43,12 @@ private slots:
     void on_ActChat_triggered();
     void on_ActUserInfo_triggered();
     void on_ActDebugOut_triggered();
-    void on_ActMember_triggered();
     void on_ActQuit_triggered();
     void on_ActTray_triggered();
-    void on_ActVer_triggered();
     void on_ActRefresh_triggered();
     void on_ActOptionFile_triggered();
     void on_ActSource_triggered();
     void on_ActProtocol_triggered();
-    void on_ActDevBBS_triggered();
-    void on_ActAbout_triggered();
-    void on_ActJyboxIndex_triggered();
-    void on_ActCheckNew_triggered();
 };
 
 #endif // MAINWIDGET_H

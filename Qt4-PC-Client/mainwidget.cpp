@@ -88,6 +88,43 @@ void MainWidget::onMsg(QString uname,QString msg)
     qApp->alert(this);
 }
 
+void MainWidget::on_ActAbout_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://0-ms.org/about"));
+}
+
+void MainWidget::on_ActMember_triggered()
+{
+    QFile file(":/Text/members.html");
+    file.open(QFile::ReadOnly);
+    QMessageBox msgBox;
+    msgBox.resize(1000,500);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle(tr("合作开发人员名单"));
+    msgBox.setText(file.readAll());
+    msgBox.exec();
+}
+
+void MainWidget::on_ActVer_triggered()
+{
+    QMessageBox::information(0,CLIENT_TITLE_NAME,tr("%\n%2").arg(CLIENT_NAME).arg(CLIENT_VER_NAME));
+}
+
+void MainWidget::on_ActJyboxIndex_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://jybox.net"));
+}
+
+void MainWidget::on_ActCheckNew_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://0-ms.org/down"));
+}
+
+void MainWidget::on_ActDevBBS_triggered()
+{
+    QDesktopServices::openUrl(QUrl("http://jybox.net/bbs/thread.php?fid-19.html"));
+}
+
 //private:
 void MainWidget::closeEvent(QCloseEvent *event)
 {
@@ -179,18 +216,6 @@ void MainWidget::on_ActDebugOut_triggered()
     QMessageBox::information(0,tr("调试输出"),tr("该版本不提供调试输出功能"));
 }
 
-void MainWidget::on_ActMember_triggered()
-{
-    QFile file(":/Text/members.html");
-    file.open(QFile::ReadOnly);
-    QMessageBox msgBox;
-    msgBox.resize(1000,500);
-    msgBox.setIcon(QMessageBox::Information);
-    msgBox.setWindowTitle(tr("合作开发人员名单"));
-    msgBox.setText(file.readAll());
-    msgBox.exec();
-}
-
 void MainWidget::on_ActQuit_triggered()
 {
     //加这句是为了调用各个聊天窗体的析构函数
@@ -203,11 +228,6 @@ void MainWidget::on_ActTray_triggered()
 {
     trayIcon->showMessage(tr("已最小化到托盘"), CLIENT_TITLE_NAME, QSystemTrayIcon::Information, 5000);
     close();
-}
-
-void MainWidget::on_ActVer_triggered()
-{
-    QMessageBox::information(0,CLIENT_TITLE_NAME,tr("%\n%2").arg(CLIENT_NAME).arg(CLIENT_VER_NAME));
 }
 
 void MainWidget::on_ActRefresh_triggered()
@@ -228,24 +248,4 @@ void MainWidget::on_ActSource_triggered()
 void MainWidget::on_ActProtocol_triggered()
 {
     QDesktopServices::openUrl(QUrl("http://0-ms.org/wiki/0-1/connect-protocol"));
-}
-
-void MainWidget::on_ActDevBBS_triggered()
-{
-    QDesktopServices::openUrl(QUrl("http://jybox.net/bbs/thread.php?fid-19.html"));
-}
-
-void MainWidget::on_ActAbout_triggered()
-{
-    QDesktopServices::openUrl(QUrl("http://0-ms.org/about"));
-}
-
-void MainWidget::on_ActJyboxIndex_triggered()
-{
-    QDesktopServices::openUrl(QUrl("http://jybox.net"));
-}
-
-void MainWidget::on_ActCheckNew_triggered()
-{
-    QDesktopServices::openUrl(QUrl("http://0-ms.org/down"));
 }
