@@ -123,34 +123,34 @@
     <property name="title">
      <string>控制</string>
     </property>
-    <addaction name="action"/>
-    <addaction name="action_2"/>
+    <addaction name="ActMinSize"/>
+    <addaction name="ActClose"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
      <string>好友</string>
     </property>
-    <addaction name="action_3"/>
+    <addaction name="ActPeerInfo"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
      <string>聊天</string>
     </property>
-    <addaction name="action_4"/>
-    <addaction name="action_5"/>
+    <addaction name="ActSend"/>
+    <addaction name="ActClear"/>
    </widget>
    <widget class="QMenu" name="menu_guanyu">
     <property name="title">
      <string>帮助|关于</string>
     </property>
-    <addaction name="action_6"/>
-    <addaction name="action_7"/>
-    <addaction name="action_Qt"/>
-    <addaction name="action_8"/>
+    <addaction name="ActAbout"/>
+    <addaction name="ActMember"/>
+    <addaction name="ActABoutQt"/>
+    <addaction name="ActVer"/>
     <addaction name="separator"/>
-    <addaction name="action_10"/>
-    <addaction name="action_11"/>
-    <addaction name="action_12"/>
+    <addaction name="ActJyboxIndex"/>
+    <addaction name="ActCheckNew"/>
+    <addaction name="ActUserBBS"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -158,67 +158,89 @@
    <addaction name="menu_guanyu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="action">
+  <action name="ActMinSize">
    <property name="text">
     <string>最小化</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="ActClose">
    <property name="text">
     <string>关闭</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="ActPeerInfo">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>查看对方资料</string>
    </property>
   </action>
-  <action name="action_4">
+  <action name="ActSend">
    <property name="text">
     <string>发送消息</string>
    </property>
   </action>
-  <action name="action_5">
+  <action name="ActClear">
    <property name="text">
     <string>清屏</string>
    </property>
   </action>
-  <action name="action_6">
+  <action name="ActAbout">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>零毫秒是什么？</string>
    </property>
   </action>
-  <action name="action_7">
+  <action name="ActMember">
    <property name="text">
     <string>合作开发人员名单</string>
    </property>
   </action>
-  <action name="action_Qt">
+  <action name="ActABoutQt">
    <property name="text">
     <string>感谢Qt</string>
    </property>
   </action>
-  <action name="action_8">
+  <action name="ActVer">
    <property name="text">
     <string>版本信息</string>
    </property>
   </action>
-  <action name="action_10">
+  <action name="ActJyboxIndex">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>精英盒子主页</string>
    </property>
   </action>
-  <action name="action_11">
+  <action name="ActCheckNew">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>检查新版本</string>
    </property>
   </action>
-  <action name="action_12">
+  <action name="ActUserBBS">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>用户论坛</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>
