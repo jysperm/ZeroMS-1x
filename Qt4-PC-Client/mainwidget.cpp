@@ -41,7 +41,6 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
     trayMenu->addSeparator();
     trayIcon->setIcon(icon);
     trayIcon->show();
-    trayIcon->setToolTip(CLIENT_TITLE_NAME);
     trayIcon->setContextMenu(trayMenu);
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason)));
 
@@ -74,6 +73,7 @@ void MainWidget::reSetUi()
     ui->LMyName->setText(cc->myname);
     setWindowTitle(QString("%1  %2").arg(cc->myname).arg(CLIENT_TITLE_NAME));
     LEnterToSend->setText(tr("回车键发送，Ctrl+回车换行哦~"));
+    trayIcon->setToolTip(windowTitle());
 }
 
 void MainWidget::closeEvent(QCloseEvent *event)
