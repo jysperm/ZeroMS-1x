@@ -23,6 +23,8 @@ ChatWidget::ChatWidget(QString uname,QWidget *parent):QMainWindow(parent),ui(new
     //菜单栏信号槽
     connect(ui->ActMinSize, SIGNAL(triggered()), this, SLOT(showMinimized()));
     connect(ui->ActClose,SIGNAL(triggered()),this,SLOT(close()));
+    connect(ui->ActSend, SIGNAL(triggered()), ui->DoSend, SLOT(click()));
+    connect(ui->ActClear, SIGNAL(triggered()), ui->MsgArea, SLOT(clear()));
     connect(ui->ActAbout,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActAbout_triggered()));
     connect(ui->ActMember,SIGNAL(triggered()),cc->mainwidget,SLOT(on_ActMember_triggered()));
     connect(ui->ActABoutQt,SIGNAL(triggered()),qApp,SLOT(aboutQt()));
