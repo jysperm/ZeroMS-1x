@@ -176,10 +176,16 @@ void OServerCore::msgCMsg(QString uname,QByteArray *data,unsigned int time)
                 msgSMsg(i.key(),MAIN_GROUP,uname,msg);
         }
     }
-
-    if(cl.contains(view))
+    else
     {
-        msgSMsg(view,uname,uname,msg);
+        if(cl.contains(view))
+        {
+            msgSMsg(view,uname,uname,msg);
+        }
+        else
+        {
+            msgSMsg(uname,view,view,tr("<系统>消息无法投递，对方已下线..."));
+        }
     }
 }
 
