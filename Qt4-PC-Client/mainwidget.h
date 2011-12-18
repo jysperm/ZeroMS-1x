@@ -9,6 +9,7 @@ class QCloseEvent;
 class QListWidgetItem;
 class QMenu;
 class QWidget;
+class QLabel;
 
 namespace Ui
 {
@@ -22,16 +23,18 @@ class MainWidget:public QMainWindow
 public:
     explicit MainWidget(QWidget *parent = 0);
     ~MainWidget();
-    void closeEvent(QCloseEvent *event);
+    void reSetUi();//重置UI，用于刷新配置文件之后
 public slots:
     void logoChange();
     void onUList(QStringList &users);
     void onMsg(QString uname,QString msg);
 private:
+    void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *watched, QEvent *event);
     QSystemTrayIcon *trayIcon;
-    QMenu *trayMenu;
+    QMenu *trayMenu;//托盘图标菜单
     Ui::MainWidget *ui;
+    QLabel *LEnterToSend;//提示回车发送的QLabel
 private slots:
     void onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reason);
     void on_ActABoutQt_triggered();

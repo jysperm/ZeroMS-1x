@@ -25,16 +25,13 @@
 extern OClientCoreEx *cc;
 
 //public:
-MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidget)
+MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidget),LEnterToSend(0)
 {
     ui->setupUi(this);
 
     //窗口居中
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
-
-    ui->LMyName->setText(cc->myname);
-    setWindowTitle(QString("%1  %2").arg(cc->myname).arg(CLIENT_TITLE_NAME));
 
     //托盘
     trayIcon=new QSystemTrayIcon(this);
@@ -50,10 +47,18 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
 
     //菜单栏信号槽
     connect(ui->ActRefresh,SIGNAL(triggered()),cc,SLOT(msgAskUList()));
+    connect(ui->ActMinSize, SIGNAL(triggered()), this, SLOT(showMinimized()));
+    connect(ui->ActUserBBS, SIGNAL(triggered()), ui->ActDevBBS, SLOT(trigger()));
+    connect(ui->ActSend, SIGNAL(triggered()), ui->DoSend, SLOT(click()));
+    connect(ui->ActClear, SIGNAL(triggered()), ui->MsgArea, SLOT(clear()));
 
     //回车发送
-    statusBar()->addWidget(new QLabel(tr("回车键发送，Ctrl+回车换行哦~"),this));
+    LEnterToSend=new QLabel(this);
+    statusBar()->addWidget(LEnterToSend);
+    //为消息输入框安装事件过滤器
     ui->MsgEdit->installEventFilter(this);
+
+    reSetUi();
 }
 
 MainWidget::~MainWidget()
@@ -63,13 +68,20 @@ MainWidget::~MainWidget()
     DELETE(ui);
 }
 
+void MainWidget::reSetUi()
+{
+    ui->LMyName->setText(cc->myname);
+    setWindowTitle(QString("%1  %2").arg(cc->myname).arg(CLIENT_TITLE_NAME));
+    LEnterToSend->setText(tr("回车键发送，Ctrl+回车换行哦~"));
+}
+
 void MainWidget::closeEvent(QCloseEvent *event)
 {
-  if(trayIcon->isVisible())
-  {
-      hide();
-      event->ignore();
-  }
+    if(trayIcon->isVisible())
+    {
+        hide();
+        event->ignore();
+    }
 }
 
 //public slots:
@@ -100,20 +112,25 @@ bool MainWidget::eventFilter(QObject *watched, QEvent *event)
 {
     if(watched==ui->MsgEdit && event->type()==QEvent::KeyPress)
     {
+        //如果是ui->MsgEdit发出的消息，且是按键消息
         int key=(static_cast<QKeyEvent*>(event))->key();
         if(key==Qt::Key_Return || key==Qt::Key_Enter)
         {
+            //如果按键是回车
             if(!((static_cast<QKeyEvent*>(event))->modifiers() & Qt::ControlModifier))
             {
+                //如果Ctrl没有被按下，就调用发送函数
                 on_DoSend_clicked();
                 return 1;
             }
             else
             {
+                //如果Ctrl被按下，在当前位置插入换行
                 ui->MsgEdit->insertPlainText(tr("\n"));
             }
         }
     }
+    //将未处理的事件交给基类处理
     return QMainWindow::eventFilter(watched, event);
 }
 
@@ -190,7 +207,12 @@ void MainWidget::on_ActMember_triggered()
 {
     QFile file(":/Text/members.html");
     file.open(QFile::ReadOnly);
-    QMessageBox::information(0,tr("合作开发人员名单"),file.readAll());
+    QMessageBox msgBox;
+    msgBox.resize(1000,500);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle(tr("合作开发人员名单"));
+    msgBox.setText(file.readAll());
+    msgBox.exec();
 }
 
 void MainWidget::on_ActRefresh_triggered()
