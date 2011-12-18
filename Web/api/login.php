@@ -15,8 +15,12 @@ if($_GET["mode"]=="post")
 			$rs->read();
 			$time=$_POST["time"];
 			$time=$time-($time%10);
-			$spwd=md5(md5($time).md5($_POST["uname"]).($rs->password));
-			$dpwd=md5($pkey.$spwd);
+            if($_GET["time"]=="yes"){
+    			$spwd=md5(md5($time).md5($_POST["uname"]).($rs->password));
+	    		$dpwd=md5($pkey.$spwd);
+            }else{
+                $dpwd=md5(md5($_POST["uname"]).md5($rs->password));
+            }
 			if($_POST["pwd"]==$dpwd)
 			{
 				echo "1\n";

@@ -21,6 +21,7 @@ const int M_Exit	= 30;
 const int M_CMsg	= 100;
 const int M_SMsg	= 101;
 const int M_Login	= 200;
+const int M_LoginNoTimeVerify = 201;
 const int M_LoginOk	= 211;
 const int M_LoginError	= 213;
 const int M_AskUList	= 300;

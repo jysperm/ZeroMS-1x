@@ -44,6 +44,7 @@ private:
     void msgCMsg(QString uname,QByteArray *data,unsigned int time);
     void msgSMsg(QString user,QString view,QString uname,QString msg);
     void msgLogin(QString uname,QByteArray *data,unsigned int time);
+    void msgLoginNoTimeVerify(QString uname,QByteArray *data,unsigned int time);
     void msgLoginOk(QString);
     void msgLoginError(QString);
     void msgAskUList(QString uname,QByteArray *data,unsigned int time);
