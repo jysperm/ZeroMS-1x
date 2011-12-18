@@ -24,7 +24,7 @@ public slots:
     void onMsg(QString uname,QString msg);
 private:
     void closeEvent(QCloseEvent *event);
-    bool eventFilter(QObject *watched, QEvent *event);
+    bool eventFilter(QObject *watched, QEvent *event);//事件过滤器，用于处理回车发送
     QSystemTrayIcon *trayIcon;//托盘
     QMenu *trayMenu;//托盘图标菜单
     Ui::MainWidget *ui;

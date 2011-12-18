@@ -221,7 +221,7 @@
     <string>隐藏到任务栏</string>
    </property>
    <property name="toolTip">
-    <string>隐藏到通知区域</string>
+    <string>隐藏到任务栏</string>
    </property>
   </action>
   <action name="ActQuit">
