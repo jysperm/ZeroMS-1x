@@ -63,6 +63,7 @@ ChatWidget::~ChatWidget()
 
 void ChatWidget::closeEvent(QCloseEvent *event)
 {
+    //不知为何，如果不在这里显式调用析构函数，窗口就不会被关闭
     this->~ChatWidget();
 }
 
@@ -73,7 +74,12 @@ void ChatWidget::onMsg(QString msg)
 
 void ChatWidget::on_DoSend_clicked()
 {
-    cc->msgCMsg(ui->LPeerName->text(),ui->MsgEdit->toPlainText());
+    if(ui->MsgEdit->toPlainText().isEmpty())
+    {
+        ui->MsgArea->append(tr(">>提示:请不要发送空消息"));
+        return;
+    }
+    cc->msgCMsg(peerName,ui->MsgEdit->toPlainText());
     ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(Qt::escape(ui->MsgEdit->toPlainText())));
     ui->MsgEdit->clear();
 }
