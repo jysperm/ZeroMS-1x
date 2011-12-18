@@ -57,6 +57,7 @@ void OClientCoreEx::showChatWidget(QString uname)
     else
     {
         ChatWidget *cp=new ChatWidget(uname);
+        connect(cp,SIGNAL(onDelete(QString)),this,SLOT(removeFromWidgets(QString)));
         widgets.insert(uname,cp);
         cp->show();
     }
@@ -124,4 +125,9 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
         widgets[user]->activateWindow();
         qApp->alert(widgets[user]);
     }
+}
+
+void OClientCoreEx::removeFromWidgets(QString uname)
+{
+    widgets.remove(uname);
 }

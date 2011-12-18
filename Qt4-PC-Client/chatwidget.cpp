@@ -57,7 +57,7 @@ bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
 
 ChatWidget::~ChatWidget()
 {
-    cc->widgets.remove(ui->LPeerName->text());
+    emit onDelete(peerName);
     DELETE(ui);
 }
 

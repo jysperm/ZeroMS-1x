@@ -21,6 +21,9 @@ public:
     QString peerName;
     void onMsg(QString msg);
     void reSetUi();
+signals:
+    //详见oclientcoreex.h中的removeFromWidgets()函数
+    void onDelete(QString uname);
 private slots:
     void on_DoSend_clicked();
 };

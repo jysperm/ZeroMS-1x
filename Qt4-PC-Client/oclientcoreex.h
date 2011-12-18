@@ -37,6 +37,8 @@ public:
 public slots:
     //这里为了省去解析消息，没有重载函数，而是使用槽函数接收信号
     void onMsg(QString user,QString view,QString msg);
+    //当widgets中的ChatWidget销毁时发射onDelete信号,被该槽接收，用于把自身从widgets中删除
+    void removeFromWidgets(QString uname);
 signals:
     void onGroupMsg(QString uname,QString msg);
 };
