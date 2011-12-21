@@ -70,12 +70,23 @@ bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
         {
             if(!((static_cast<QKeyEvent*>(event))->modifiers() & Qt::ControlModifier))
             {
-                on_DoSend_clicked();
-                return 1;
+                if((cc->config)["ENTER_TO_SEND"].toInt())
+                {
+                    on_DoSend_clicked();
+                    return 1;
+                }
             }
             else
             {
-                ui->MsgEdit->insertPlainText(tr("\n"));
+                if((cc->config)["CTRL_ENTER_TO_SEND"].toInt())
+                {
+                    on_DoSend_clicked();
+                    return 1;
+                }
+                else
+                {
+                    ui->MsgEdit->insertPlainText(tr("\n"));
+                }
             }
         }
     }
