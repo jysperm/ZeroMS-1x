@@ -57,7 +57,19 @@ void MainWidget::reSetUi()
 {
     ui->LMyName->setText(cc->myname);
     setWindowTitle(QString("%1  %2").arg(cc->myname).arg(CLIENT_TITLE_NAME));
-    LEnterToSend->setText(tr("回车键发送，Ctrl+回车换行哦~"));
+
+    //这里有些蛋痛，其实不要也可以
+    int enter=(cc->config)["ENTER_TO_SEND"].toInt();
+    int ctrl=(cc->config)["CTRL_ENTER_TO_SEND"].toInt();
+    if(enter && ctrl)
+        LEnterToSend->setText(tr("回车和Ctrl+回车都可以发送哦~~不过想要换行貌似有点麻烦..."));
+    else if(!enter && !ctrl)
+        LEnterToSend->setText(tr("Alt+S发送消息，回车或Ctrl+回车换行..."));
+    else if(enter && !ctrl)
+        LEnterToSend->setText(tr("回车发送消息，Ctrl+回车换行..."));
+    else
+        LEnterToSend->setText(tr("Ctrl+回车发送消息，回车换行..."));
+
     trayIcon->setToolTip(windowTitle());
 }
 
@@ -146,14 +158,25 @@ bool MainWidget::eventFilter(QObject *watched, QEvent *event)
             //如果按键是回车
             if(!((static_cast<QKeyEvent*>(event))->modifiers() & Qt::ControlModifier))
             {
-                //如果Ctrl没有被按下，就调用发送函数
-                on_DoSend_clicked();
-                return 1;
+                //如果Ctrl没有被按下
+                if((cc->config)["ENTER_TO_SEND"].toInt())
+                {
+                    on_DoSend_clicked();
+                    return 1;
+                }
             }
             else
             {
-                //如果Ctrl被按下，在当前位置插入换行
-                ui->MsgEdit->insertPlainText(tr("\n"));
+                //如果Ctrl被按下
+                if((cc->config)["CTRL_ENTER_TO_SEND"].toInt())
+                {
+                    on_DoSend_clicked();
+                    return 1;
+                }
+                else
+                {
+                    ui->MsgEdit->insertPlainText(tr("\n"));
+                }
             }
         }
     }

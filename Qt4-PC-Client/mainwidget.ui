@@ -252,6 +252,9 @@
    <property name="text">
     <string>发送消息</string>
    </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
+   </property>
   </action>
   <action name="ActClear">
    <property name="text">

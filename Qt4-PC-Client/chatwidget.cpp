@@ -62,27 +62,23 @@ void ChatWidget::closeEvent(QCloseEvent *event)
 
 bool ChatWidget::eventFilter(QObject *watched, QEvent *event)
 {
+    //注释请见mainwidget.cpp中的同名函数
     if(watched==ui->MsgEdit && event->type()==QEvent::KeyPress)
     {
-        //如果是ui->MsgEdit发出的消息，且是按键消息
         int key=(static_cast<QKeyEvent*>(event))->key();
         if(key==Qt::Key_Return || key==Qt::Key_Enter)
         {
-            //如果按键是回车
             if(!((static_cast<QKeyEvent*>(event))->modifiers() & Qt::ControlModifier))
             {
-                //如果Ctrl没有被按下，就调用发送函数
                 on_DoSend_clicked();
                 return 1;
             }
             else
             {
-                //如果Ctrl被按下，在当前位置插入换行
                 ui->MsgEdit->insertPlainText(tr("\n"));
             }
         }
     }
-    //将未处理的事件交给基类处理
     return QMainWindow::eventFilter(watched, event);
 }
 
