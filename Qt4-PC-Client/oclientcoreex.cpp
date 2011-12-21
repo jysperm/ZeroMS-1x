@@ -21,6 +21,7 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
+    timeOffLine=config["TIME_OFFLINE"].toInt();
     connect(this,SIGNAL(onSMsg(QString,QString,QString)),this,SLOT(onMsg(QString,QString,QString)));
     showLogin();
 }

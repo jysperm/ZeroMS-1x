@@ -179,6 +179,8 @@ void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::So
 //private slots:
 void OClientCore::pingTimeOut()
 {
+    //0.002f是0.001*2，前者是毫秒和秒之间的换算，后者为了在timeOffLine的一半时间内发送msgPing()消息
+    //TODO，提前一半时间就发送相应消息?这里有待商量
     if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-pingTimer->interval()*0.002f))
         msgPing();
 }
