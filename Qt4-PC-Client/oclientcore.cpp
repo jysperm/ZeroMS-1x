@@ -96,7 +96,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
     conn->write(packet.exec());
 }
 
-void OClientCore::msgLogin(QString uname,QString pwd)
+void OClientCore::msgLogin(QString uname,QString pwdMD5)
 {
     pingUpdate();
     //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
@@ -113,7 +113,7 @@ void OClientCore::msgLogin(QString uname,QString pwd)
     }
 
     unsigned int time=serTime-(serTime%10);
-    QString spwd=md5(md5(QString::number(time))+md5(uname)+md5(pwd));
+    QString spwd=md5(md5(QString::number(time))+md5(uname)+pwdMD5);
 
     QByteArray msgData;
     msgData.append(QString("%1 %2 %3 %4").arg(uname).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));

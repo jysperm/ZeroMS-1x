@@ -58,7 +58,7 @@ public:
     virtual void msgPing();
     virtual void msgExit();
     virtual void msgCMsg(QString objname,QString msg);
-    virtual void msgLogin(QString uname,QString pwd);
+    virtual void msgLogin(QString uname,QString pwdMD5);
 public slots:
     virtual void msgAskUList();
 protected:

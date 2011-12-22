@@ -66,6 +66,7 @@ void OClientCoreEx::showChatWidget(QString uname)
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
+    login->onLoginOK();
     showMainWidget();
     msgAskUList();
 }
