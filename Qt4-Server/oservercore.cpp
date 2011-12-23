@@ -209,15 +209,14 @@ void OServerCore::msgLogin(QString uname,QByteArray *data,unsigned int time,QStr
         return;
     }
     QString msg=*data;
-    //下面几句比较乱，总之是为了从数据部分(msg)里拆分出各个字段
-    QString msgUName=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgUName.length()+1);
-    QString msgPwd=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgPwd.length()+1);
-    QString msgClientVer=msg.left(msg.indexOf(" "));
-    msg.remove(0,msgClientVer.length()+1);
-    QString msgClientName=msg.left(msg.indexOf(" "));
-
+    
+    //直接通过split分割字符串..
+    QStringList msglist = msg.split(" ");
+    QString msgUName = msglist[0];
+    QString msgPwd = msglist[1];
+    QString msgClientVer = msglist[2];
+    QString msgClientName = msglist[3];
+    
     unsigned int stime=QDateTime::currentDateTime().toTime_t();
     QString dpwd=md5(config["API_KEY"].toString()+msgPwd);
     QByteArray content;
