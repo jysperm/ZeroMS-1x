@@ -1,6 +1,8 @@
 #include <QApplication>
 #include <QByteArray>
 #include <QMessageBox>
+#include <QFile>
+#include <QDir>
 #include "const.h"
 #include "oclientcoreex.h"
 #include "login.h"
@@ -61,6 +63,27 @@ void OClientCoreEx::showChatWidget(QString uname)
         connect(cp,SIGNAL(onDelete(QString)),this,SLOT(removeFromWidgets(QString)));
         widgets.insert(uname,cp);
         cp->show();
+    }
+}
+
+void OClientCoreEx::writeChatLog(QString user,QString msg)
+{
+    if(config["OPEN_CHATLOG"].toInt())
+    {
+        QString fileName=config["CHATLOG_PATH"].toString().arg(myname).arg(QString(user).replace("*","_"));
+
+        //这里是创建文件夹..灰常蛋痛，看了半个小时Qt文档也就是这样了....
+        QFileInfo fileInfo(fileName);
+        QDir dir;
+        dir.mkpath(fileInfo.dir().path());
+
+        QFile chatLog(fileName);
+        chatLog.open(QFile::Append);
+        QByteArray bMsg;
+        QString stime=QDateTime::currentDateTime().toString(config["CHATLOG_DATETIME_FORMAT"].toString());
+        bMsg.append(config["CHATLOG_FORMAT"].toString().arg(stime).arg(user).arg(msg));
+        chatLog.write(bMsg);
+        chatLog.close();
     }
 }
 
@@ -127,6 +150,8 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
         widgets[user]->activateWindow();
         qApp->alert(widgets[user]);
     }
+
+    writeChatLog(view,msg);
 }
 
 void OClientCoreEx::removeFromWidgets(QString uname)

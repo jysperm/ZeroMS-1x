@@ -49,6 +49,7 @@ private slots:
     void on_ActOptionFile_triggered();
     void on_ActSource_triggered();
     void on_ActProtocol_triggered();
+    void on_ActChatLog_triggered();
 };
 
 #endif // MAINWIDGET_H

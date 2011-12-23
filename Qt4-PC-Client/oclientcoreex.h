@@ -27,6 +27,7 @@ public:
     void showLogin();//显示登陆窗口
     void showMainWidget();//显示主窗口
     void showChatWidget(QString uname);
+    void writeChatLog(QString user,QString msg);
 
     Login *login;
     MainWidget *mainwidget;

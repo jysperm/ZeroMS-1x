@@ -101,12 +101,19 @@ void ChatWidget::on_DoSend_clicked()
         ui->MsgArea->append(tr(">>提示:请不要发送空消息"));
         return;
     }
-    cc->msgCMsg(peerName,ui->MsgEdit->toPlainText());
-    ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(Qt::escape(ui->MsgEdit->toPlainText())));
+    QString msg=ui->MsgEdit->toPlainText();
+    cc->msgCMsg(peerName,msg);
+    ui->MsgArea->append(tr("%1 : %2").arg(cc->myname).arg(Qt::escape(msg)));
+    cc->writeChatLog(peerName,msg);
     ui->MsgEdit->clear();
 }
 
 void ChatWidget::on_ActPeerInfo_triggered()
 {
     QDesktopServices::openUrl(QUrl((cc->config)["USERINFO_URL"].toString().arg(peerName)));
+}
+
+void ChatWidget::on_ActChatLog_triggered()
+{
+    QDesktopServices::openUrl(QUrl((cc->config)["CHATLOG_PATH"].toString().arg(cc->myname).arg(QString(peerName).replace("*","_"))));
 }

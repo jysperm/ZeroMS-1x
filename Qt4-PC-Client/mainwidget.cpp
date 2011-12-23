@@ -273,3 +273,8 @@ void MainWidget::on_ActProtocol_triggered()
 {
     QDesktopServices::openUrl(QUrl("http://0-ms.org/wiki/0-1/connect-protocol"));
 }
+
+void MainWidget::on_ActChatLog_triggered()
+{
+    QDesktopServices::openUrl(QUrl((cc->config)["CHATLOG_PATH"].toString().arg(cc->myname).arg(QString(MAIN_GROUP).replace("*","_"))));
+}

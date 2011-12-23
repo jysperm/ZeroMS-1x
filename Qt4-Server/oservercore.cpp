@@ -67,7 +67,7 @@ void OServerCore::log(QString msg)
     }
     QString stime=QDateTime::currentDateTime().toString(config["LOG_TIME_FORMAT"].toString());
     QByteArray bMsg;
-    bMsg.append(tr("%1>%2\n").arg(stime).arg(msg));
+    bMsg.append(tr("%1>%2\r\n").arg(stime).arg(msg));
     logFile->write(bMsg);
     logFile->flush();
     cout<<tr("%1>%2").arg(stime).arg(msg)<<endl;
