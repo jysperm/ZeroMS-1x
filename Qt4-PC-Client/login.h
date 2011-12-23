@@ -33,6 +33,7 @@ private slots:
     void LoginError();
     void on_DoLogin_clicked();
     void on_Options_clicked();
+    void on_UserInput_textEdited(const QString &text);
 };
 
 #endif // LOGIN_H
