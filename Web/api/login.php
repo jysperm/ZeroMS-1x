@@ -18,8 +18,8 @@ if($_GET["mode"]=="post")
             if($_GET["time"]=="yes")
                 $spwd=md5(md5($time).md5($_POST["uname"]).($rs->password));
             else
-                $spwd=md5(md5($_POST["uname"]).md5($rs->password));
-            $dpwd=md5($pkey.$dpwd);
+                $spwd=md5(md5($_POST["uname"]).($rs->password));
+            $dpwd=md5($pkey.$spwd);
             if($_POST["pwd"]==$dpwd)
             {
                 echo "1\n";
