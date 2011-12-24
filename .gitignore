@@ -1,4 +1,4 @@
-#注意,该文件只新增条目,不要删除!!
+﻿#注意,该文件只新增条目,不要删除!!
 *.pro.user
 *.qm
 *.autosave
@@ -9,7 +9,8 @@
 /S-build/*
 /build/*
 /build*/*
-
+/Qt4-Server-build*/*
+/Qt4-PC-Client-build*/*
 
 debug
 release
