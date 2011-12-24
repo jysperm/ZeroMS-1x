@@ -35,7 +35,7 @@ public:
     virtual void init();
     virtual void connectTo(QString ip,int port);//连接到服务器
     virtual void abort();//中断连接
-    virtual QString errorString(ErrorType e=(ErrorType)-2);//获得消息的文本描述
+    virtual QString errorString(ErrorType e=(ErrorType)-2);//获得错误信息的文本描述
     inline virtual void send(OPacket &packet);//发送数据包
 
     //几个工具函数

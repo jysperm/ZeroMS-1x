@@ -2,6 +2,7 @@
 #define CLIENTCOREEX_H
 
 #include <QMap>
+#include <QDir>
 #include "const.h"
 #include "oclientcore.h"
 #include "chatwidget.h"
@@ -15,7 +16,7 @@ class OClientCoreEx:public OClientCore
     Q_OBJECT
     //该类用意就在连接GUI与ClientCore，为方便GUI存取数据，全部成员公有
 public:
-    //重写基类的函数
+//重写基类的函数:
     OClientCoreEx();
     ~OClientCoreEx();
     void init();
@@ -23,11 +24,14 @@ public:
     void msgLoginOk(QByteArray *data,unsigned int time);
     void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
 
-    //新函数
+//新函数:
     void showLogin();//显示登陆窗口
     void showMainWidget();//显示主窗口
     void showChatWidget(QString uname);
     void writeChatLog(QString user,QString msg);
+
+    //工具函数，建立path所在的目录(path是一个文件的路径)
+    inline void mkDir(QString path);
 
     Login *login;
     MainWidget *mainwidget;
@@ -43,5 +47,10 @@ public slots:
 signals:
     void onGroupMsg(QString uname,QString msg);
 };
+
+inline void OClientCoreEx::mkDir(QString path)
+{
+    QDir().mkpath(QFileInfo(path).dir().path());
+}
 
 #endif // CLIENTCOREEX_H

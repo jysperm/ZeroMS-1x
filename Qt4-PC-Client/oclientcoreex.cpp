@@ -73,9 +73,7 @@ void OClientCoreEx::writeChatLog(QString user,QString msg)
         QString fileName=config["CHATLOG_PATH"].toString().arg(myname).arg(QString(user).replace("*","_"));
 
         //这里是创建文件夹..灰常蛋痛，看了半个小时Qt文档也就是这样了....
-        QFileInfo fileInfo(fileName);
-        QDir dir;
-        dir.mkpath(fileInfo.dir().path());
+        mkDir(fileName);
 
         QFile chatLog(fileName);
         chatLog.open(QFile::Append);
