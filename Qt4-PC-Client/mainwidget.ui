@@ -131,6 +131,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
        </widget>
       </item>
      </layout>
@@ -170,11 +173,14 @@
     </property>
     <addaction name="ActSend"/>
     <addaction name="ActClear"/>
+    <addaction name="separator"/>
+    <addaction name="ActChatLog"/>
    </widget>
    <widget class="QMenu" name="menu_4">
     <property name="title">
      <string>开发人员</string>
     </property>
+    <addaction name="separator"/>
     <addaction name="ActDebugOut"/>
     <addaction name="ActOptionFile"/>
     <addaction name="separator"/>
@@ -215,7 +221,7 @@
     <string>隐藏到任务栏</string>
    </property>
    <property name="toolTip">
-    <string>隐藏到通知区域</string>
+    <string>隐藏到任务栏</string>
    </property>
   </action>
   <action name="ActQuit">
@@ -234,6 +240,10 @@
    </property>
   </action>
   <action name="ActUserInfo">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/Act/images/web.png</normaloff>:/Act/images/web.png</iconset>
+   </property>
    <property name="text">
     <string>查看选中好友的资料</string>
    </property>
@@ -241,6 +251,9 @@
   <action name="ActSend">
    <property name="text">
     <string>发送消息</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+S</string>
    </property>
   </action>
   <action name="ActClear">
@@ -357,42 +370,14 @@
     <bool>true</bool>
    </property>
   </action>
+  <action name="ActChatLog">
+   <property name="text">
+    <string>聊天记录</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="res.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>ActMinSize</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWidget</receiver>
-   <slot>showMinimized()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>299</x>
-     <y>224</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>ActUserBBS</sender>
-   <signal>triggered()</signal>
-   <receiver>ActDevBBS</receiver>
-   <slot>trigger()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

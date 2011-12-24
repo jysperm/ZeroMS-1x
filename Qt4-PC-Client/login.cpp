@@ -15,7 +15,7 @@
 extern OClientCoreEx *cc;
 
 //public:
-Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
+Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),isRemembered(0)
 {
     ui->setupUi(this);
 
@@ -32,11 +32,52 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login)
     ui->ForgetLink->setText(ui->ForgetLink->text().arg((cc->config)["FORGET_URL"].toString()));
 
     ui->Banner->setStyleSheet("border-image:url(:/images/banner.png)");
+
+    //记住密码
+    QSettings pwdIni((cc->config)["REMEMBERED_PATH"].toString(),QSettings::IniFormat);
+    if(!pwdIni.value("REMEMBER_UNAME").toString().isEmpty() && !pwdIni.value("REMEMBER_PWD").toString().isEmpty())
+    {
+        ui->UserInput->setText(pwdIni.value("REMEMBER_UNAME").toString());
+        ui->PassWordInput->setText(pwdIni.value("REMEMBER_PWD").toString());
+
+        //设置显示的密码位数，要确保它必须是正整数
+        int pwdLen=(pwdIni.value("REMEMBER_PWD_LEN").toInt() > 0)?pwdIni.value("REMEMBER_PWD_LEN").toInt():cc->config.defaultConfig->value("DEFAULT_PWD_LEN").toInt();
+        ui->PassWordInput->setText(QString(pwdLen,QChar('*')));
+
+        isRemembered=1;
+        ui->Remember->setChecked(1);
+
+        //当文本修改时，不再使用记住的密码
+        connect(ui->PassWordInput,SIGNAL(textEdited(QString)),this,SLOT(on_UserInput_textEdited(QString)));
+        connect(ui->UserInput,SIGNAL(textEdited(QString)),ui->PassWordInput,SLOT(clear()));
+    }
 }
 
 Login::~Login()
 {
     delete ui;
+}
+
+void Login::onLoginOK()
+{
+    QSettings pwdIni((cc->config)["REMEMBERED_PATH"].toString(),QSettings::IniFormat);
+    if(!ui->Remember->isChecked())
+    {
+        pwdIni.setValue("REMEMBER_UNAME",tr(""));
+        pwdIni.setValue("REMEMBER_PWD",tr(""));
+        pwdIni.setValue("REMEMBER_PWD_LEN",tr(""));
+    }
+    else
+    {
+        pwdIni.setValue("REMEMBER_UNAME",ui->UserInput->text());
+        if(!isRemembered)
+        {
+            pwdIni.setValue("REMEMBER_PWD",OClientCore::md5(ui->PassWordInput->text()));
+            if((cc->config)["IS_REMEMBER_PWD_LEN"].toInt())
+                pwdIni.setValue("REMEMBER_PWD_LEN",ui->PassWordInput->text().length());
+        }
+    }
+    pwdIni.sync();
 }
 
 //public slots:
@@ -62,7 +103,13 @@ void Login::on_DoLogin_clicked()
     ui->DoLogin->setEnabled(0);
 
     QString uname=ui->UserInput->text();
-    QString pwd=ui->PassWordInput->text();
+
+    QString pwd;
+    QSettings pwdIni((cc->config)["REMEMBERED_PATH"].toString(),QSettings::IniFormat);
+    if(isRemembered)
+        pwd=pwdIni.value("REMEMBER_PWD").toString();
+    else
+        pwd=OClientCore::md5(ui->PassWordInput->text());
 
     QEventLoop waitConnected;
     connect(cc,SIGNAL(onConnected()),&waitConnected,SLOT(quit()));
@@ -86,4 +133,9 @@ void Login::on_DoLogin_clicked()
 void Login::on_Options_clicked()
 {
     QDesktopServices::openUrl(QUrl(PUBLIC_CONFIG_FILE));
+}
+
+void Login::on_UserInput_textEdited(const QString &text)
+{
+    isRemembered=0;
 }

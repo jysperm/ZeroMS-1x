@@ -1,5 +1,8 @@
+#include <QApplication>
 #include <QByteArray>
 #include <QMessageBox>
+#include <QFile>
+#include <QDir>
 #include "const.h"
 #include "oclientcoreex.h"
 #include "login.h"
@@ -20,6 +23,7 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
+    timeOffLine=config["TIME_OFFLINE"].toInt();
     connect(this,SIGNAL(onSMsg(QString,QString,QString)),this,SLOT(onMsg(QString,QString,QString)));
     showLogin();
 }
@@ -27,15 +31,18 @@ void OClientCoreEx::init()
 void OClientCoreEx::showLogin()
 {
     //调用该函数之前应该检查登陆窗口是否已经显示
+    if(login)login->disconnect();
     DELETE(login);
     login=new Login;
     connect(this,SIGNAL(onLoginError()),login,SLOT(LoginError()));
+    connect(login,SIGNAL(destroyed()),qApp,SLOT(quit()));
     login->show();
 }
 
 void OClientCoreEx::showMainWidget()
 {
     //调用该函数之前应该检查主窗口是否已经显示
+    if(login) login->disconnect();
     DELETE(login);
     DELETE(mainwidget);
     mainwidget=new MainWidget;
@@ -53,13 +60,36 @@ void OClientCoreEx::showChatWidget(QString uname)
     else
     {
         ChatWidget *cp=new ChatWidget(uname);
+        connect(cp,SIGNAL(onDelete(QString)),this,SLOT(removeFromWidgets(QString)));
         widgets.insert(uname,cp);
         cp->show();
     }
 }
 
+void OClientCoreEx::writeChatLog(QString user,QString msg)
+{
+    if(config["OPEN_CHATLOG"].toInt())
+    {
+        QString fileName=config["CHATLOG_PATH"].toString().arg(myname).arg(QString(user).replace("*","_"));
+
+        //这里是创建文件夹..灰常蛋痛，看了半个小时Qt文档也就是这样了....
+        QFileInfo fileInfo(fileName);
+        QDir dir;
+        dir.mkpath(fileInfo.dir().path());
+
+        QFile chatLog(fileName);
+        chatLog.open(QFile::Append);
+        QByteArray bMsg;
+        QString stime=QDateTime::currentDateTime().toString(config["CHATLOG_DATETIME_FORMAT"].toString());
+        bMsg.append(config["CHATLOG_FORMAT"].toString().arg(stime).arg(user).arg(msg));
+        chatLog.write(bMsg);
+        chatLog.close();
+    }
+}
+
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
+    login->onLoginOK();
     showMainWidget();
     msgAskUList();
 }
@@ -117,5 +147,14 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
     {
         showChatWidget(user);
         widgets[user]->onMsg(msg);
+        widgets[user]->activateWindow();
+        qApp->alert(widgets[user]);
     }
+
+    writeChatLog(view,msg);
+}
+
+void OClientCoreEx::removeFromWidgets(QString uname)
+{
+    widgets.remove(uname);
 }

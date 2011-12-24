@@ -76,9 +76,6 @@
            <height>27</height>
           </size>
          </property>
-         <property name="text">
-          <string>zeroms</string>
-         </property>
         </widget>
        </item>
        <item row="0" column="2">
@@ -137,9 +134,6 @@ p, li { white-space: pre-wrap; }
            <height>27</height>
           </size>
          </property>
-         <property name="text">
-          <string>123123</string>
-         </property>
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
          </property>
@@ -176,6 +170,9 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="text">
           <string>记住密码</string>
+         </property>
+         <property name="tristate">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
