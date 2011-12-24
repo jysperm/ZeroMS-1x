@@ -271,7 +271,7 @@ void MainWidget::on_ActSource_triggered()
 
 void MainWidget::on_ActProtocol_triggered()
 {
-    QDesktopServices::openUrl(QUrl("http://0-ms.org/wiki/0-1/connect-protocol"));
+    QDesktopServices::openUrl(QUrl("http://0-ms.org/wiki/protocol/p1-1"));
 }
 
 void MainWidget::on_ActChatLog_triggered()
