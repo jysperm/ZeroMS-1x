@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QVector>
+#include <QMetaType>
 class QNetworkReply;
 class QNetworkAccessManager;
 
@@ -33,12 +34,15 @@ public:
 protected:
     void run();
 signals:
-    void finish(FileAddress address);
+    void finish(ODowner::FileAddress address);
     void allFinish();
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;
     QVector<FileAddress> list;
 };
+
+//见构造函数中的注释
+Q_DECLARE_METATYPE(ODowner::FileAddress)
 
 #endif // PUBLIC_ODOWNER_H

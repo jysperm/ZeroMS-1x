@@ -29,5 +29,7 @@ if($rs->read())
 else
 	$url=$root."images/face/none.gif";
 
-header("Location:".$url);
+//TODO,临时性的...以后改为重定向
+header('content-Type:image/jpeg');
+echo file_get_contents($url);
 ?>

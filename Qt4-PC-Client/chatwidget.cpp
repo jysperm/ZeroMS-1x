@@ -46,11 +46,21 @@ ChatWidget::~ChatWidget()
 void ChatWidget::reSetUi()
 {
     setWindowTitle(tr("与%1聊天-%2").arg(peerName).arg(CLIENT_TITLE_NAME));
+
+    logoChange();
 }
 
 void ChatWidget::onMsg(QString msg)
 {
     ui->MsgArea->append(tr("%1 : %2").arg(ui->LPeerName->text()).arg(Qt::escape(msg)));
+}
+
+void ChatWidget::logoChange()
+{
+    QImage image(((cc->config)["LOGO_CACHE_PATH"].toString()).arg(peerName));
+    image=image.scaled(60,60);
+    ui->PeerLogo->setPixmap(QPixmap::fromImage(image));
+    ui->PeerLogo->adjustSize();
 }
 
 //private:

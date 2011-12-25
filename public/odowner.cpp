@@ -8,7 +8,9 @@
 
 ODowner::ODowner(QObject *parent,int autoExit,int autoDelete):QThread(parent),isAutoExit(autoExit),isAutoDelete(autoDelete),manager(0),reply(0)
 {
-
+    //注册该类型，以便可以在信号槽中作为参数传递
+    //与此对应的还有odowner.h中结尾的Q_DECLARE_METATYPE(ODowner::FileAddress)
+    qRegisterMetaType<ODowner::FileAddress>("ODowner::FileAddress");
 }
 
 void ODowner::addFile(FileAddress address)
@@ -18,9 +20,19 @@ void ODowner::addFile(FileAddress address)
 
 void ODowner::run()
 {
-    manager=new QNetworkAccessManager(this);
-    while(!list.empty())
+    manager=new QNetworkAccessManager;
+    while(1)
     {
+        //如果下载列表为空，且设置了isAutoExit，则等待列表中出现新文件
+        while(!isAutoExit)
+        {
+            if(!list.empty())
+                break;
+            qApp->processEvents();
+        }
+        if(list.empty())
+            break;
+
         FileAddress fa=list.front();
         list.pop_front();
 
@@ -45,13 +57,6 @@ void ODowner::run()
         if(list.empty())
             emit allFinish();
 
-        //如果下载列表为空，且设置了isAutoExit，则等待列表中出现新文件
-        while(!isAutoExit)
-        {
-            if(!list.empty())
-                break;
-            qApp->processEvents();
-        }
     }
     if(isAutoDelete)
         delete this;

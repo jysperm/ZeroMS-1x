@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include "../public/odowner.h"
 class QListWidgetItem;
 class QLabel;
 
@@ -18,8 +19,8 @@ public:
     explicit MainWidget(QWidget *parent=0);
     ~MainWidget();
     void reSetUi();//重置UI，用于刷新配置文件之后
-public slots:
     void logoChange();
+public slots:
     void onUList(QStringList &users);
     void onMsg(QString uname,QString msg);
     //下面这些是供ChatWidget绑定的

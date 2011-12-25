@@ -16,6 +16,7 @@ public:
     ~ChatWidget();
     void reSetUi();
     void onMsg(QString msg);
+    void logoChange();
     QString peerName;
 signals:
     //详见oclientcoreex.h中的removeFromWidgets()函数

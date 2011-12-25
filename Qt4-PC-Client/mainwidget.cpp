@@ -71,18 +71,19 @@ void MainWidget::reSetUi()
         LEnterToSend->setText(tr("Ctrl+回车发送消息，回车换行..."));
 
     trayIcon->setToolTip(windowTitle());
+
+    logoChange();
 }
 
-//public slots:
 void MainWidget::logoChange()
 {
-    //设置我的头像
-    QImage image((QDir::currentPath()+"/cahce/logo/%1.png").arg(cc->myname));
+    QImage image(((cc->config)["LOGO_CACHE_PATH"].toString()).arg(cc->myname));
     image=image.scaled(60,60);
     ui->MyLogo->setPixmap(QPixmap::fromImage(image));
     ui->MyLogo->adjustSize();
 }
 
+//public slots:
 void MainWidget::onUList(QStringList &users)
 {
     ui->UListWidget->clear();

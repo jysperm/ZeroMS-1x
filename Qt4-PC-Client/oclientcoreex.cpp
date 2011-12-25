@@ -12,7 +12,10 @@
 //public:
 OClientCoreEx::OClientCoreEx():login(0),mainwidget(0)
 {
-
+    //下载器
+    downer.isAutoExit=0;
+    connect(&downer,SIGNAL(finish(ODowner::FileAddress)),this,SLOT(onDownFinish(ODowner::FileAddress)));
+    downer.start();
 }
 
 OClientCoreEx::~OClientCoreEx()
@@ -87,9 +90,21 @@ void OClientCoreEx::writeChatLog(QString user,QString msg)
 
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
-    login->onLoginOK();
+    login->onLoginOK();//TODO,这里可以改为信号槽来实现
     showMainWidget();
     msgAskUList();
+}
+
+void OClientCoreEx::msgUList(QByteArray *data,unsigned int time)
+{
+    QStringList users=QString(*data).split(",");
+    foreach(QString i,users)
+    {
+        if(!QFile::exists(config["LOGO_CACHE_PATH"].toString().arg(i)))
+        {
+            downer.addFile(ODowner::FileAddress(config["LOGO_DOWNLOAD_URL"].toString().arg(i),config["LOGO_CACHE_PATH"].toString().arg(i),i));
+        }
+    }
 }
 
 void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
@@ -155,4 +170,13 @@ void OClientCoreEx::onMsg(QString user,QString view,QString msg)
 void OClientCoreEx::removeFromWidgets(QString uname)
 {
     widgets.remove(uname);
+}
+
+void OClientCoreEx::onDownFinish(ODowner::FileAddress file)
+{
+    if(file.key==myname && mainwidget)
+        mainwidget->logoChange();
+
+    if(widgets.contains(file.key))
+        widgets[file.key]->logoChange();
 }
