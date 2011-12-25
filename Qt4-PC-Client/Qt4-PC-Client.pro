@@ -1,11 +1,10 @@
+QT          = core gui network
 
-QT	= core gui network
+TARGET      = Qt4-PC-Client
 
-TARGET	= Qt4-PC-Client
+CONFIG     += thread
 
-CONFIG	+= thread
-
-TEMPLATE= app
+TEMPLATE    = app
 
 HEADERS += \
     oclientcoreex.h \
@@ -17,7 +16,8 @@ HEADERS += \
     ../public/p1.h \
     ../public/osettings.h \
     ../public/opacket.h \
-    ../public/const.h
+    ../public/const.h \
+    ../public/odowner.h
 
 SOURCES += \
     oclientcoreex.cpp \
@@ -27,14 +27,15 @@ SOURCES += \
     login.cpp \
     chatwidget.cpp \
     ../public/osettings.cpp \
-    ../public/opacket.cpp
+    ../public/opacket.cpp \
+    ../public/odowner.cpp
 
 FORMS	+= \
     login.ui \
     mainwidget.ui \
     chatwidget.ui
 
-TRANSLATIONS = ZeroMS_C_EN.ts
+TRANSLATIONS += ZeroMS_C_EN.ts
 
 RESOURCES += \
     res.qrc
