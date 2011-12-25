@@ -25,6 +25,7 @@ public slots:
     //取消登陆
     void cancel();
 private:
+    void closeEvent(QCloseEvent *event);
     Ui::Login *ui;
     //是否是“记住密码”模式
     int isRemembered;

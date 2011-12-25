@@ -86,6 +86,13 @@ void Login::cancel()
     ui->DoLogin->setEnabled(1);
 }
 
+//private:
+void Login::closeEvent(QCloseEvent *event)
+{
+    //不知为何，如果不在这里显式调用析构函数，窗口就不会被关闭,不会发射destroyed()信号，详见OClientCoreEx::showLogin()
+    this->~Login();
+}
+
 //private slots:
 void Login::QLable_linkActivated(const QString &link)
 {
