@@ -198,7 +198,7 @@ void OClientCore::dataCome()
         return;
     }
     int len=QBtoint(databuf->mid(4,4));
-    if(databuf->size()>=(len+P_HEADLEN))
+    while(databuf->size()>=(len+P_HEADLEN))
     {
         //如果已经接收到了数据包的全部数据，进行分发命令
         int type=QBtoint(databuf->mid(8,4));
@@ -267,6 +267,8 @@ void OClientCore::dataCome()
         DELETE(msgData);
         if(databuf)
             databuf->remove(0,P_HEADLEN+len);
+
+        len=QBtoint(databuf->mid(4,4));
     }
 }
 

@@ -111,7 +111,10 @@ void OServerCore::checkMsg(QString uname)
         }
         DELETE(msgData);
         if(databuf)
+        {
             databuf->remove(0,P_HEADLEN+len);
+            checkMsg(uname);
+        }
     }
 }
 
