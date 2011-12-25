@@ -301,10 +301,12 @@ void OServerCore::checkTimeOut()
     {
         if((QDateTime::currentDateTime().toTime_t()-(i.value()->lasttime))>config["TIME_OFFLINE"].toInt())
         {
+            log(tr("kill %1").arg(i.key()));
             delete i.value();
             cl.erase(i);
         }
     }
+    log(tr("now %1 users are online").arg(cl.size()));
 }
 
 void OServerCore::LoginResult()
