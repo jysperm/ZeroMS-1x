@@ -89,8 +89,8 @@ void Login::cancel()
 //private:
 void Login::closeEvent(QCloseEvent *event)
 {
-    //不知为何，如果不在这里显式调用析构函数，窗口就不会被关闭,不会发射destroyed()信号，详见OClientCoreEx::showLogin()
-    this->~Login();
+    //不知为何，如果不在这里显式调用销毁函数，窗口就不会被关闭,不会发射destroyed()信号，详见OClientCoreEx::showLogin()
+    this->destroyed();
 }
 
 //private slots:
