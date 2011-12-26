@@ -1,6 +1,8 @@
 #include <QDesktopWidget>
 #include <QDesktopServices>
 #include <QKeyEvent>
+#include <QMovie>
+#include <QSize>
 #include "oclientcoreex.h"
 #include "mainwidget.h"
 #include "ui_chatwidget.h"
@@ -57,10 +59,12 @@ void ChatWidget::onMsg(QString msg)
 
 void ChatWidget::logoChange()
 {
-    QImage image(((cc->config)["LOGO_CACHE_PATH"].toString()).arg(peerName));
-    image=image.scaled(60,60);
-    ui->PeerLogo->setPixmap(QPixmap::fromImage(image));
-    ui->PeerLogo->adjustSize();
+    QString fname=QFileInfo((cc->config)["LOGO_CACHE_PATH"].toString().arg(peerName)).absoluteFilePath();
+    QSize size(60, 60);
+    QMovie *Avatar = new QMovie(fname);
+    Avatar->setScaledSize(size);
+    ui->PeerLogo->setMovie(Avatar);
+    Avatar->start();
 }
 
 //private:

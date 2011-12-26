@@ -4,6 +4,8 @@
 #include <QDesktopServices>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QMovie>
+#include <QSize>
 #include "oclientcoreex.h"
 #include "mainwidget.h"
 #include "ui_mainwidget.h"
@@ -79,10 +81,11 @@ void MainWidget::reSetUi()
 void MainWidget::logoChange()
 {
     QString fname=QFileInfo((cc->config)["LOGO_CACHE_PATH"].toString().arg(cc->myname)).absoluteFilePath();
-    QImage image(fname);
-    image=image.scaled(60,60);
-    ui->MyLogo->setPixmap(QPixmap::fromImage(image));
-    ui->MyLogo->adjustSize();
+    QSize size(60, 60);
+    QMovie *Avatar = new QMovie(fname);
+    Avatar->setScaledSize(size);
+    ui->MyLogo->setMovie(Avatar);
+    Avatar->start();
 }
 
 //public slots:
