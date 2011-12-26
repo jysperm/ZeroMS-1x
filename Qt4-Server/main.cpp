@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QDir>
 #include <QTextStream>
 #include <QTextCodec>
 #include "const.h"
@@ -10,6 +11,11 @@ QTextStream cout(stdout);
 
 int main(int argc, char *argv[])
 {
+    //方便Windows下调试
+    QString dir_name = QDir::current().dirName();
+    if(dir_name == "release" || dir_name == "debug")
+        QDir::setCurrent("..");
+        
     QCoreApplication a(argc, argv);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
