@@ -2,6 +2,7 @@
 #include <QDesktopWidget>
 #include <QDir>
 #include <QDesktopServices>
+#include <QImageReader>
 #include <QMessageBox>
 #include "oclientcoreex.h"
 #include "mainwidget.h"
@@ -77,7 +78,8 @@ void MainWidget::reSetUi()
 
 void MainWidget::logoChange()
 {
-    QImage image(((cc->config)["LOGO_CACHE_PATH"].toString()).arg(cc->myname));
+    QString fname=QFileInfo((cc->config)["LOGO_CACHE_PATH"].toString().arg(cc->myname)).absoluteFilePath();
+    QImage image(fname);
     image=image.scaled(60,60);
     ui->MyLogo->setPixmap(QPixmap::fromImage(image));
     ui->MyLogo->adjustSize();
