@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QDir>
 #include <QTextCodec>
 #include "const.h"
 #include "oclientcoreex.h"
@@ -8,6 +9,11 @@ OClientCoreEx *cc;
 
 int main(int argc, char *argv[])
 {
+    //方便Windows下调试
+    QString dir_name = QDir::current().dirName();
+    if(dir_name == "release" || dir_name == "debug")
+        QDir::setCurrent("..");
+
     QApplication a(argc, argv);
 
     a.setQuitOnLastWindowClosed(0);

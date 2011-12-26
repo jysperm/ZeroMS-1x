@@ -17,4 +17,6 @@ release
 ui_*
 Makefile*
 object_script*
+cache
+chatlog
 
