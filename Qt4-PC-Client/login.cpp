@@ -19,14 +19,26 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),isRemembered(0)
 {
     ui->setupUi(this);
 
-    this->setWindowTitle(tr("%1-登录  服务器 %2").arg(CLIENT_TITLE_NAME).arg((cc->config)["SERVER_ADDRESS"].toString()));
-    ui->LVer->setText(tr("版本 %1").arg(CLIENT_VER_NAME));
     //窗口居中
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
     //绑定QLable点击信号的槽
     connect(ui->RegLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
     connect(ui->ForgetLink,SIGNAL(linkActivated(QString)),this,SLOT(QLable_linkActivated(QString)));
+
+    reSetUi();
+}
+
+Login::~Login()
+{
+    delete ui;
+}
+
+void Login::reSetUi()
+{
+    this->setWindowTitle(tr("%1-登录  服务器 %2").arg(CLIENT_TITLE_NAME).arg((cc->config)["SERVER_ADDRESS"].toString()));
+    ui->LVer->setText(tr("版本 %1").arg(CLIENT_VER_NAME));
+
     //设置网址
     ui->RegLink->setText(ui->RegLink->text().arg((cc->config)["REG_URL"].toString()));
     ui->ForgetLink->setText(ui->ForgetLink->text().arg((cc->config)["FORGET_URL"].toString()));
@@ -51,11 +63,6 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),isRemembered(0)
         connect(ui->PassWordInput,SIGNAL(textEdited(QString)),this,SLOT(on_UserInput_textEdited(QString)));
         connect(ui->UserInput,SIGNAL(textEdited(QString)),ui->PassWordInput,SLOT(clear()));
     }
-}
-
-Login::~Login()
-{
-    delete ui;
 }
 
 void Login::onLoginOK()

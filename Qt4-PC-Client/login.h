@@ -19,6 +19,7 @@ class Login:public QWidget
 public:
     explicit Login(QWidget *parent = 0);
     ~Login();
+    void reSetUi();
     //登陆成功的回调函数(由OClientCoreEx调用)，用于处理记住密码功能
     void onLoginOK();
 public slots:
