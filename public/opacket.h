@@ -11,8 +11,6 @@ class OPacket:public QObject
 {
     //对数据包的封装，表示一个数据包
     //因为只是简单的封装，所以所有成员共有
-
-    //内容不多,所以不单独使用实现文件了
 public:
     OPacket(QByteArray &data,unsigned int type);
     OPacket(unsigned int type);

@@ -13,6 +13,7 @@
 #include "const.h"
 #include "../public/opacket.h"
 
+
 class OClientCore:public QObject
 {
     Q_OBJECT
@@ -69,6 +70,11 @@ protected:
     virtual void msgLoginError(QByteArray *data,unsigned int time);
     //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是解析后的QStringList
     virtual void msgUList(QByteArray *data,unsigned int time);
+
+    //发送数据包
+    virtual void sendPacket(OPacket &packet);
+    //收到数据包(可以重载该类来拦截数据包，返回1代表已被拦截，该类会忽略该数据包)
+    virtual int receivePacket(OPacket &packet);
 
     QByteArray *databuf;//数据缓冲
 protected slots:

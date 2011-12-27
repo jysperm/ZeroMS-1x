@@ -50,6 +50,7 @@ void OServerCore::stop()
     close();
     for(it i=cl.begin();i!=cl.end();i++)
     {
+        //TODO,这里的代码可能有问题...
         delete i.value();
 	cl.erase(i);
     }

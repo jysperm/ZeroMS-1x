@@ -71,20 +71,20 @@ QString OClientCore::errorString(ErrorType e)
 void OClientCore::msgAskTime()
 {
     OPacket packet(M_AskTime);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 void OClientCore::msgPing()
 {
     pingUpdate();
     OPacket packet(M_Ping);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 void OClientCore::msgExit()
 {
     OPacket packet(M_Exit);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 void OClientCore::msgCMsg(QString objname,QString msg)
@@ -93,7 +93,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
     QByteArray msgData;
     msgData.append(QString("%1 %2").arg(objname).arg(msg));
     OPacket packet(msgData,M_CMsg);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 void OClientCore::msgLogin(QString uname,QString pwdMD5)
@@ -118,14 +118,14 @@ void OClientCore::msgLogin(QString uname,QString pwdMD5)
     QByteArray msgData;
     msgData.append(QString("%1 %2 %3 %4").arg(uname).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));
     OPacket packet(msgData,M_Login);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 void OClientCore::msgAskUList()
 {
     pingUpdate();
     OPacket packet(M_AskUList);
-    conn->write(packet.exec());
+    sendPacket(packet);
 }
 
 //protected:
@@ -149,6 +149,17 @@ void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
 void OClientCore::msgUList(QByteArray *data,unsigned int time)
 {
 
+}
+
+void OClientCore::sendPacket(OPacket &packet)
+{
+    if(conn)
+        conn->write(packet.exec());
+}
+
+int OClientCore::receivePacket(OPacket &packet)
+{
+    return 0;
 }
 
 //private:
@@ -200,10 +211,18 @@ void OClientCore::dataCome()
     int len=QBtoint(databuf->mid(4,4));
     while(databuf && databuf->size()>=(len+P_HEADLEN))
     {
+
         //如果已经接收到了数据包的全部数据，进行分发命令
         int type=QBtoint(databuf->mid(8,4));
         unsigned int time=QBtoint(databuf->mid(12,4));
         QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
+        OPacket packet(*msgData,type);
+        if(receivePacket(packet))
+        {
+            databuf->remove(0,P_HEADLEN+len);
+            len=QBtoint(databuf->mid(4,4));
+            continue;
+        }
         switch(type)
         {
             case M_Error:

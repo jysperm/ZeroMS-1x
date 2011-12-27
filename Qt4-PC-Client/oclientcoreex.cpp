@@ -88,6 +88,22 @@ void OClientCoreEx::writeChatLog(QString user,QString msg)
     }
 }
 
+void OClientCoreEx::debugOut(OPacket &packet)
+{
+    if(config["OPEN_DEBUG_OUT"].toInt())
+    {
+        mkDir(config["DEBUG_OUT_PATH"].toString());
+        QFile file(config["DEBUG_OUT_PATH"].toString());
+        file.open(QFile::Append);
+        QString stime=QDateTime::currentDateTime().toString(config["DEBUG_OUT_DATETIME_FORMAT"].toString());
+        QByteArray bMsg;
+        bMsg.append(packet.packetType%2?tr("Server "):tr("Client "));
+        bMsg.append(config["DEBUG_OUT_FORMAT"].toString().arg(stime).arg(P_VER).arg(packet.packetType).arg(packet.packetData.size()).arg(QString(packet.packetData)));
+        file.write(bMsg);
+        file.close();
+    }
+}
+
 void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
 {
     login->onLoginOK();//TODO,这里可以改为信号槽来实现
@@ -148,6 +164,19 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
         isLoged=0;
         showLogin();
     }
+}
+
+void OClientCoreEx::sendPacket(OPacket &packet)
+{
+    OClientCore::sendPacket(packet);
+    debugOut(packet);
+}
+
+int OClientCoreEx::receivePacket(OPacket &packet)
+{
+    OClientCore::receivePacket(packet);
+    debugOut(packet);
+    return 0;
 }
 
 void OClientCoreEx::onMsg(QString user,QString view,QString msg)
