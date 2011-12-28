@@ -146,7 +146,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -263,7 +263,10 @@
   </action>
   <action name="ActDebugOut">
    <property name="text">
-    <string>打开调试输出</string>
+    <string>调试输出</string>
+   </property>
+   <property name="toolTip">
+    <string>调试输出</string>
    </property>
   </action>
   <action name="ActOptionFile">

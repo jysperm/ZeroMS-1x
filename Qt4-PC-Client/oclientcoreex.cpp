@@ -26,6 +26,19 @@ OClientCoreEx::~OClientCoreEx()
 void OClientCoreEx::init()
 {
     OClientCore::init();
+
+    //删除头像缓存
+    if(config["REFRESH_LOGO_ON_START"].toInt())
+    {
+        QDir logoDir(QFileInfo(config["LOGO_CACHE_PATH"].toString().arg("0")).absolutePath());
+        QStringList list=logoDir.entryList(QDir::Files);
+        for(QStringList::Iterator i=list.begin();i!=list.end();i++)
+        {
+            QFile(logoDir.absoluteFilePath(*i)).remove();
+        }
+
+    }
+
     timeOffLine=config["TIME_OFFLINE"].toInt();
     connect(this,SIGNAL(onSMsg(QString,QString,QString)),this,SLOT(onMsg(QString,QString,QString)));
     showLogin();
@@ -116,7 +129,7 @@ void OClientCoreEx::msgUList(QByteArray *data,unsigned int time)
     QStringList users=QString(*data).split(",");
     foreach(QString i,users)
     {
-        if(!QFile::exists(config["LOGO_CACHE_PATH"].toString().arg(i)))
+        if(!QFile::exists(config["LOGO_CACHE_PATH"].toString().arg(i)) && config["OPEN_LOGO_DOWNLOAD"].toInt())
         {
             downer.addFile(ODowner::FileAddress(config["LOGO_DOWNLOAD_URL"].toString().arg(i),config["LOGO_CACHE_PATH"].toString().arg(i),i));
         }

@@ -243,7 +243,7 @@ void MainWidget::on_ActUserInfo_triggered()
 
 void MainWidget::on_ActDebugOut_triggered()
 {
-    QMessageBox::information(0,tr("调试输出"),tr("该版本不提供调试输出功能"));
+    QDesktopServices::openUrl(QUrl((cc->config)["DEBUG_OUT_PATH"].toString()));
 }
 
 void MainWidget::on_ActQuit_triggered()
