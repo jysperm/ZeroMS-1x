@@ -6,7 +6,7 @@
 #include "const.h"
 #include "oservercore.h"
 
-#if defined Q_OS_LINUX  
+#ifdef Q_OS_LINUX
 
 #include <unistd.h>
 #include <signal.h>
@@ -22,11 +22,14 @@ QTextStream cout(stdout);
 
 int main(int argc, char *argv[])
 {       
-    #if defined Q_OS_LINUX  
+#ifdef Q_OS_LINUX
     if(argc > 1 && strcmp(argv[1], "-nodaemon") == 0)
+    {
         cout << "Running Server without daemon \n";
         cout.flush();
-    else{
+    }
+    else
+    {
         int pid; 
         int i;
         if(pid=fork()) 
@@ -49,7 +52,7 @@ int main(int argc, char *argv[])
         chdir("/tmp");//改变工作目录到/tmp 
         umask(0);//重设文档创建掩模 
     }
-    #endif // Q_OS_LINUX  
+#endif // Q_OS_LINUX
         
     QCoreApplication a(argc, argv);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
