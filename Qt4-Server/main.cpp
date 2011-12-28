@@ -5,13 +5,13 @@
 #include "const.h"
 #include "oservercore.h"
 
-#if defined Q_OS_LINUX  
+#ifdef Q_OS_LINUX
 #include <unistd.h>
 #include <signal.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#endif
+#endif // Q_OS_LINUX
 
 //标准输入和标准输出
 QTextStream cin(stdin);
@@ -26,13 +26,13 @@ int main(int argc, char *argv[])
         QDir::setCurrent("..");
 #endif // WHTSKY_DEBUG
         
-    #if defined Q_OS_LINUX  
+#ifdef Q_OS_LINUX
     int pid; 
     int i;
     if(pid=fork()) 
         exit(0);//是父进程，结束父进程 
     else if(pid< 0) 
-        exit(1);//fork失败，退出 
+        Q_ASSERT(!"fork失败");
     
     //是第一子进程，后台继续执行
     setsid();//第一子进程成为新的会话组长和进程组长并和控制终端分离 
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     if(pid=fork()) 
         exit(0);//是第一子进程，结束第一子进程 
     else if(pid< 0) 
-        exit(1);//fork失败，退出 
+        Q_ASSERT(!"fork失败");
     
     //是第二子进程，继续 
     //第二子进程不再是会话组长
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
         close(i); 
     chdir("/tmp");//改变工作目录到/tmp 
     umask(0);//重设文档创建掩模 
-    #endif
+#endif // Q_OS_LINUX
         
     QCoreApplication a(argc, argv);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
