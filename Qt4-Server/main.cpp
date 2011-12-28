@@ -6,24 +6,21 @@
 #include "oservercore.h"
 
 #if defined Q_OS_LINUX  
+
 #include <unistd.h>
 #include <signal.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#endif
+
+#endif // Q_OS_LINUX  
 
 //标准输入和标准输出
 QTextStream cin(stdin);
 QTextStream cout(stdout);
 
 int main(int argc, char *argv[])
-{
-    //方便Windows下调试
-    QString dir_name = QDir::current().dirName();
-    if(dir_name == "release" || dir_name == "debug")
-        QDir::setCurrent("..");
-        
+{       
     #if defined Q_OS_LINUX  
     int pid; 
     int i;
@@ -46,7 +43,7 @@ int main(int argc, char *argv[])
         close(i); 
     chdir("/tmp");//改变工作目录到/tmp 
     umask(0);//重设文档创建掩模 
-    #endif
+    #endif // Q_OS_LINUX  
         
     QCoreApplication a(argc, argv);
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));

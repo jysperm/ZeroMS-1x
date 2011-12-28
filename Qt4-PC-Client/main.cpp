@@ -9,10 +9,6 @@ OClientCoreEx *cc;
 
 int main(int argc, char *argv[])
 {
-    //方便Windows下调试
-    QString dir_name = QDir::current().dirName();
-    if(dir_name == "release" || dir_name == "debug")
-        QDir::setCurrent("..");
 
     QApplication a(argc, argv);
 
