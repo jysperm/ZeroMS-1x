@@ -9,10 +9,12 @@ OClientCoreEx *cc;
 
 int main(int argc, char *argv[])
 {
+#ifdef WHTSKY_DEBUG
     //方便Windows下调试
     QString dir_name = QDir::current().dirName();
     if(dir_name == "release" || dir_name == "debug")
         QDir::setCurrent("..");
+#endif // WHTSKY_DEBUG
 
     QApplication a(argc, argv);
 
