@@ -21,8 +21,9 @@ QTextStream cin(stdin);
 QTextStream cout(stdout);
 
 int main(int argc, char *argv[])
-{       
+{
 #ifdef Q_OS_LINUX
+    //守护进程的实现(Linux专用)
     if(argc > 1 && strcmp(argv[1], "-nodaemon") == 0)
     {
         cout << "Running Server without daemon \n";
