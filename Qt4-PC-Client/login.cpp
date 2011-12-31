@@ -117,6 +117,7 @@ void Login::on_DoLogin_clicked()
     ui->DoLogin->setEnabled(0);
 
     QString uname=ui->UserInput->text();
+    bool noballache = ui->NoBallache->isChecked();
 
     QString pwd;
     QSettings pwdIni((cc->config)["REMEMBERED_PATH"].toString(),QSettings::IniFormat);
@@ -137,11 +138,15 @@ void Login::on_DoLogin_clicked()
     }
 
     QEventLoop waitTimeUp;
+        
     connect(cc,SIGNAL(onTimeChange(uint)),&waitTimeUp,SLOT(quit()));
     cc->msgAskTime();
     waitTimeUp.exec();
-
-    cc->msgLogin(uname,pwd);
+    
+    if (noballache)
+        cc->msgLoginNoTime(uname,pwd);
+    else
+        cc->msgLogin(uname,pwd);
 }
 
 void Login::on_Options_clicked()
