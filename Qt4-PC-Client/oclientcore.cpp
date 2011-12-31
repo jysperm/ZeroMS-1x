@@ -121,6 +121,19 @@ void OClientCore::msgLogin(QString uname,QString pwdMD5)
     sendPacket(packet);
 }
 
+void OClientCore::msgLoginNoTime(QString uname,QString pwdMD5)
+{
+    pingUpdate();
+    myname=uname;
+
+    QString spwd=md5(md5(uname)+pwdMD5);
+
+    QByteArray msgData;
+    msgData.append(QString("%1 %2 %3 %4").arg(uname).arg(spwd).arg(CLIENT_VER_NUM).arg(CLIENT_NAME));
+    OPacket packet(msgData,M_LoginNoTimeVerify);
+    sendPacket(packet);
+}
+
 void OClientCore::msgAskUList()
 {
     pingUpdate();
