@@ -21,3 +21,6 @@ cache
 chatlog
 
 *.pyc
+build
+dist
+*.egg-info
