@@ -12,7 +12,7 @@ class BaseSB(object):
     '''零毫秒SB协议的收发实现
     '''
 
-    def __init__(self,server='127.0.0.1',port=4321):#173.212.235.252
+    def __init__(self,server='173.212.235.252',port=4321):
         self.server = server
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
