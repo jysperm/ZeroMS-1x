@@ -22,18 +22,21 @@ public:
     ~OClientCoreEx();
     void init();
 
-    void msgLoginOk(QByteArray *data,unsigned int time);
-    void msgUList(QByteArray *data,unsigned int time);
+    void msgLoginOk(OPacket &packet);
+    void msgUList(OPacket &packet);
     void Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s);
     void sendPacket(OPacket &packet);
-    int receivePacket(OPacket &packet);
+    void receivePacket(OPacket &packet);
 
 //新函数:
     void showLogin();//显示登陆窗口
     void showMainWidget();//显示主窗口
     void showChatWidget(QString uname);//显示私聊窗体
     void writeChatLog(QString user,QString msg);//聊天记录
-    void debugOut(OPacket &packet);//调试输出
+
+    //调试输出
+    void debugOut(OPacket packet);
+    void debugOut(QString text);
 
     //工具函数，建立path所在的目录(path是一个文件的路径)
     inline void mkDir(QString path);

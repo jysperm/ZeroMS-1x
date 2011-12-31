@@ -101,32 +101,38 @@ void OClientCoreEx::writeChatLog(QString user,QString msg)
     }
 }
 
-void OClientCoreEx::debugOut(OPacket &packet)
+void OClientCoreEx::debugOut(OPacket packet)
+{
+    QString stime=QDateTime::currentDateTime().toString(config["DEBUG_OUT_DATETIME_FORMAT"].toString());
+    QString text(packet.type%2?tr("Server "):tr("Client "));
+    text.append(config["DEBUG_OUT_FORMAT"].toString().arg(stime).arg(P_VER).arg(packet.type).arg(packet.data.size()).arg(QString(packet.data)));
+    debugOut(text);
+}
+
+void OClientCoreEx::debugOut(QString text)
 {
     if(config["OPEN_DEBUG_OUT"].toInt())
     {
         mkDir(config["DEBUG_OUT_PATH"].toString());
         QFile file(config["DEBUG_OUT_PATH"].toString());
         file.open(QFile::Append);
-        QString stime=QDateTime::currentDateTime().toString(config["DEBUG_OUT_DATETIME_FORMAT"].toString());
         QByteArray bMsg;
-        bMsg.append(packet.packetType%2?tr("Server "):tr("Client "));
-        bMsg.append(config["DEBUG_OUT_FORMAT"].toString().arg(stime).arg(P_VER).arg(packet.packetType).arg(packet.packetData.size()).arg(QString(packet.packetData)));
+        bMsg.append(text);
         file.write(bMsg);
         file.close();
     }
 }
 
-void OClientCoreEx::msgLoginOk(QByteArray *data,unsigned int time)
+void OClientCoreEx::msgLoginOk(OPacket &packet)
 {
     login->onLoginOK();//TODO,这里可以改为信号槽来实现
     showMainWidget();
     msgAskUList();
 }
 
-void OClientCoreEx::msgUList(QByteArray *data,unsigned int time)
+void OClientCoreEx::msgUList(OPacket &packet)
 {
-    QStringList users=QString(*data).split(",");
+    QStringList users=QString(packet.data).split(",");
     foreach(QString i,users)
     {
         if(!QFile::exists(config["LOGO_CACHE_PATH"].toString().arg(i)) && config["OPEN_LOGO_DOWNLOAD"].toInt())
@@ -185,11 +191,10 @@ void OClientCoreEx::sendPacket(OPacket &packet)
     debugOut(packet);
 }
 
-int OClientCoreEx::receivePacket(OPacket &packet)
+void OClientCoreEx::receivePacket(OPacket &packet)
 {
     OClientCore::receivePacket(packet);
     debugOut(packet);
-    return 0;
 }
 
 void OClientCoreEx::onMsg(QString user,QString view,QString msg)

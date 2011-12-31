@@ -21,6 +21,7 @@ public:
     enum ErrorType
     {
         //解释请参见errorString()中的注释
+        //TODO,其实这里用Q_ENUM好些，只不过找不到中文的相关资料
         Unknown=-1,
         NoError,
         CantUnderstand,
@@ -32,8 +33,8 @@ public:
 
     explicit OClientCore();
     virtual ~OClientCore();
-    //初始化，因为有些工作不能在构造函数里完成（好像在构造函数里没法往自己身上绑定信号槽）
-    virtual void init();
+
+    virtual void init();//初始化
     virtual void connectTo(QString ip,int port);//连接到服务器
     virtual void abort();//中断连接
     virtual QString errorString(ErrorType e=(ErrorType)-2);//获得错误信息的文本描述
@@ -65,16 +66,16 @@ public slots:
 protected:
 //可重载消息回调函数:
     //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是已经解析后的消息
-    virtual void msgSMsg(QByteArray *data,unsigned int time);
-    virtual void msgLoginOk(QByteArray *data,unsigned int time);
-    virtual void msgLoginError(QByteArray *data,unsigned int time);
+    virtual void msgSMsg(OPacket &packet);
+    virtual void msgLoginOk(OPacket &packet);
+    virtual void msgLoginError(OPacket &packet);
     //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是解析后的QStringList
-    virtual void msgUList(QByteArray *data,unsigned int time);
+    virtual void msgUList(OPacket &packet);
 
     //发送数据包
     virtual void sendPacket(OPacket &packet);
     //收到数据包(可以重载该类来拦截数据包，返回1代表已被拦截，该类会忽略该数据包)
-    virtual int receivePacket(OPacket &packet);
+    virtual void receivePacket(OPacket &packet);
 
     QByteArray *databuf;//数据缓冲
 protected slots:
@@ -94,8 +95,8 @@ signals:
     void onTimeChange(unsigned int time);//服务器时间被更新
 private:
 //不可重载消息回调函数:
-    virtual void msgTime(QByteArray *data,unsigned int time);
-    virtual void msgChangeUList(QByteArray *data,unsigned int time);
+    virtual void msgTime(OPacket &packet);
+    virtual void msgChangeUList(OPacket &packet);
     //定时器，用于定时与服务器保持相应
     QTimer *pingTimer;
 private slots:

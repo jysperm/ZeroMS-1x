@@ -7,26 +7,29 @@
 #include "p1.h"
 using namespace P1;
 
-class OPacket:public QObject
+class OPacket
 {
     //对数据包的封装，表示一个数据包
-    //因为只是简单的封装，所以所有成员共有
 public:
-    OPacket(QByteArray &data,unsigned int type);
-    OPacket(unsigned int type);
-    //返回一个可以用于发送的完整的数据包
-    QByteArray exec();
-    //把数据追加到数据包的尾部，事实上只是一个简写形式
-    inline OPacket &append(QByteArray &data);
-
-    unsigned int packetType;
-    QByteArray packetData;
+    OPacket(QByteArray d,int t);
+    OPacket(int type);
+    QByteArray exec();//返回一个可以用于发送的完整的数据包
+    inline OPacket &append(QByteArray d);//把数据追加到数据包的尾部
+    inline int length();
+    unsigned int time;
+    int type;
+    QByteArray data;
 };
 
-inline OPacket &OPacket::append(QByteArray &data)
+inline OPacket &OPacket::append(QByteArray d)
 {
-    packetData.append(data);
+    data.append(d);
     return *this;
+}
+
+inline int OPacket::length()
+{
+    return data.size();
 }
 
 #endif // PUBLIC_OPACKET_H

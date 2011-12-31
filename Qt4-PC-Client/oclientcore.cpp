@@ -130,23 +130,23 @@ void OClientCore::msgAskUList()
 
 //protected:
 //可重载消息回调函数:
-void OClientCore::msgSMsg(QByteArray *data,unsigned int time)
+void OClientCore::msgSMsg(OPacket &packet)
 {
 
 }
 
-void OClientCore::msgLoginOk(QByteArray *data,unsigned int time)
+void OClientCore::msgLoginOk(OPacket &packet)
 {
 
 }
 
-void OClientCore::msgLoginError(QByteArray *data,unsigned int time)
+void OClientCore::msgLoginError(OPacket &packet)
 {
     //如果不希望登陆错误后断开连接，请重载这个函数
     abort();
 }
 
-void OClientCore::msgUList(QByteArray *data,unsigned int time)
+void OClientCore::msgUList(OPacket &packet)
 {
 
 }
@@ -157,22 +157,96 @@ void OClientCore::sendPacket(OPacket &packet)
         conn->write(packet.exec());
 }
 
-int OClientCore::receivePacket(OPacket &packet)
+void OClientCore::receivePacket(OPacket &packet)
 {
-    return 0;
+    switch(packet.type)
+    {
+        case M_Error:
+            emit onError(lastError=MsgError,packet.data,(QAbstractSocket::SocketError)0);
+            return;
+        case M_SMsg:
+            if(!isLoged)
+            {
+                qDebug()<<tr("未登陆，但收到服务器的M_SMsg消息");
+                break;
+            }
+            msgSMsg(packet);
+            //可重载的消息回调函数都是在函数外来发射信号
+            //否则的话，重载后将无法发射信号
+            {
+                QString msg=packet.data;
+                //下面就是提取msgData中的各个字段
+                QString user=msg.left(msg.indexOf(" "));
+                msg.remove(0,user.length()+1);
+                QString view=msg.left(msg.indexOf(" "));
+                msg.remove(0,view.length()+1);
+                emit onSMsg(user,view,msg);
+            }
+            return;
+        case M_Time:
+            msgTime(packet);
+            return;
+        case M_LoginOk:
+            if(isLoged)
+            {
+                qDebug()<<tr("已经成功登陆，但收到服务器的M_LoginOk消息");
+                break;
+            }
+            msgLoginOk(packet);
+            {
+                pingTimer=new QTimer;
+                connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
+                pingTimer->start(10*1000);
+                isLoged=1;
+            }
+            emit onLoginOk();
+            return;
+        case M_LoginError:
+            if(isLoged)
+            {
+                qDebug()<<tr("已经成功登陆，但收到服务器的M_LoginError消息");
+                break;
+            }
+            msgLoginError(packet);
+            emit onLoginError();
+            return;
+        case M_UList:
+            if(!isLoged)
+            {
+                qDebug()<<tr("未登陆，但收到服务器的M_UList消息");
+                break;
+            }
+            msgUList(packet);
+            {
+                QStringList users=QString(packet.data).split(",");
+                emit onUList(users);
+            }
+            return;
+        case M_ChangeUList:
+            if(!isLoged)
+            {
+                qDebug()<<tr("未登陆，但收到服务器的M_ChangeUList消息");
+                break;
+            }
+            msgChangeUList(packet);
+            return;
+        default:
+            break;
+    }
+    emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
 }
 
 //private:
 //不可重载消息回调函数:
-void OClientCore::msgTime(QByteArray *data,unsigned int time)
+void OClientCore::msgTime(OPacket &packet)
 {
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
-    unsigned int serTime=QString(*data).toUInt();
+    unsigned int serTime=QString(packet.data).toUInt();
     timeDiff=serTime-curTime;
     emit onTimeChange(timeDiff);
 }
 
-void OClientCore::msgChangeUList(QByteArray *data,unsigned int time)
+void OClientCore::msgChangeUList(OPacket &packet)
 {
     msgAskUList();
     emit onChangeUList();
@@ -200,95 +274,26 @@ void OClientCore::dataCome()
 {
     emit onData();
     databuf->append(conn->readAll());
-    if(databuf->size()<P_HEADLEN)
-        return;
-    int ver=QBtoint(databuf->mid(0,4));
-    if(!checkVer(ver))
+    while(databuf && databuf->size() >= P_HEADLEN)
     {
-        emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
-        return;
-    }
-    int len=QBtoint(databuf->mid(4,4));
-    while(databuf && databuf->size()>=(len+P_HEADLEN))
-    {
-
-        //如果已经接收到了数据包的全部数据，进行分发命令
-        int type=QBtoint(databuf->mid(8,4));
-        unsigned int time=QBtoint(databuf->mid(12,4));
-        QByteArray *msgData=new QByteArray(databuf->mid(P_HEADLEN,len));
-        OPacket packet(*msgData,type);
-        if(receivePacket(packet))
+        int ver=QBtoint(databuf->mid(0,4));
+        if(!checkVer(ver))
         {
-            databuf->remove(0,P_HEADLEN+len);
-            len=QBtoint(databuf->mid(4,4));
+            emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
             continue;
         }
-        switch(type)
-        {
-            case M_Error:
-                emit onError(lastError=MsgError,*msgData,(QAbstractSocket::SocketError)0);
-                break;
-            case M_SMsg:
-                if(!isLoged)
-                    break;
-                msgSMsg(msgData,time);
-                //可重载的消息回调函数都是在函数外来发射信号
-                //否则的话，重载后将无法发射信号
-            {
-                QString msg=*msgData;
-                //下面就是提取msgData中的各个字段
-                QString user=msg.left(msg.indexOf(" "));
-                msg.remove(0,user.length()+1);
-                QString view=msg.left(msg.indexOf(" "));
-                msg.remove(0,view.length()+1);
-                QString msgMsg=msg;
-                emit onSMsg(user,view,msgMsg);
-            }
-                break;
-            case M_Time:
-                msgTime(msgData,time);
-                break;
-            case M_LoginOk:
-                if(isLoged)
-                    break;
-                msgLoginOk(msgData,time);
-            {
-                pingTimer=new QTimer;
-                connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
-                pingTimer->start(10*1000);
-                isLoged=1;
-                emit onLoginOk();
-            }
-                break;
-            case M_LoginError:
-                if(isLoged)
-                    break;
-                msgLoginError(msgData,time);
-                emit onLoginError();
-                break;
-            case M_UList:
-                if(!isLoged)
-                    break;
-                msgUList(msgData,time);
-            {
-                QStringList users=QString(*msgData).split(",");
-                emit onUList(users);
-            }
-                break;
-            case M_ChangeUList:
-                if(!isLoged)
-                    break;
-                msgChangeUList(msgData,time);
-                break;
-            default:
-                emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
-        }
-        DELETE(msgData);
+
+        int len=QBtoint(databuf->mid(4,4));
+        int type=QBtoint(databuf->mid(8,4));
+        unsigned int time=QBtoint(databuf->mid(12,4));
+
+        OPacket packet(databuf->mid(P_HEADLEN,len),type);
+        packet.time=time;
+
+        receivePacket(packet);
+
         if(databuf)
-        {
             databuf->remove(0,P_HEADLEN+len);
-            len=QBtoint(databuf->mid(4,4));
-        }
     }
 }
 

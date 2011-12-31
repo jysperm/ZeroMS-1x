@@ -3,24 +3,24 @@
 #include "opacket.h"
 #include "const.h"
 
-OPacket::OPacket(QByteArray &data,unsigned int type):packetType(type),packetData(data)
+OPacket::OPacket(QByteArray d,int t):type(t),data(d)
 {
 
 }
 
-OPacket::OPacket(unsigned int type):packetType(type)
+OPacket::OPacket(int t):type(t)
 {
 
 }
 
 QByteArray OPacket::exec()
 {
-    if(!packetType)
+    if(!type)
         return 0;
     QByteArray tData;
     QDataStream DSdata(&tData,QIODevice::WriteOnly);
     unsigned int time=QDateTime::currentDateTime().toTime_t();
-    DSdata<<P_VER<<packetData.size()<<packetType<<time;
-    tData.append(packetData);
+    DSdata<<P_VER<<data.size()<<type<<time;
+    tData.append(data);
     return tData;
 }

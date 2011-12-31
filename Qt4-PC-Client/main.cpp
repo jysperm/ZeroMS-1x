@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QDir>
 #include <QTextCodec>
+#include <QImageReader>
 #include "const.h"
 #include "oclientcoreex.h"
 
@@ -18,6 +19,8 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
     QApplication::addLibraryPath("./plugins");
+
+    qDebug()<<QImageReader::supportedImageFormats();
 
     cc=new OClientCoreEx;
     cc->init();
