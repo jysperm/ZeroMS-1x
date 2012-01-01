@@ -125,7 +125,7 @@ void MainWidget::on_ActMember_triggered()
 
 void MainWidget::on_ActVer_triggered()
 {
-    QMessageBox::information(0,CLIENT_TITLE_NAME,tr("%\n%2").arg(CLIENT_NAME).arg(CLIENT_VER_NAME));
+    QMessageBox::information(0,CLIENT_TITLE_NAME,tr("%1\n%2").arg(CLIENT_NAME).arg(CLIENT_VER_NAME));
 }
 
 void MainWidget::on_ActJyboxIndex_triggered()
