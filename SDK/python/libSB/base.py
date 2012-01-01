@@ -3,11 +3,8 @@
 import socket
 from struct import pack,unpack
 import select
-from time import time as __time__
+from time import time as _time
 import os
-
-def toUTF8(str):
-    return str.decode((os.name == 'posix' and 'utf-8' or 'cp936')).encode('utf-8')
     
 def toEcho(str):
     return str.decode('utf-8').encode((os.name == 'posix' and 'utf-8' or 'cp936'))
@@ -43,7 +40,6 @@ class BaseSB(object):
             packet = pack('!IIII',
                 1,0,type,time()) #1代表版本号，0代表数据长度
         else:
-            data = toUTF8(data)
             length = len(data)
             packet = pack('!IIII',
                 1,length,type,time()) + data

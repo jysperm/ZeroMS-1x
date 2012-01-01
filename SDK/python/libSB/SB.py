@@ -1,9 +1,9 @@
 ﻿#coding=utf-8
 
 from base import BaseSB
-from hashlib import md5 as __md5__
+from hashlib import md5 as _md5
 
-md5 = lambda x:__md5__(str(x)).hexdigest()
+md5 = lambda x:_md5(str(x)).hexdigest()
 class SB1(BaseSB):
     '''
     完成了全部发送消息的函数
