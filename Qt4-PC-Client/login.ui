@@ -197,10 +197,10 @@ p, li { white-space: pre-wrap; }
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>无时间戳（不蛋疼）登陆</string>
+          <string>无时间戳(不蛋疼)登陆</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>

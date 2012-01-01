@@ -63,6 +63,11 @@ void Login::reSetUi()
         connect(ui->PassWordInput,SIGNAL(textEdited(QString)),this,SLOT(on_UserInput_textEdited(QString)));
         connect(ui->UserInput,SIGNAL(textEdited(QString)),ui->PassWordInput,SLOT(clear()));
     }
+
+    if((cc->config)["DEFAULT_LOGINNOTIME"].toInt())
+    {
+        ui->NoBallache->setChecked(1);
+    }
 }
 
 void Login::onLoginOK()

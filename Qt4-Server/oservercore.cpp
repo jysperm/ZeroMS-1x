@@ -333,7 +333,7 @@ void OServerCore::LoginResult()
     }
     else
     {
-        if(!cl.contains(result[UAPI_LISTNAME]))
+        if((result.size()>1) && !cl.contains(result[UAPI_LISTNAME]))
         {
             log(tr("warning!! the user %1 attempted to send a abnormal package").arg(result[UAPI_LISTNAME]));
             return;

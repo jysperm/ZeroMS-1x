@@ -55,15 +55,14 @@ public:
     int isLoged;//是否已经登陆
     ErrorType lastError;
     int timeOffLine;//客户端多长时间向服务器发送在线相应消息
-
-public slots:
-    //消息发送函数:
+//消息发送函数:
     virtual void msgAskTime();
     virtual void msgPing();
     virtual void msgExit();
     virtual void msgCMsg(QString objname,QString msg);
     virtual void msgLogin(QString uname,QString pwdMD5);
     virtual void msgLoginNoTime(QString uname,QString pwdMD5);
+public slots:
     virtual void msgAskUList();
 protected:
 //可重载消息回调函数:
@@ -74,9 +73,9 @@ protected:
     //对于这个消息，如果选择重载，需要自己解析数据包，而信号中发射的是解析后的QStringList
     virtual void msgUList(OPacket &packet);
 
-    //发送消息
+    //发送数据包
     virtual void sendPacket(OPacket &packet);
-    //收到消息(该函数内会对消息进行分拣，交给相应的处理函数，派生类可以重载这个函数来拦截消息)
+    //收到数据包(可以重载该类来拦截数据包，返回1代表已被拦截，该类会忽略该数据包)
     virtual void receivePacket(OPacket &packet);
 
     QByteArray *databuf;//数据缓冲

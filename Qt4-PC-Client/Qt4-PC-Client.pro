@@ -35,8 +35,6 @@ FORMS	+= \
     mainwidget.ui \
     chatwidget.ui
 
-TRANSLATIONS += ZeroMS_C_EN.ts
-
 RESOURCES += \
     res.qrc
 
@@ -47,12 +45,12 @@ OTHER_FILES += \
     icon.rc \
     images/40_0ms.png \
     images/0ms.ico \
-    config.ini \
-    ZeroMS_C_EN.ts
+    config.ini
 
 win32{
     RC_FILE += icon.rc
 }
+
 
 
 

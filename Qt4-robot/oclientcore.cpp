@@ -1,13 +1,6 @@
-#include <QAbstractSocket>
-#include <QApplication>
-#include <QByteArray>
-#include <QDateTime>
+#include <QCoreApplication>
 #include <QHostAddress>
-#include <QString>
-#include <QTcpSocket>
-#include "const.h"
 #include "oclientcore.h"
-#include "../public/opacket.h"
 
 //public:
 OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0),pingTimer(0)
@@ -17,7 +10,9 @@ OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine
 
 OClientCore::~OClientCore()
 {
-    abort();
+    DELETE(pingTimer);
+    DELETE(conn);
+    DELETE(databuf);
 }
 
 void OClientCore::init()
@@ -33,7 +28,6 @@ void OClientCore::connectTo(QString ip,int port)
     databuf=new QByteArray;
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(socketError(QAbstractSocket::SocketError)));
     connect(conn,SIGNAL(readyRead()),this,SLOT(dataCome()));
-    connect(conn,SIGNAL(readyRead()),this,SIGNAL(onData()));
     connect(conn,SIGNAL(connected()),this,SIGNAL(onConnected()));
     conn->connectToHost(QHostAddress(ip),port);
 }
@@ -98,7 +92,7 @@ void OClientCore::msgCMsg(QString objname,QString msg)
 void OClientCore::msgLogin(QString uname,QString pwdMD5)
 {
     pingUpdate();
-    //注意，调用该函数之前要先获取服务器时间
+    //注意，调用该函数可能会引起阻塞，但在阻塞中会自动调用qApp->processEvents()
     unsigned int curTime=QDateTime::currentDateTime().toTime_t();
     unsigned int serTime=curTime+timeDiff;
     myname=uname;
@@ -186,9 +180,12 @@ void OClientCore::receivePacket(OPacket &packet)
             //可重载的消息回调函数都是在函数外来发射信号
             //否则的话，重载后将无法发射信号
             {
-                QString user=packet.split(0);
-                QString view=packet.split(1);
-                QString msg=packet.splitTail(2);
+                QString msg=packet.data;
+                //下面就是提取msgData中的各个字段
+                QString user=msg.left(msg.indexOf(" "));
+                msg.remove(0,user.length()+1);
+                QString view=msg.left(msg.indexOf(" "));
+                msg.remove(0,view.length()+1);
                 emit onSMsg(user,view,msg);
             }
             return;
@@ -205,7 +202,7 @@ void OClientCore::receivePacket(OPacket &packet)
             {
                 pingTimer=new QTimer;
                 connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
-                pingTimer->start(timeOffLine*1000);
+                pingTimer->start(10*1000);
                 isLoged=1;
             }
             emit onLoginOk();
@@ -281,7 +278,7 @@ void OClientCore::pingTimeOut()
 
 void OClientCore::dataCome()
 {
-    //该函数将收到的数据拆分为消息(一个OPacket对象)，交给receivePacket()函数
+    emit onData();
     databuf->append(conn->readAll());
     while(databuf && databuf->size() >= P_HEADLEN)
     {
