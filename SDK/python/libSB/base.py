@@ -8,6 +8,9 @@ import os
 
 def toUTF8(str):
     return str.decode((os.name == 'posix' and 'utf-8' or 'cp936')).encode('utf-8')
+    
+def toEcho(str):
+    return str.decode('utf-8').encode((os.name == 'posix' and 'utf-8' or 'cp936'))
 
 time = lambda :int(__time__())
 
@@ -65,7 +68,7 @@ class BaseSB(object):
             packet = self.sock.recv(16)
             data = list(unpack('!IIII',packet))
             if data[1] > 0:
-                data.append(self.sock.recv(data[1]))
+                data.append(toEcho(self.sock.recv(data[1])))
             return data
         except:
             return None
