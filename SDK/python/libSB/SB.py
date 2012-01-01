@@ -1,4 +1,4 @@
-#coding=utf-8
+﻿#coding=utf-8
 
 from base import BaseSB
 from hashlib import md5 as __md5__
