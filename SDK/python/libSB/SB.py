@@ -1,17 +1,16 @@
-#coding=utf-8
+ï»¿#coding=utf-8
 
 from base import BaseSB
-import __init__ as libSB
 from hashlib import md5 as __md5__
 
 md5 = lambda x:__md5__(str(x)).hexdigest()
 class SB1(BaseSB):
     '''
-    Íê³ÉÁËÈ«²¿·¢ËÍÏûÏ¢µÄº¯Êı
-    ¹ØÓÚ½ÓÊÕ²¿·Ö£¬Ã¿¸öÈËĞèÇó²»Í¬£¬×Ô¼ºÊ¹ÓÃ×°ÊÎÆ÷¶¨Òåº¯Êı.
+    å®Œæˆäº†å…¨éƒ¨å‘é€æ¶ˆæ¯çš„å‡½æ•°
+    å…³äºæ¥æ”¶éƒ¨åˆ†ï¼Œæ¯ä¸ªäººéœ€æ±‚ä¸åŒï¼Œè‡ªå·±ä½¿ç”¨è£…é¥°å™¨å®šä¹‰å‡½æ•°.
     '''
 
-    def login(self,username,password,clientversion=libSB.__version__,clientname=libSB.__name__):
+    def login(self,username,password,clientversion='1',clientname='Client'):
         self.send(type=201,
             data='%s %s %s %s' % (username,
                                   md5(md5(username)+md5(password)),
@@ -29,7 +28,7 @@ class SB1(BaseSB):
 
     def sendmessage(self,to,message):
         self.send(type=100,
-        data='%s %s' % (to,message))
+                  data='%s %s' % (to,message))
 
     def logout(self):
         self.send(type=30)

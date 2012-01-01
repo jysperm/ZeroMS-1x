@@ -1,10 +1,16 @@
-#coding=utf-8
+﻿#coding=utf-8
 
 import socket
 from struct import pack,unpack
 import select
 from time import time as __time__
-from thread import start_new_thread
+import os
+
+def toUTF8(str):
+    return str.decode((os.name == 'posix' and 'utf-8' or 'cp936')).encode('utf-8')
+    
+def toEcho(str):
+    return str.decode('utf-8').encode((os.name == 'posix' and 'utf-8' or 'cp936'))
 
 time = lambda :int(__time__())
 
@@ -12,7 +18,7 @@ class BaseSB(object):
     '''零毫秒SB协议的收发实现
     '''
 
-    def __init__(self,server='127.0.0.1',port=4321):#173.212.235.252
+    def __init__(self,server='173.212.235.252',port=4321):
         self.server = server
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -20,7 +26,7 @@ class BaseSB(object):
             self.sock.connect((server,port))
         except socket.error, e:
             self.sock.close()
-        self.startloop()
+        self.loop = True
         self.recvfuncs = {}
         
         
@@ -37,22 +43,18 @@ class BaseSB(object):
             packet = pack('!IIII',
                 1,0,type,time()) #1代表版本号，0代表数据长度
         else:
+            data = toUTF8(data)
             length = len(data)
             packet = pack('!IIII',
                 1,length,type,time()) + data
         self.sock.send(packet)
 
-    def startloop(self):
-        self.loop = True
-        start_new_thread(self._loop,())
-
-    def _loop(self):
+    def mainloop(self):
         while self.loop:
             data = self._recv()
             if data != None:
                 try:
-                    print data
-                    func = self.recv[int(data[2])]
+                    func = self.recvfuncs[data[2]]
                     func(data)
                 except:
                     pass
@@ -62,10 +64,11 @@ class BaseSB(object):
 
     def _recv(self, timeout = 0.1):
         irdy, ordy, erdy = select.select([self.sock], [], [], timeout)
-        if not irdy:
+        try:
+            packet = self.sock.recv(16)
+            data = list(unpack('!IIII',packet))
+            if data[1] > 0:
+                data.append(toEcho(self.sock.recv(data[1])))
+            return data
+        except:
             return None
-        packet = self.sock.recv(1024)
-        data = list(unpack('!IIII',packet[:16]))
-        if data[1] > 0:
-            data.append(''.join(unpack('!'+'s'*data[1],packet[16:])))
-        return data
