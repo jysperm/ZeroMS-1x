@@ -9,7 +9,7 @@ import os
 def toEcho(str):
     return str.decode('utf-8').encode((os.name == 'posix' and 'utf-8' or 'cp936'))
 
-time = lambda :int(__time__())
+time = lambda :int(_time())
 
 class BaseSB(object):
     '''零毫秒SB协议的收发实现
