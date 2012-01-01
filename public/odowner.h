@@ -36,6 +36,7 @@ protected:
 signals:
     void finish(ODowner::FileAddress address);
     void allFinish();
+    void newFile();
 private:
     QNetworkAccessManager *manager;
     QNetworkReply *reply;

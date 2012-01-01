@@ -16,6 +16,7 @@ ODowner::ODowner(QObject *parent,int autoExit,int autoDelete):QThread(parent),is
 void ODowner::addFile(FileAddress address)
 {
     list.append(address);
+    emit newFile();
 }
 
 void ODowner::run()
@@ -28,7 +29,9 @@ void ODowner::run()
         {
             if(!list.empty())
                 break;
-            qApp->processEvents();
+            QEventLoop waitNewFile;
+            connect(this, SIGNAL(newFile()), &waitNewFile, SLOT(quit()));
+            waitNewFile.exec();
         }
         if(list.empty())
             break;
