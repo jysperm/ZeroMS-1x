@@ -205,7 +205,7 @@ void OClientCore::receivePacket(OPacket &packet)
             {
                 pingTimer=new QTimer;
                 connect(pingTimer,SIGNAL(timeout()),this,SLOT(pingTimeOut()));
-                pingTimer->start(timeOffLine*1000);
+                pingTimer->start(timeOffLine*1000*0.4);
                 isLoged=1;
             }
             emit onLoginOk();
