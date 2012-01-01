@@ -4,7 +4,6 @@ import socket
 from struct import pack,unpack
 import select
 from time import time as __time__
-from thread import start_new_thread
 
 time = lambda :int(__time__())
 
@@ -20,7 +19,7 @@ class BaseSB(object):
             self.sock.connect((server,port))
         except socket.error, e:
             self.sock.close()
-        self.startloop()
+        self.loop = True
         self.recvfuncs = {}
         
         
@@ -42,17 +41,12 @@ class BaseSB(object):
                 1,length,type,time()) + data
         self.sock.send(packet)
 
-    def startloop(self):
-        self.loop = True
-        start_new_thread(self._loop,())
-
-    def _loop(self):
+    def mainloop(self):
         while self.loop:
             data = self._recv()
             if data != None:
                 try:
-                    print data
-                    func = self.recv[int(data[2])]
+                    func = self.recvfuncs[data[2]]
                     func(data)
                 except:
                     pass
@@ -62,10 +56,11 @@ class BaseSB(object):
 
     def _recv(self, timeout = 0.1):
         irdy, ordy, erdy = select.select([self.sock], [], [], timeout)
-        if not irdy:
+        try:
+            packet = self.sock.recv(16)
+            data = list(unpack('!IIII',packet))
+            if data[1] > 0:
+                data.append(self.sock.recv(data[1]))
+            return data
+        except:
             return None
-        packet = self.sock.recv(1024)
-        data = list(unpack('!IIII',packet[:16]))
-        if data[1] > 0:
-            data.append(''.join(unpack('!'+'s'*data[1],packet[16:])))
-        return data
