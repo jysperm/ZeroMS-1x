@@ -165,7 +165,7 @@ void OClientCoreEx::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::
             msgStr=tr("连接被服务器中断");
             break;
         case SocketOthers:
-            msgStr=errorString(e);
+            msgStr=msg;
     }
     QMessageBox::critical(0,tr("错误 %1").arg(e),msgStr);
     if(e>3 && !login)
