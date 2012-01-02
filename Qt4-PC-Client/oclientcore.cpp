@@ -1,16 +1,9 @@
-#include <QAbstractSocket>
 #include <QApplication>
-#include <QByteArray>
-#include <QDateTime>
 #include <QHostAddress>
-#include <QString>
-#include <QTcpSocket>
-#include "const.h"
 #include "oclientcore.h"
-#include "../public/opacket.h"
 
 //public:
-OClientCore::OClientCore():conn(0),timeDiff(0),lastMsg(0),isLoged(0),timeOffLine(200),databuf(0),pingTimer(0)
+OClientCore::OClientCore():conn(0),timeDiff(0),lastMsgTime(0),isLoged(0),timeOffLine(200),databuf(0),pingTimer(0)
 {
 
 }
@@ -66,6 +59,7 @@ QString OClientCore::errorString(ErrorType e)
         return conn?conn->errorString():QString();
 }
 
+//public slots:
 //消息发送函数:
 void OClientCore::msgAskTime()
 {
@@ -245,6 +239,16 @@ void OClientCore::receivePacket(OPacket &packet)
     emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
 }
 
+//protected slots:
+void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
+{
+    if(s>=3)
+    {
+        isLoged=0;
+        abort();
+    }
+}
+
 //private:
 //不可重载消息回调函数:
 void OClientCore::msgTime(OPacket &packet)
@@ -261,21 +265,12 @@ void OClientCore::msgChangeUList(OPacket &packet)
     emit onChangeUList();
 }
 
-void OClientCore::Error(OClientCore::ErrorType e,QString msg,QAbstractSocket::SocketError s)
-{
-    if(s>=3)
-    {
-        isLoged=0;
-        abort();
-    }
-}
-
 //private slots:
 void OClientCore::pingTimeOut()
 {
     //0.002f是0.001*2，前者是毫秒和秒之间的换算，后者为了在timeOffLine的一半时间内发送msgPing()消息
     //TODO，提前一半时间就发送相应消息?这里有待商量
-    if((QDateTime::currentDateTime().toTime_t()-lastMsg)>(timeOffLine-pingTimer->interval()*0.002f))
+    if((QDateTime::currentDateTime().toTime_t()-lastMsgTime)>(timeOffLine-pingTimer->interval()*0.002f))
         msgPing();
 }
 
