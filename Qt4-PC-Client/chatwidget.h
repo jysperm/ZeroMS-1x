@@ -22,7 +22,6 @@ signals:
     //详见oclientcoreex.h中的removeFromWidgets()函数
     void onDelete(QString uname);
 private:
-    void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *watched, QEvent *event);//事件过滤器，用于处理回车发送
     Ui::ChatWidget *ui;
 private slots:

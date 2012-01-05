@@ -17,6 +17,8 @@ MainWidget::MainWidget(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWidge
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_DeleteOnClose);
+
     //窗口居中
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
@@ -146,7 +148,7 @@ void MainWidget::on_ActDevBBS_triggered()
 //private:
 void MainWidget::closeEvent(QCloseEvent *event)
 {
-    if(trayIcon->isVisible())
+    if(trayIcon && trayIcon->isVisible())
     {
         hide();
         event->ignore();
@@ -248,9 +250,8 @@ void MainWidget::on_ActDebugOut_triggered()
 
 void MainWidget::on_ActQuit_triggered()
 {
-    //加这句是为了调用各个聊天窗体的析构函数
-    qApp->closeAllWindows();
-    this->~MainWidget();
+    DELETE(trayIcon);//必须先销毁托盘图标，才能关闭主窗体
+    qApp->closeAllWindows();//加这句是为了调用各个聊天窗体的析构函数
     qApp->quit();
 }
 

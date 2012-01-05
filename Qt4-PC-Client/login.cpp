@@ -19,6 +19,8 @@ Login::Login(QWidget *parent):QWidget(parent),ui(new Ui::Login),isRemembered(0)
 {
     ui->setupUi(this);
 
+    setAttribute(Qt::WA_DeleteOnClose);
+
     //窗口居中
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
@@ -96,13 +98,6 @@ void Login::onLoginOK()
 void Login::cancel()
 {
     ui->DoLogin->setEnabled(1);
-}
-
-//private:
-void Login::closeEvent(QCloseEvent *event)
-{
-    //不知为何，如果不在这里显式调用销毁函数，窗口就不会被关闭,不会发射destroyed()信号，详见OClientCoreEx::showLogin()
-    this->destroyed();
 }
 
 //private slots:
