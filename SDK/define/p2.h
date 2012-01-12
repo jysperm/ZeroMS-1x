@@ -21,7 +21,7 @@ const int AskPublicKey	= 5;
 const int PublicKey	= 6;
 const int Unknown	= 7;
 const int Hi    = 8;
-const int UserListChanged   = 9;
+const int UserListChanged= 9;
 const int AskUserList	= 10;
 const int UserList	= 11;
 const int SystemMsg	= 12;
@@ -50,7 +50,7 @@ const int ConfigurationValue        = 34;
 const int CreateConfigurationData   = 35;
 const int RemoveConfigurationKey    = 36;
 
-inline int checkVer(int n)
+inline bool checkVer(int n)
 {
     if(n==2)
         return true;
