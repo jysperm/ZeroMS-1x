@@ -11,7 +11,7 @@
 /build*/*
 /Qt4-Server-build*/*
 /Qt4-PC-Client-build*/*
-/Qt4-robot-build*/*
+/*build*/*
 
 debug
 release

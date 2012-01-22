@@ -2,7 +2,7 @@
 #include <QSettings>
 #include <QString>
 #include <QFile>
-#include "osettings.h"
+#include "OSettings.h"
 
 
 OSettings::OSettings(QString file):config(0),defaultConfig(0)
