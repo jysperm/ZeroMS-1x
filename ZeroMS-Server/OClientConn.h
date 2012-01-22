@@ -14,10 +14,7 @@ public:
     class SubConn
     {
     public:
-        SubConn(QTcpSocket *conn):conn(conn)
-        {
-
-        }
+        SubConn(QTcpSocket *conn):conn(conn){}
         QTcpSocket *conn;//连接对象
         QByteArray databuf;//数据缓冲
     };
@@ -27,7 +24,7 @@ public:
     inline QString getSignature();//获得唯一标识
     void checkData(QTcpSocket *conn,QByteArray *databuf);//接收数据
     void init();//初始化，绑定主连接的信号槽
-    void addSubConn(QTcpSocket *conn);//增加次要连接，绑定信号槽
+    void addSubConn(QTcpSocket *conn);//增加次要连接，自动绑定信号槽
 
     QString uname;//用户名
     bool isLoged;//是否登录
@@ -35,9 +32,13 @@ public:
     QByteArray databuf;//数据缓冲
     QVector<SubConn*> subConnList;//次要连接数组
     typedef QVector<SubConn*>::Iterator SubConnIt;
+signals:
+    void newMsgData(QString uname,QTcpSocket *conn,QByteArray *databuf);
+    void error(QString uname,QString msg,QAbstractSocket::SocketError s,bool isMain);
+    void log(QString msg);
 private slots:
     void onData();
-    void onError(QAbstractSocket::SocketError);
+    void onError(QAbstractSocket::SocketError s);
 };
 
 inline QString OClientConn::getSignature()

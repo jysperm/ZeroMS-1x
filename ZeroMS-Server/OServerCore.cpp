@@ -41,6 +41,9 @@ void OServerCore::onNewConn()
         {
             OClientConn *cConn=new OClientConn;
             cConn->conn=conn;
+            connect(cConn,SIGNAL(newMsgData(QString,QTcpSocket*,QByteArray*)),this,SLOT(onNewMsg(QString,QTcpSocket*,QByteArray*)));
+            connect(cConn,SIGNAL(error(QString,QString,QAbstractSocket::SocketError,bool)),this,SLOT(onError(QString,QString,QAbstractSocket::SocketError,bool)));
+            cConn->init();
             QString uname=cConn->getSignature();
             if(cl.contains(uname))
             {
@@ -57,5 +60,20 @@ void OServerCore::onNewConn()
             conn->abort();
             log(tr("超过了服务器最大客户端上限:%1").arg(maxClient));
         }
+    }
+}
+
+void OServerCore::onNewMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+{
+
+}
+
+void OServerCore::onError(QString uname,QString msg,QAbstractSocket::SocketError s,bool isMain)
+{
+    log(tr("%1(%2) 断开连接:%3").arg(uname).arg(isMain?"主要":"次要").arg(msg));
+    if(isMain)
+    {
+        delete cl[uname];
+        cl.remove(uname);
     }
 }

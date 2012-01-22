@@ -1,6 +1,11 @@
 #include "OProtocolForSC.h"
+#include <QTcpSocket>
 
-OProtocolForSC::OProtocolForSC(QObject *parent) :
-    QObject(parent)
+OProtocolForSC::OProtocolForSC()
 {
+}
+
+void OProtocolForSC::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+{
+
 }

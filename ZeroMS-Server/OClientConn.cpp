@@ -1,7 +1,4 @@
 #include "OClientConn.h"
-#include "OServerCore.h"
-
-extern OServerCore *servercore;
 
 OClientConn::OClientConn():isLoged(false)
 {
@@ -12,7 +9,7 @@ OClientConn::~OClientConn()
 {
     if(conn)
         conn->deleteLater();
-    for(SubConnIt i;i!=subConnList.end();++i)
+    for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
         if((*i)->conn)
             (*i)->conn->deleteLater();
 }
@@ -39,20 +36,36 @@ void OClientConn::checkData(QTcpSocket *conn,QByteArray *databuf)
     {
         databuf->append(conn->readAll());
         if(databuf->size() >= P_HEADLEN)
-            servercore->checkMsg(uname,conn,databuf);
+            emit newMsgData(uname,conn,databuf);
     }
 }
 
 void OClientConn::onData()
 {
     checkData(conn,&databuf);
-    for(SubConnIt i;i!=subConnList.end();++i)
+    for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
     {
         checkData((*i)->conn,&((*i)->databuf));
     }
 }
 
-void OClientConn::onError(QAbstractSocket::SocketError)
+void OClientConn::onError(QAbstractSocket::SocketError s)
 {
-
+    if(conn->error()==s)
+    {
+        emit error(getSignature(),conn->errorString(),s,true);
+    }
+    else
+    {
+        for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
+        {
+            QTcpSocket *conn=(*i)->conn;
+            if(conn->error()==s)
+            {
+                conn->deleteLater();
+                subConnList.erase(i);
+                emit error(getSignature(),conn->errorString(),s,false);
+            }
+        }
+    }
 }
