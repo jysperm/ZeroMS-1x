@@ -8,8 +8,8 @@ OServerCore::OServerCore():cin(stdin),cout(stdout)
 void OServerCore::init()
 {
     //使用该类时应该在创建类后立刻调用该函数进行初始化，因为在构造函数中无法调用虚函数
-
     log(tr("零毫秒服务器启动 %1 %2").arg(SERVER).arg(VERSION));
+    connect(&server,SIGNAL(newConnection()),this,SLOT(onNewConn()));
 }
 
 void OServerCore::start()
