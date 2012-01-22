@@ -26,30 +26,36 @@ void OServerCore::log(QString msg)
     cout<<msg<<endl;
 }
 
+void OServerCore::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+{
+
+}
+
 void OServerCore::onNewConn()
 {
     while(server.hasPendingConnections())
     {
         QTcpSocket *conn=server.nextPendingConnection();
-        QString uname=QString("#%1:%2").arg(conn->peerAddress().toString()).arg(conn->peerPort());
-        if(cl.size()<config["CLIENT_MAX"].toInt())
+        int maxClient=config["CLIENT_MAX"].toInt();
+        if(cl.size() < maxClient)
         {
-            connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
-            connect(conn,SIGNAL(readyRead()),this,SLOT(onData()));
-            OClient *pc=new OClient;
-            pc->conn=conn;
+            OClientConn *cConn=new OClientConn;
+            cConn->conn=conn;
+            QString uname=cConn->getSignature();
             if(cl.contains(uname))
             {
+                //这里的情况是，存在与新连接同IP同端口的连接
+                //这里显然应该直接销毁旧的连接
                 delete cl[uname];
                 cl.remove(uname);
             }
-            cl.insert(uname,pc);
-            log(tr("%1 connected").arg(uname));
+            cl.insert(uname,cConn);
+            log(tr("%1 连接到服务器").arg(uname));
         }
         else
         {
             conn->abort();
-            log(tr("over of connections up limit:%1").arg(config["CLIENT_MAX"].toInt()));
+            log(tr("超过了服务器最大客户端上限:%1").arg(maxClient));
         }
     }
 }

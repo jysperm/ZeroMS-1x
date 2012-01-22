@@ -6,6 +6,7 @@
 #include <QTcpServer>
 #include "../public/OSettings.h"
 #include "global.h"
+#include "OClientConn.h"
 
 class OServerCore:public QObject
 {
@@ -14,9 +15,11 @@ public:
     explicit OServerCore();
     void init();
     void start();
-protected:
-    virtual void log(QString msg);
+    void checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf);
+
 private:
+    void log(QString msg);
+    QMap<QString,OClientConn*> cl;
     QTextStream cin;
     QTextStream cout;
     QTcpServer server;
