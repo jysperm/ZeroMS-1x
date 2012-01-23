@@ -2,17 +2,30 @@
 #define PUBLIC_OMESSAGE_H
 
 #include <QObject>
+#include "global.h"
 
-class OMessage:public QObject
+class OMessage
 {
-    Q_OBJECT
 public:
     OMessage();
+    OMessage(QByteArray data);
 
-signals:
+    static OMessage fromDataBuff(QByteArray *databuf,bool autoRemove=true);
 
-public slots:
+    inline bool isEmpty();
 
+    QByteArray data;
+    unsigned int time;
+    int protocolVer;
+    int msgType;
 };
+
+inline bool OMessage::isEmpty()
+{
+    if((!msgType) && !(data.isEmpty()))
+        return true;
+    else
+        return false;
+}
 
 #endif // PUBLIC_OMESSAGE_H
