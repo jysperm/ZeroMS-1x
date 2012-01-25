@@ -11,7 +11,7 @@ const int P_HEADLEN	= 16;
 //消息编号
 const int M_Login       = 1;
 const int M_LoginResult	= 2;
-const int M_AskInfo	= 3;
+const int M_AskInfo     = 3;
 const int M_Info        = 4;
 const int M_AskPublicKey= 5;
 const int M_PublicKey	= 6;

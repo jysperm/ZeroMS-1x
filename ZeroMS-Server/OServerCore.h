@@ -6,7 +6,7 @@
 #include <QTcpServer>
 #include "../public/OSettings.h"
 #include "global.h"
-#include "OClientConn.h"
+#include "OClient.h"
 #include "OProtocolForSC.h"
 
 class OServerCore:public QObject
@@ -20,7 +20,7 @@ public:
 
 private:
     void log(QString msg);
-    QMap<QString,OClientConn*> cl;
+    QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;
     QTcpServer server;
@@ -30,8 +30,8 @@ signals:
 
 private slots:
     void onNewConn();
-    void onNewMsg(QString uname,QTcpSocket *conn,QByteArray *databuf);
-    void onError(QString uname,QString msg,QAbstractSocket::SocketError s,bool isMain);
+    void onNewMsg(OClient::Connect *connect);
+    void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError);
 };
 
 #endif // OSERVERCORE_H

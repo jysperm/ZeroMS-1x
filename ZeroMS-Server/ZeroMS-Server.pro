@@ -10,6 +10,8 @@ TARGET = ZeroMS-Server
 CONFIG   += console
 CONFIG   -= app_bundle
 
+QMAKE_CXXFLAGS += -Wno-unused-parameter
+
 TEMPLATE = app
 
 SOURCES += main.cpp \
@@ -17,7 +19,7 @@ SOURCES += main.cpp \
     OProtocolForSC.cpp \
     OServerCore.cpp \
     ../public/OSettings.cpp \
-    OClientConn.cpp
+    OClient.cpp
 
 HEADERS += \
     ../public/OGlobal.h \
@@ -27,7 +29,7 @@ HEADERS += \
     OServerCore.h \
     ../public/OSettings.h \
     global.h \
-    OClientConn.h
+    OClient.h
 
 RESOURCES += \
     res.qrc

@@ -5,6 +5,7 @@
 
 OProtocolForSC::OProtocolForSC()
 {
+
 }
 
 void OProtocolForSC::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
@@ -16,7 +17,7 @@ void OProtocolForSC::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf
             break;
         switch(msg.msgType)
         {
-            case M_Login:
+            case M_AskPublicKey:
                 ;
             default:
                 ;

@@ -39,12 +39,13 @@ void OServerCore::onNewConn()
         int maxClient=config["CLIENT_MAX"].toInt();
         if(cl.size() < maxClient)
         {
-            OClientConn *cConn=new OClientConn;
-            cConn->conn=conn;
-            connect(cConn,SIGNAL(newMsgData(QString,QTcpSocket*,QByteArray*)),this,SLOT(onNewMsg(QString,QTcpSocket*,QByteArray*)));
-            connect(cConn,SIGNAL(error(QString,QString,QAbstractSocket::SocketError,bool)),this,SLOT(onError(QString,QString,QAbstractSocket::SocketError,bool)));
-            cConn->init();
-            QString uname=cConn->getSignature();
+            OClient *client=new OClient;
+            OClient::Connect *mainConn=new OClient::Connect(conn,client);
+            client->main=mainConn;
+            connect(client,SIGNAL(newMsgData(OClient::Connect*)),this,SLOT(onNewMsg(OClient::Connect*)));
+            connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QAbstractSocket::SocketError)));
+            client->init();
+            QString uname=client->getSignature();
             if(cl.contains(uname))
             {
                 //这里的情况是，存在与新连接同IP同端口的连接
@@ -52,7 +53,7 @@ void OServerCore::onNewConn()
                 delete cl[uname];
                 cl.remove(uname);
             }
-            cl.insert(uname,cConn);
+            cl.insert(uname,client);
             log(tr("%1 连接到服务器").arg(uname));
         }
         else
@@ -63,17 +64,17 @@ void OServerCore::onNewConn()
     }
 }
 
-void OServerCore::onNewMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+void OServerCore::onNewMsg(OClient::Connect *connect)
 {
 
 }
 
-void OServerCore::onError(QString uname,QString msg,QAbstractSocket::SocketError s,bool isMain)
+void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s)
 {
-    log(tr("%1(%2) 断开连接:%3").arg(uname).arg(isMain?"主要":"次要").arg(msg));
-    if(isMain)
+    log(tr("%1(%2) 断开连接:%3").arg(connect->client->uname).arg((connect->isMain())?"主要":"次要").arg(msg));
+    if(connect->isMain())
     {
-        delete cl[uname];
-        cl.remove(uname);
+        delete cl[connect->client->uname];
+        cl.remove(connect->client->uname);
     }
 }
