@@ -43,7 +43,7 @@ void OServerCore::onNewConn()
             OClient::Connect *mainConn=new OClient::Connect(conn,client);
             client->main=mainConn;
             connect(client,SIGNAL(newMsgData(OClient::Connect*)),this,SLOT(onNewMsg(OClient::Connect*)));
-            connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QAbstractSocket::SocketError)));
+            connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QString,QAbstractSocket::SocketError)));
             client->init();
             QString uname=client->getSignature();
             if(cl.contains(uname))
@@ -71,7 +71,7 @@ void OServerCore::onNewMsg(OClient::Connect *connect)
 
 void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s)
 {
-    log(tr("%1(%2) 断开连接:%3").arg(connect->client->uname).arg((connect->isMain())?"主要":"次要").arg(msg));
+    log(tr("%1(%2) 因错误断开连接:%3").arg(connect->client->getSignature()).arg((connect->isMain())?"主要":"次要").arg(msg));
     if(connect->isMain())
     {
         delete cl[connect->client->uname];
