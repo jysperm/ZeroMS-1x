@@ -284,6 +284,7 @@ void OClientCore::dataCome()
         if(!checkVer(ver))
         {
             emit onError(lastError=CantUnderstand,errorString((ErrorType)1),(QAbstractSocket::SocketError)0);
+            databuf->clear();
             continue;
         }
 
