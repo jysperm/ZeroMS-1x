@@ -2,6 +2,7 @@
 #define OPROTOCOLFORSC_H
 
 #include <QObject>
+#include "OClient.h"
 class QTcpSocket;
 
 class OProtocolForSC:public QObject
@@ -13,7 +14,7 @@ public:
 signals:
 
 public slots:
-    void checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf);
+    void checkMsg(OClient::Connect *connect);
 };
 
 #endif // OPROTOCOLFORSC_H

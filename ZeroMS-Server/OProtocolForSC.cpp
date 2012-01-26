@@ -8,11 +8,11 @@ OProtocolForSC::OProtocolForSC()
 
 }
 
-void OProtocolForSC::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+void OProtocolForSC::checkMsg(OClient::Connect *connect)
 {
     while(true)
     {
-        OMessage msg=OMessage::fromDataBuff(databuf);
+        OMessage msg=OMessage::fromDataBuff(&connect->databuf);
         if(msg.isEmpty())
             break;
         switch(msg.msgType)

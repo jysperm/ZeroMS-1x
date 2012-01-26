@@ -16,7 +16,7 @@ public:
     explicit OServerCore();
     void init();
     void start();
-    void checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf);
+    void checkMsg(OClient::Connect *connect);
 
 private:
     void log(QString msg);

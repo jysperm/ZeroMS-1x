@@ -26,7 +26,7 @@ void OServerCore::log(QString msg)
     cout<<msg<<endl;
 }
 
-void OServerCore::checkMsg(QString uname,QTcpSocket *conn,QByteArray *databuf)
+void OServerCore::checkMsg(OClient::Connect *connect)
 {
 
 }

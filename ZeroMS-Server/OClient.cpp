@@ -1,5 +1,6 @@
 #include "OClient.h"
 
+//class OClient::Connect
 OClient::Connect::Connect(OClient *client):client(client)
 {
 
@@ -15,6 +16,7 @@ OClient::OClient():isLoged(false)
 
 }
 
+//class OClient
 OClient::~OClient()
 {
     if(main->conn)
