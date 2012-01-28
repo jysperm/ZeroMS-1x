@@ -10,11 +10,10 @@ class OProtocolForSC:public QObject
     Q_OBJECT
 public:
     explicit OProtocolForSC();
-    void AskPublicKey(QString);
-signals:
-
 public slots:
     void checkMsg(OClient::Connect *connect);
+signals:
+    void AskPublicKey(OClient::Connect *connect);
 };
 
 #endif // OPROTOCOLFORSC_H

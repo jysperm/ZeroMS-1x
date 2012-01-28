@@ -18,7 +18,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
         switch(msg.msgType)
         {
             case M_AskPublicKey:
-                ;
+                emit AskPublicKey(connect);
             default:
                 ;
         }

@@ -44,6 +44,7 @@ void OServerCore::onNewConn()
             client->main=mainConn;
             connect(client,SIGNAL(newMsgData(OClient::Connect*)),this,SLOT(onNewMsg(OClient::Connect*)));
             connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QString,QAbstractSocket::SocketError)));
+            connect(client,SIGNAL(newMsgData(OClient::Connect*)),&protocol,SLOT(checkMsg(OClient::Connect*)));
             client->init();
             QString uname=client->getSignature();
             if(cl.contains(uname))
@@ -62,11 +63,6 @@ void OServerCore::onNewConn()
             log(tr("超过了服务器最大客户端上限:%1").arg(maxClient));
         }
     }
-}
-
-void OServerCore::onNewMsg(OClient::Connect *connect)
-{
-
 }
 
 void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s)

@@ -17,7 +17,6 @@ public:
     void init();
     void start();
     void checkMsg(OClient::Connect *connect);
-
 private:
     void log(QString msg);
     QMap<QString,OClient*> cl;
@@ -30,8 +29,7 @@ signals:
 
 private slots:
     void onNewConn();
-    void onNewMsg(OClient::Connect *connect);
-    void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError);
+    void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);
 };
 
 #endif // OSERVERCORE_H
