@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>649</width>
+    <width>676</width>
     <height>623</height>
    </rect>
   </property>
@@ -18,6 +18,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout_8">
      <item>
       <widget class="QTextEdit" name="Output">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>20</verstretch>
+        </sizepolicy>
+       </property>
        <property name="toolTip">
         <string>信息输出区，收到的包和提示信息将会在这里显示</string>
        </property>
@@ -93,6 +99,12 @@ p, li { white-space: pre-wrap; }
        </item>
        <item>
         <widget class="QListWidget" name="ConnectList">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>20</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
            <width>190</width>
@@ -279,7 +291,7 @@ p, li { white-space: pre-wrap; }
            <widget class="QToolButton" name="AutoAccept">
             <property name="maximumSize">
              <size>
-              <width>30</width>
+              <width>35</width>
               <height>16777215</height>
              </size>
             </property>
@@ -317,6 +329,22 @@ p, li { white-space: pre-wrap; }
           <property name="sizeConstraint">
            <enum>QLayout::SetMaximumSize</enum>
           </property>
+          <item>
+           <widget class="QComboBox" name="UdpSendSelect">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>在这里选择或输入发送端口，也可以选择随机端口</string>
+            </property>
+            <property name="editable">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLineEdit" name="UdpSendIp">
             <property name="maximumSize">
@@ -408,8 +436,26 @@ p, li { white-space: pre-wrap; }
          </layout>
         </item>
         <item>
-         <widget class="QLineEdit" name="UdpSendContent">
+         <widget class="QTextEdit" name="UdpSendContent">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="baseSize">
            <size>
             <width>0</width>
             <height>60</height>
@@ -552,8 +598,26 @@ p, li { white-space: pre-wrap; }
          </layout>
         </item>
         <item>
-         <widget class="QLineEdit" name="TcpSendContent">
+         <widget class="QTextEdit" name="TcpSendContent">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="sizeIncrement">
+           <size>
+            <width>0</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="baseSize">
            <size>
             <width>0</width>
             <height>60</height>
@@ -635,5 +699,22 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>DoClearOutput</sender>
+   <signal>clicked()</signal>
+   <receiver>Output</receiver>
+   <slot>clear()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>592</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>150</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

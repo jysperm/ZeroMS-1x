@@ -12,12 +12,4 @@ using namespace Protocol2;
 //全局默认配置文件路径
 const QString PUBLIC_CONFIG_FILE = QObject::trUtf8("./config.ini");
 
-inline int QBtoint(QByteArray b)
-{
-    QDataStream d(b);
-    int i;
-    d>>i;
-    return i;
-}
-
 #endif // PUBLIC_OGLOBAL_H

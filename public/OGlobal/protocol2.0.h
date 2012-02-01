@@ -1,6 +1,8 @@
 #ifndef PUBLIC_OGLOBAL_PROTOCOL2_0_H
 #define PUBLIC_OGLOBAL_PROTOCOL2_0_H
 
+class QString;
+
 namespace Protocol2
 {
 const int P_VER = 2;
@@ -54,6 +56,92 @@ inline bool checkVer(int n)
         return true;
     else
         return false;
+}
+
+inline QString num2String(int type)
+{
+    //该函数提供从枚举值到字符串的转换
+    switch(type)
+    {
+        case 1:
+            return "M_Login";
+        case 2:
+            return "M_LoginResult";
+        case 3:
+            return "M_AskInfo";
+        case 4:
+            return "M_Info";
+        case 5:
+            return "M_AskPublicKey";
+        case 6:
+            return "M_PublicKey";
+        case 7:
+            return "M_Unknown";
+        case 8:
+            return "M_Hi";
+        case 9:
+            return "M_UserListChanged";
+        case 10:
+            return "M_AskUserList";
+        case 11:
+            return "M_UserList";
+        case 12:
+            return "M_ModifyUserList";
+        case 13:
+            return "M_SystemMsg";
+        case 14:
+            return "M_State";
+        case 15:
+            return "M_Logout";
+        case 16:
+            return "M_SendMsg";
+        case 17:
+            return "M_NewMsg";
+        case 18:
+            return "M_ImageData";
+        case 19:
+            return "M_AskImageData";
+        case 20:
+            return "M_AskImageInfo";
+        case 21:
+            return "M_ImageInfo";
+        case 22:
+            return "M_UserRequest";
+        case 23:
+            return "M_NewRequest";
+        case 24:
+            return "M_RequestResult";
+        case 25:
+            return "M_ModifyGroup";
+        case 26:
+            return "M_AskUserInfo";
+        case 27:
+            return "M_UserInfo";
+        case 28:
+            return "M_CreateTempGroup";
+        case 29:
+            return "M_FileRequest";
+        case 30:
+            return "M_FileRequestResult";
+        case 31:
+            return "M_FilePartData";
+        case 32:
+            return "M_AskFilePartData";
+        case 33:
+            return "M_AskConfigurationKeyList";
+        case 34:
+            return "M_ConfigurationKeyList";
+        case 35:
+            return "M_AskConfigurationData";
+        case 36:
+            return "M_ConfigurationValue";
+        case 37:
+            return "M_CreateConfigurationData";
+        case 38:
+            return "M_RemoveConfigurationKey";
+        default:
+            return "";
+    }
 }
 
 }       //namespace Protocol2

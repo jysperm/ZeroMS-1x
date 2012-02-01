@@ -12,6 +12,7 @@
 /Qt4-Server-build*/*
 /Qt4-PC-Client-build*/*
 /*build*/*
+*.o
 
 debug
 release
