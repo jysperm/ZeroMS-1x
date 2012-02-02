@@ -5,6 +5,8 @@
 #include <QMap>
 #include <QVector>
 #include <QUdpSocket>
+#include <QTcpServer>
+#include <QTcpSocket>
 #include "ui_ONetwokerDebuger.h"
 #include "../public/OGlobal.h"
 
@@ -15,7 +17,7 @@ namespace Ui
 
 const QString sqlitter="--------------------";
 
-class UdpListen
+class UdpConnect
 {
     //Udp监听对象，实际上也表示Udp发送对象
 public:
@@ -33,17 +35,25 @@ public:
     inline void log(QString msg);
 private:
     Ui::ONetwokerDebuger *ui;
-    QMap<QString,UdpListen> udpListenList;
+    QMap<QString,UdpConnect> udpList;
+    QMap<QString,QTcpServer*> tcpServerList;
+    QMap<QString,QTcpSocket*> tcpList;
 private slots:
     void updateList();
     void on_DoUdpListen_clicked();
     void on_UdpDoSend_clicked();
+    void on_DoTcpListen_clicked();
+    void onNewConnection();
     void onSocketNewData();
     void onSocketError(QAbstractSocket::SocketError s);
+    void onConnected();
     void on_UdpSendAutoCalcLength_clicked(bool checked);
     void on_UdpSendAutoFillCurrentTime_clicked(bool checked);
     void on_TcpSendAutoCalcLength_clicked(bool checked);
     void on_TcpSendAutoFillCurrentTime_clicked(bool checked);
+    void on_DoInitialize_clicked();
+    void on_DoTcpConnect_clicked();
+    void on_ConnectList_itemDoubleClicked(QListWidgetItem *item);
 };
 
 //连接对象的命名方法：
