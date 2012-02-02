@@ -16,6 +16,10 @@ ONetwokerDebuger::ONetwokerDebuger(QWidget *parent):QWidget(parent),ui(new Ui::O
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
 
     updateList();
+    on_UdpSendAutoCalcLength_clicked(true);
+    on_UdpSendAutoFillCurrentTime_clicked(true);
+    on_TcpSendAutoCalcLength_clicked(true);
+    on_TcpSendAutoFillCurrentTime_clicked(true);
 }
 
 ONetwokerDebuger::~ONetwokerDebuger()
@@ -74,6 +78,71 @@ void ONetwokerDebuger::on_DoUdpListen_clicked()
     updateList();
 }
 
+void ONetwokerDebuger::on_UdpDoSend_clicked()
+{
+    UdpListen sender;
+    QString sport=ui->UdpSendSelect->currentText();
+    QString name=QString("%1:%2:%3").arg("UDP").arg(QHostAddress(QHostAddress::Any).toString()).arg(sport);
+
+    if(sport==QString("新随机"))
+    {
+        sender.conn=new QUdpSocket;
+        sender.isListen=false;
+    }
+    else if(udpListenList.contains(name))
+    {
+        sender=udpListenList[name];
+    }
+    else
+    {
+        sender.conn=new QUdpSocket;
+        sender.isListen=false;
+        sender.conn->bind(sport.toInt());
+    }
+
+    QByteArray content;
+    content.append(ui->UdpSendContent->toPlainText());
+
+    if(ui->UdpSendAutoCalcLength->isChecked())
+    {
+        ui->UdpSendHeadLength->setValue(content.length());
+    }
+    if(ui->UdpSendAutoFillCurrentTime->isChecked())
+    {
+        ui->UdpSendHeadTime->setText(QString::number(QDateTime::currentDateTime().toTime_t()));
+    }
+
+    int ver=ui->UdpSendHeadVersion->value();
+    unsigned int len=ui->UdpSendHeadLength->value();
+    int type=ui->UdpSendHeadMsgType->value();
+    unsigned int time=ui->UdpSendHeadTime->text().toInt();
+
+    QByteArray data;
+    data.append(inttoQB(ver));
+    data.append(inttoQB(len));
+    data.append(inttoQB(type));
+    data.append(inttoQB(time));
+    data.append(content);
+
+    QString ip=ui->UdpSendIp->text();
+    int port=ui->UdpSendPort->value();
+
+    sender.conn->writeDatagram(data,QHostAddress(ip),port);
+
+    if(ui->ShowSendMsg->isChecked())
+    {
+        QString stime=QDateTime::fromTime_t(time).toString("yyyy-MM-dd hh:mm:ss");
+
+        log(sqlitter);
+        log(QString("向%1:%2发送UDP数据包:").arg(ip).arg(port));
+
+        log(QString("Ver-%1 Len-%2 %3(%4) %5(%6)").arg(ver).arg(len).arg(num2String(type)).arg(type)
+            .arg(stime).arg(time));
+
+        log(QString(content));
+    }
+}
+
 void ONetwokerDebuger::onSocketNewData()
 {
     QMapIterator<QString,UdpListen> i(udpListenList);
@@ -89,7 +158,7 @@ void ONetwokerDebuger::onSocketNewData()
             quint16 senderPort;
             conn->readDatagram(data.data(), data.size(),&sender, &senderPort);
             log(sqlitter);
-            log(QString("收到来自%1:%2的消息:").arg(sender.toString()).arg(senderPort));
+            log(QString("收到来自%1:%2的UDP数据包:").arg(sender.toString()).arg(senderPort));
 
             int ver=QBtoint(data.mid(0,4));
             unsigned int len=QBtoint(data.mid(4,4));
@@ -100,6 +169,8 @@ void ONetwokerDebuger::onSocketNewData()
 
             log(QString("Ver-%1 Len-%2 %3(%4) %5(%6)").arg(ver).arg(len).arg(num2String(type)).arg(type)
                 .arg(stime).arg(time));
+
+            log(data.mid(16));
         }
     }
 }
@@ -108,3 +179,25 @@ void ONetwokerDebuger::onSocketError(QAbstractSocket::SocketError s)
 {
 
 }
+
+void ONetwokerDebuger::on_UdpSendAutoCalcLength_clicked(bool checked)
+{
+    ui->UdpSendHeadLength->setEnabled(!checked);
+}
+
+void ONetwokerDebuger::on_UdpSendAutoFillCurrentTime_clicked(bool checked)
+{
+    ui->UdpSendHeadTime->setEnabled(!checked);
+}
+
+void ONetwokerDebuger::on_TcpSendAutoCalcLength_clicked(bool checked)
+{
+    ui->TcpSendHeadLength->setEnabled(!checked);
+}
+
+void ONetwokerDebuger::on_TcpSendAutoFillCurrentTime_clicked(bool checked)
+{
+    ui->TcpSendHeadTime->setEnabled(!checked);
+}
+
+

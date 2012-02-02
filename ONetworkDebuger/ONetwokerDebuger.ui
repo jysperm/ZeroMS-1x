@@ -85,7 +85,7 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="EchoSendMsg">
+        <widget class="QCheckBox" name="ShowSendMsg">
          <property name="toolTip">
           <string>勾选此复选框，将会在左面的输出区显示已经发出的包的信息</string>
          </property>
@@ -413,14 +413,7 @@ p, li { white-space: pre-wrap; }
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="UdpSendHeadTime">
-            <property name="maximum">
-             <number>999999999</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QSpinBox" name="UdpSendHeadMsgType">
             <property name="toolTip">
              <string/>
@@ -430,6 +423,22 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="maximum">
              <number>2147483647</number>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="UdpSendHeadTime">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>0</string>
             </property>
            </widget>
           </item>
@@ -589,9 +598,15 @@ p, li { white-space: pre-wrap; }
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="TcpSendHeadTime">
-            <property name="maximum">
-             <number>999999999</number>
+           <widget class="QLineEdit" name="TcpSendHeadTime">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>0</string>
             </property>
            </widget>
           </item>

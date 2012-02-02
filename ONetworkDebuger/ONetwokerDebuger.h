@@ -37,8 +37,13 @@ private:
 private slots:
     void updateList();
     void on_DoUdpListen_clicked();
+    void on_UdpDoSend_clicked();
     void onSocketNewData();
     void onSocketError(QAbstractSocket::SocketError s);
+    void on_UdpSendAutoCalcLength_clicked(bool checked);
+    void on_UdpSendAutoFillCurrentTime_clicked(bool checked);
+    void on_TcpSendAutoCalcLength_clicked(bool checked);
+    void on_TcpSendAutoFillCurrentTime_clicked(bool checked);
 };
 
 //连接对象的命名方法：
@@ -63,7 +68,7 @@ inline QByteArray inttoQB(int i)
 {
     //从int向QByteArray转换
     QByteArray b;
-    QDataStream d(b);
+    QDataStream d(&b,QIODevice::WriteOnly);
     d<<i;
     return b;
 }
