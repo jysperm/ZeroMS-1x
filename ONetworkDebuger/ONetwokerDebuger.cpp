@@ -21,6 +21,10 @@ ONetwokerDebuger::ONetwokerDebuger(QWidget *parent):QWidget(parent),ui(new Ui::O
     on_UdpSendAutoFillCurrentTime_clicked(true);
     on_TcpSendAutoCalcLength_clicked(true);
     on_TcpSendAutoFillCurrentTime_clicked(true);
+    on_UdpSendHeadMsgType_valueChanged(0);
+    on_TcpSendHeadMsgType_valueChanged(0);
+    on_UdpSendHeadTime_textChanged("0");
+    on_UdpSendHeadTime_textChanged("0");
 }
 
 ONetwokerDebuger::~ONetwokerDebuger()
@@ -57,12 +61,14 @@ void ONetwokerDebuger::updateList()
         ui->ConnectList->insertItem(0,iTcpServer.key());
     }
 
+    ui->TcpSendSelect->clear();
     QMapIterator<QString,QTcpSocket*> iTcpSocket(tcpList);
     while(iTcpSocket.hasNext())
     {
         iTcpSocket.next();
 
         ui->ConnectList->insertItem(0,iTcpSocket.key());
+        ui->TcpSendSelect->addItem(iTcpSocket.key());
     }
 }
 
@@ -168,6 +174,55 @@ void ONetwokerDebuger::on_UdpDoSend_clicked()
     updateList();
 }
 
+void ONetwokerDebuger::on_TcpDoSend_clicked()
+{
+    QTcpSocket *sender;
+    if(!tcpList.contains(ui->TcpSendSelect->currentText()))
+        return;
+    sender=tcpList[ui->TcpSendSelect->currentText()];
+
+    QByteArray content;
+    content.append(ui->TcpSendContent->toPlainText());
+
+    if(ui->TcpSendAutoCalcLength->isChecked())
+    {
+        ui->TcpSendHeadLength->setValue(content.length());
+    }
+    if(ui->TcpSendAutoFillCurrentTime->isChecked())
+    {
+        ui->TcpSendHeadTime->setText(QString::number(QDateTime::currentDateTime().toTime_t()));
+    }
+
+    int ver=ui->TcpSendHeadVersion->value();
+    unsigned int len=ui->TcpSendHeadLength->value();
+    int type=ui->TcpSendHeadMsgType->value();
+    unsigned int time=ui->TcpSendHeadTime->text().toInt();
+
+    QByteArray data;
+    data.append(inttoQB(ver));
+    data.append(inttoQB(len));
+    data.append(inttoQB(type));
+    data.append(inttoQB(time));
+    data.append(content);
+
+    sender->write(data);
+
+    if(ui->ShowSendMsg->isChecked())
+    {
+        QString stime=QDateTime::fromTime_t(time).toString("yyyy-MM-dd hh:mm:ss");
+
+        log(sqlitter);
+        log(QString("向%1发送数据包:").arg(ui->TcpSendSelect->currentText()));
+
+        log(QString("Ver-%1 Len-%2 %3(%4) %5(%6)").arg(ver).arg(len).arg(num2String(type)).arg(type)
+            .arg(stime).arg(time));
+
+        log(QString(content));
+    }
+
+    updateList();
+}
+
 void ONetwokerDebuger::on_DoTcpListen_clicked()
 {
     int port=ui->TcpListenPort->value();
@@ -206,8 +261,10 @@ void ONetwokerDebuger::onNewConnection()
             QString peerName=QString("%1:%2:%3").arg("TCP").arg(conn->peerAddress().toString()).arg(conn->peerPort());
             if(!autoAccept)
             {
-                if(QMessageBox::YesRole!=QMessageBox::question(this,QString("有一个新TCP连接请求，是否接受"),
-                                                               QString("%1接受到了一个新连接请求%2").arg(name).arg(peerName)))
+                int r=QMessageBox::question(this,QString("有一个新TCP连接请求，是否接受"),
+                                            QString("%1接收到了一个新连接请求%2").arg(name).arg(peerName),
+                                            QMessageBox::Yes|QMessageBox::No,QMessageBox::Yes);
+                if(QMessageBox::Yes!=r)
                 {
                     conn->abort();
                     continue;
@@ -404,4 +461,26 @@ void ONetwokerDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
     }
 
     updateList();
+}
+
+void ONetwokerDebuger::on_UdpSendHeadMsgType_valueChanged(int arg1)
+{
+    ui->UdpSendHeadMsgType->setToolTip(QString("%1\n修改后，悬停可看对应的消息名").arg(num2String(arg1)));
+}
+
+void ONetwokerDebuger::on_TcpSendHeadMsgType_valueChanged(int arg1)
+{
+    ui->TcpSendHeadMsgType->setToolTip(QString("%1\n修改后，悬停可看对应的消息名").arg(num2String(arg1)));
+}
+
+void ONetwokerDebuger::on_UdpSendHeadTime_textChanged(const QString &arg1)
+{
+    QString stime=QDateTime::fromTime_t(arg1.toInt()).toString("yyyy-MM-dd hh:mm:ss");
+    ui->UdpSendHeadTime->setToolTip(QString("%1\n修改后，悬停可看时间字符串").arg(stime));
+}
+
+void ONetwokerDebuger::on_TcpSendHeadTime_textChanged(const QString &arg1)
+{
+    QString stime=QDateTime::fromTime_t(arg1.toInt()).toString("yyyy-MM-dd hh:mm:ss");
+    ui->TcpSendHeadTime->setToolTip(QString("%1\n修改后，悬停可看时间字符串").arg(stime));
 }

@@ -54,6 +54,11 @@ private slots:
     void on_DoInitialize_clicked();
     void on_DoTcpConnect_clicked();
     void on_ConnectList_itemDoubleClicked(QListWidgetItem *item);
+    void on_TcpDoSend_clicked();
+    void on_UdpSendHeadMsgType_valueChanged(int arg1);
+    void on_TcpSendHeadMsgType_valueChanged(int arg1);
+    void on_UdpSendHeadTime_textChanged(const QString &arg1);
+    void on_TcpSendHeadTime_textChanged(const QString &arg1);
 };
 
 //连接对象的命名方法：
