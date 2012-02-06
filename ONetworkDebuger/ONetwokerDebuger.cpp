@@ -287,12 +287,12 @@ void ONetwokerDebuger::on_DoTcpConnect_clicked()
 {
     QTcpSocket *conn=new QTcpSocket;
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onSocketError(QAbstractSocket::SocketError)));
-    connect(conn,SIGNAL(connected()),this,SLOT(onConnected()));
     connect(conn,SIGNAL(readyRead()),this,SLOT(onSocketNewData()));
     conn->connectToHost(QHostAddress(ui->TcpConnectIp->text()),ui->TcpConnectPort->value());
 
     QEventLoop wait;
     connect(conn,SIGNAL(connected()),&wait,SLOT(quit()));
+    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),&wait,SLOT(quit()));
     wait.exec();
 
     QString name=QString("%4-%1:%2:%3").arg("TCP").arg(ui->TcpConnectIp->text()).arg(ui->TcpConnectPort->value()).arg(conn->localPort());
@@ -388,13 +388,7 @@ void ONetwokerDebuger::onSocketError(QAbstractSocket::SocketError s)
             tcpList.remove(iTcpSocket.key());
         }
     }
-
     updateList();
-}
-
-void ONetwokerDebuger::onConnected()
-{
-    log(QString("连接成功"));
 }
 
 void ONetwokerDebuger::on_DoInitialize_clicked()
@@ -422,8 +416,6 @@ void ONetwokerDebuger::on_DoInitialize_clicked()
         delete iTcpServer.value();
         tcpServerList.remove(iTcpServer.key());
     }
-
-
 
     updateList();
 }
@@ -489,4 +481,27 @@ void ONetwokerDebuger::on_TcpSendHeadTime_textChanged(const QString &arg1)
 {
     QString stime=QDateTime::fromTime_t(arg1.toInt()).toString("yyyy-MM-dd hh:mm:ss");
     ui->TcpSendHeadTime->setToolTip(QString("%1\n修改后，悬停可看时间字符串").arg(stime));
+}
+
+void ONetwokerDebuger::on_toolButton_clicked()
+{
+    //该函数用来自定义一些自动化测试
+    QTime t;
+    t.start();
+    for(int i=0;i<10;i++)
+    {
+        for(int j=0;j<100;j++)
+        {
+            on_DoTcpConnect_clicked();
+            on_DoTcpConnect_clicked();
+            on_DoTcpConnect_clicked();
+            on_DoTcpConnect_clicked();
+            on_DoTcpConnect_clicked();
+
+            on_DoInitialize_clicked();
+        }
+        qDebug()<<i;
+        qDebug()<<e;
+    }
+    qDebug()<<t.elapsed();
 }

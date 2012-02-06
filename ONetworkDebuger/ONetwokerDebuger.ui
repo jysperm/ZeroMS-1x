@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_8">
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
      <item>
       <widget class="QTextEdit" name="Output">
        <property name="sizePolicy">
@@ -85,17 +85,28 @@ p, li { white-space: pre-wrap; }
         </layout>
        </item>
        <item>
-        <widget class="QCheckBox" name="ShowSendMsg">
-         <property name="toolTip">
-          <string>勾选此复选框，将会在左面的输出区显示已经发出的包的信息</string>
-         </property>
-         <property name="text">
-          <string>显示发出的包</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QCheckBox" name="ShowSendMsg">
+           <property name="toolTip">
+            <string>勾选此复选框，将会在左面的输出区显示已经发出的包的信息</string>
+           </property>
+           <property name="text">
+            <string>显示发出的包</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButton">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QListWidget" name="ConnectList">

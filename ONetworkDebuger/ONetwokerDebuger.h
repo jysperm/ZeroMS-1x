@@ -46,7 +46,6 @@ private slots:
     void onNewConnection();
     void onSocketNewData();
     void onSocketError(QAbstractSocket::SocketError s);
-    void onConnected();
     void on_UdpSendAutoCalcLength_clicked(bool checked);
     void on_UdpSendAutoFillCurrentTime_clicked(bool checked);
     void on_TcpSendAutoCalcLength_clicked(bool checked);
@@ -59,6 +58,7 @@ private slots:
     void on_TcpSendHeadMsgType_valueChanged(int arg1);
     void on_UdpSendHeadTime_textChanged(const QString &arg1);
     void on_TcpSendHeadTime_textChanged(const QString &arg1);
+    void on_toolButton_clicked();
 };
 
 //连接对象的命名方法：
