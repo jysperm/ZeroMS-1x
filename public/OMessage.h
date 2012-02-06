@@ -13,6 +13,7 @@ public:
     static OMessage fromDataBuff(QByteArray *databuf,bool autoRemove=true);
 
     inline bool isEmpty();
+    inline static int QBtoint(QByteArray b);
 
     QByteArray data;
     unsigned int time;
@@ -26,6 +27,14 @@ inline bool OMessage::isEmpty()
         return true;
     else
         return false;
+}
+
+inline int OMessage::QBtoint(QByteArray b)
+{
+    QDataStream d(b);
+    int i;
+    d>>i;
+    return i;
 }
 
 #endif // PUBLIC_OMESSAGE_H

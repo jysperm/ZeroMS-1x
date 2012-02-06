@@ -16,7 +16,6 @@ public:
     explicit OServerCore();
     void init();
     void start();
-    void checkMsg(OClient::Connect *connect);
 private:
     void log(QString msg);
     QMap<QString,OClient*> cl;

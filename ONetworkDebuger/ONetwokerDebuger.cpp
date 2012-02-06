@@ -291,7 +291,11 @@ void ONetwokerDebuger::on_DoTcpConnect_clicked()
     connect(conn,SIGNAL(readyRead()),this,SLOT(onSocketNewData()));
     conn->connectToHost(QHostAddress(ui->TcpConnectIp->text()),ui->TcpConnectPort->value());
 
-    QString name=QString("%1:%2:%3").arg("TCP").arg(ui->TcpConnectIp->text()).arg(ui->TcpConnectPort->value());
+    QEventLoop wait;
+    connect(conn,SIGNAL(connected()),&wait,SLOT(quit()));
+    wait.exec();
+
+    QString name=QString("%4-%1:%2:%3").arg("TCP").arg(ui->TcpConnectIp->text()).arg(ui->TcpConnectPort->value()).arg(conn->localPort());
     tcpList.insert(name,conn);
 
     log(QString("正在连接到%1").arg(name));
@@ -341,7 +345,7 @@ void ONetwokerDebuger::onSocketNewData()
             QByteArray data=conn->readAll();
 
             log(sqlitter);
-            log(QString("收到来自TCP:%1:%2的数据包:").arg(conn->peerAddress().toString()).arg(conn->peerPort()));
+            log(QString("TCP:%4收到来自TCP:%1:%2的数据包:").arg(conn->peerAddress().toString()).arg(conn->peerPort()).arg(conn->localPort()));
 
             int ver=QBtoint(data.mid(0,4));
             unsigned int len=QBtoint(data.mid(4,4));

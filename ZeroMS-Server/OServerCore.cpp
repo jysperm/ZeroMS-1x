@@ -26,11 +26,6 @@ void OServerCore::log(QString msg)
     cout<<msg<<endl;
 }
 
-void OServerCore::checkMsg(OClient::Connect *connect)
-{
-
-}
-
 void OServerCore::onNewConn()
 {
     while(server.hasPendingConnections())
@@ -42,7 +37,6 @@ void OServerCore::onNewConn()
             OClient *client=new OClient;
             OClient::Connect *mainConn=new OClient::Connect(conn,client);
             client->main=mainConn;
-            connect(client,SIGNAL(newMsgData(OClient::Connect*)),this,SLOT(onNewMsg(OClient::Connect*)));
             connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QString,QAbstractSocket::SocketError)));
             connect(client,SIGNAL(newMsgData(OClient::Connect*)),&protocol,SLOT(checkMsg(OClient::Connect*)));
             client->init();
