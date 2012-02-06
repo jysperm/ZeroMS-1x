@@ -407,6 +407,14 @@ void ONetwokerDebuger::on_DoInitialize_clicked()
         udpList.remove(iUdp.key());
     }
 
+    QMapIterator<QString,QTcpSocket*> iTcpSocket(tcpList);
+    while(iTcpSocket.hasNext())
+    {
+        iTcpSocket.next();
+        iTcpSocket.value()->abort();
+        tcpList.remove(iTcpSocket.key());
+    }
+
     QMapIterator<QString,QTcpServer*> iTcpServer(tcpServerList);
     while(iTcpServer.hasNext())
     {
@@ -415,13 +423,7 @@ void ONetwokerDebuger::on_DoInitialize_clicked()
         tcpServerList.remove(iTcpServer.key());
     }
 
-    QMapIterator<QString,QTcpSocket*> iTcpSocket(tcpList);
-    while(iTcpSocket.hasNext())
-    {
-        iTcpSocket.next();
-        //iTcpSocket.value()->abort();
-        tcpList.remove(iTcpSocket.key());
-    }
+
 
     updateList();
 }
