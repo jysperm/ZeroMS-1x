@@ -64,7 +64,8 @@ void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket:
     log(tr("%1(%2) 因错误断开连接:%3").arg(connect->client->getSignature()).arg((connect->isMain())?"主要":"次要").arg(msg));
     if(connect->isMain())
     {
-        delete cl[connect->client->uname];
-        cl.remove(connect->client->uname);
+        QString uname=connect->client->getSignature();
+        delete cl[uname];
+        cl.remove(uname);
     }
 }
