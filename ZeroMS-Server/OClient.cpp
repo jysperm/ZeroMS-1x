@@ -44,7 +44,7 @@ void OClient::addSubConn(QTcpSocket *conn)
 
 void OClient::checkData(Connect *connect)
 {
-    if(connect->conn->atEnd())
+    if(!connect->conn->atEnd())
     {
         connect->databuf.append(connect->conn->readAll());
         if(connect->databuf.size() >= P_HEADLEN)

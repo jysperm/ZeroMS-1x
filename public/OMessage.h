@@ -23,7 +23,7 @@ public:
 
 inline bool OMessage::isEmpty()
 {
-    if((!msgType) && !(data.isEmpty()))
+    if((!msgType) && data.isEmpty())
         return true;
     else
         return false;
