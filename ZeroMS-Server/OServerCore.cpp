@@ -10,6 +10,10 @@ void OServerCore::init()
     //使用该类时应该在创建类后立刻调用该函数进行初始化，因为在构造函数中无法调用虚函数
     log(tr("零毫秒服务器启动 %1 %2").arg(SERVER).arg(VERSION));
     connect(&server,SIGNAL(newConnection()),this,SLOT(onNewConn()));
+
+    //注册该类型，以便可以在信号槽中作为参数传递
+    //与此对应的还有OClient.h中结尾的Q_DECLARE_METATYPE(OClient::Connect)
+    qRegisterMetaType<OClient::Connect>("OClient::Connect");
 }
 
 void OServerCore::start()

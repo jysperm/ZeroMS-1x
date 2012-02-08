@@ -11,12 +11,12 @@ OClient::Connect::Connect(QTcpSocket *conn,OClient *client):conn(conn),client(cl
 
 }
 
+//class OClient
 OClient::OClient():isLoged(false)
 {
 
 }
 
-//class OClient
 OClient::~OClient()
 {
     if(main->conn)

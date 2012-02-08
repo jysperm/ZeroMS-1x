@@ -16,6 +16,7 @@ public:
     {
         //该类抽象一个客户端连接(SB2.x是允许多连接的)
     public:
+        Connect():conn(0),client(0){};
         Connect(OClient *client);
         Connect(QTcpSocket *conn,OClient *client);
         QTcpSocket *conn;//连接对象
@@ -50,6 +51,9 @@ private slots:
     void onData();
     void onError(QAbstractSocket::SocketError s);
 };
+
+//见OServerCore::OServerCore()中的注释
+Q_DECLARE_METATYPE(OClient::Connect)
 
 inline bool OClient::Connect::isMain()
 {
