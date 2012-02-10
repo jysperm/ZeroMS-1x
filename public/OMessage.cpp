@@ -14,7 +14,7 @@ OMessage::OMessage(QByteArray data)
     msgType=QBtoint(data.mid(8,4));
     time=QBtoint(data.mid(12,4));
 
-    this->data=data.mid(P_HEADLEN-1);
+    this->data=data.mid(P_HEADLEN);
 }
 
 OMessage OMessage::fromDataBuff(QByteArray *databuf,bool autoRemove)
