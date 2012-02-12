@@ -19,7 +19,8 @@ SOURCES += main.cpp \
     OProtocolForSC.cpp \
     OServerCore.cpp \
     ../public/OSettings.cpp \
-    OClient.cpp
+    OClient.cpp \
+    OServerCore_MsgSlot.cpp
 
 HEADERS += \
     ../public/OGlobal.h \
@@ -36,6 +37,7 @@ RESOURCES += \
 
 OTHER_FILES += \
     config.ini
+
 
 
 

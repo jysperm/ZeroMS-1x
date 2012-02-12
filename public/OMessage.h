@@ -31,6 +31,7 @@ inline bool OMessage::isEmpty()
 
 inline int OMessage::QBtoint(QByteArray b)
 {
+    //将参数的前4个字节转换成int
     QDataStream d(b);
     int i;
     d>>i;

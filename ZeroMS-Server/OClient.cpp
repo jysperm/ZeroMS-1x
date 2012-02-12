@@ -1,6 +1,12 @@
 #include "OClient.h"
 
 //class OClient::Connect
+//public:
+OClient::Connect::Connect():conn(0),client(0)
+{
+
+}
+
 OClient::Connect::Connect(OClient *client):client(client)
 {
 
@@ -12,6 +18,7 @@ OClient::Connect::Connect(QTcpSocket *conn,OClient *client):conn(conn),client(cl
 }
 
 //class OClient
+//public:
 OClient::OClient():isLoged(false)
 {
 
@@ -52,6 +59,7 @@ void OClient::checkData(Connect *connect)
     }
 }
 
+//private slots:
 void OClient::onData()
 {
     checkData(main);

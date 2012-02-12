@@ -18,15 +18,15 @@ public:
     void start();
 private:
     void log(QString msg);
+
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;
     QTcpServer server;
     OSettings config;
     OProtocolForSC protocol;
-signals:
-
 private slots:
+    void AskPublicKey(OClient::Connect *connect);
     void onNewConn();
     void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);
 };

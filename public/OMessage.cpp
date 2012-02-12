@@ -1,5 +1,6 @@
 #include "OMessage.h"
 
+//public:
 OMessage::OMessage():time(0),protocolVer(0),msgType(0)
 {
 

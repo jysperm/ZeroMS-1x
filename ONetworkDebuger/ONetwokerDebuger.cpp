@@ -501,7 +501,6 @@ void ONetwokerDebuger::on_toolButton_clicked()
             on_DoInitialize_clicked();
         }
         qDebug()<<i;
-        qDebug()<<e;
     }
     qDebug()<<t.elapsed();
 }

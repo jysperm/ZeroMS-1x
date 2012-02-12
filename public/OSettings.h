@@ -7,11 +7,11 @@
 class OSettings
 {
 public:
-    OSettings(QString file=PUBLIC_CONFIG_FILE);
+    explicit OSettings(QString file=PUBLIC_CONFIG_FILE);
     virtual ~OSettings();
-    inline QVariant operator[](QString key);
     void load();
-
+    inline QVariant operator[](QString key);
+protected:
     QSettings *config;
     QSettings *defaultConfig;
     QString configFile;

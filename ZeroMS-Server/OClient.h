@@ -16,7 +16,7 @@ public:
     {
         //该类抽象一个客户端连接(SB2.x是允许多连接的)
     public:
-        Connect():conn(0),client(0){};
+        Connect();
         Connect(OClient *client);
         Connect(QTcpSocket *conn,OClient *client);
         QTcpSocket *conn;//连接对象
@@ -31,9 +31,9 @@ public:
     //获得唯一标识,登录后等同用户名，未登录  #IP:端口
     inline QString getSignature();
 
-    void checkData(Connect *connect);//接收数据
     void init();//初始化，绑定主连接的信号槽
     void addSubConn(QTcpSocket *conn);//增加次要连接，自动绑定信号槽
+    void checkData(Connect *connect);//接收数据
 
     QString uname;//用户名
     bool isLoged;//是否已经登录
@@ -53,7 +53,7 @@ private slots:
 };
 
 //见OServerCore::OServerCore()中的注释
-Q_DECLARE_METATYPE(OClient::Connect)
+Q_DECLARE_METATYPE(OClient::Connect);
 
 inline bool OClient::Connect::isMain()
 {

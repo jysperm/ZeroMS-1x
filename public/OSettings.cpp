@@ -4,7 +4,7 @@
 #include <QFile>
 #include "OSettings.h"
 
-
+//public:
 OSettings::OSettings(QString file):config(0),defaultConfig(0)
 {
     configFile=file;
