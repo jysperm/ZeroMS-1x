@@ -10,6 +10,7 @@ class OProtocolForSC:public QObject
     Q_OBJECT
 public:
     explicit OProtocolForSC();
+    void PublicKey(OClient::Connect *connect);
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:

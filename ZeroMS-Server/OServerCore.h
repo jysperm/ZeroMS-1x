@@ -12,6 +12,7 @@
 class OServerCore:public QObject
 {
     Q_OBJECT
+    friend class OProtocolForSC;
 public:
     explicit OServerCore();
     void init();

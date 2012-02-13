@@ -6,6 +6,7 @@
 #include <QHostAddress>
 #include <QVector>
 #include "global.h"
+#include "../public/OMessage.h"
 
 class OClient:public QObject
 {
@@ -22,7 +23,9 @@ public:
         QTcpSocket *conn;//连接对象
         QByteArray databuf;//数据缓冲
         OClient *client;//属于哪个客户端对象
+        QString publicKey;//公钥
         inline bool isMain();
+        inline void send(OMessage *msg);
     };
 
     explicit OClient();
@@ -58,6 +61,11 @@ Q_DECLARE_METATYPE(OClient::Connect);
 inline bool OClient::Connect::isMain()
 {
     return this==client->main;
+}
+
+inline void OClient::Connect::send(OMessage *msg)
+{
+    conn->write(msg->exec());
 }
 
 inline QString OClient::getSignature()

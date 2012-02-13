@@ -13,6 +13,7 @@ void OServerCore::init()
     connect(&server,SIGNAL(newConnection()),this,SLOT(onNewConn()));
 
     //绑定OProtocolForSC相关的信号槽
+    connect(&protocol,SIGNAL(AskPublicKey(OClient::Connect*)),this,SLOT(AskPublicKey(OClient::Connect*)));
 
     //注册该类型，以便可以在信号槽中作为参数传递
     //与此对应的还有OClient.h中结尾的Q_DECLARE_METATYPE(OClient::Connect)
