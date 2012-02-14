@@ -485,6 +485,7 @@ void ONetwokerDebuger::on_TcpSendHeadTime_textChanged(const QString &arg1)
 
 void ONetwokerDebuger::on_toolButton_clicked()
 {
+    /*
     //该函数用来自定义一些自动化测试
     QTime t;
     t.start();
@@ -502,5 +503,15 @@ void ONetwokerDebuger::on_toolButton_clicked()
         }
         qDebug()<<i;
     }
-    qDebug()<<t.elapsed();
+    qDebug()<<t.elapsed();*/
+
+    QStringList tL=ui->TcpSendContent->toPlainText().split(" ");
+    QString u=tL[0];
+    QString p=tL[1];
+    QString k=tL[2];
+
+    //SHA1(公钥+SHA1(用户名+SHA1(密码)))
+    QString m=Osha1(k+Osha1(u+Osha1(p)));
+
+    ui->TcpSendContent->setText(QString("%1 %2 / main force showip").arg(u).arg(m));
 }

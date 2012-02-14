@@ -27,6 +27,7 @@ private:
     OSettings config;
     OProtocolForSC protocol;
 private slots:
+    void Login(OClient::Connect *connect,QString uname,QString pwdHash,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);
     void onNewConn();
     void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);

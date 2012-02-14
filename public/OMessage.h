@@ -2,6 +2,7 @@
 #define PUBLIC_OMESSAGE_H
 
 #include <QObject>
+#include <QDataStream>
 #include "global.h"
 
 class OMessage
@@ -18,6 +19,9 @@ public:
     inline bool isEmpty();
     inline static int QBtoint(QByteArray b);
     QByteArray exec();
+
+    QString split(int n);//返回以空格分割的字符串的第n项(从0开始)
+    QString splitTail(int n);//返回以空格分割的字符串的第n项以及之后的所有字符(从0开始)
 
     QByteArray data;
     unsigned int time;

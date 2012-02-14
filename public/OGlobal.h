@@ -2,7 +2,7 @@
 #define PUBLIC_OGLOBAL_H
 
 #include<QObject>
-#include<QDataStream>
+#include <QCryptographicHash>
 #include "OGlobal/protocol2.0.h"
 using namespace Protocol2;
 
@@ -11,5 +11,10 @@ using namespace Protocol2;
 
 //全局默认配置文件路径
 const QString PUBLIC_CONFIG_FILE = QObject::trUtf8("./config.ini");
+
+inline QString Osha1(QString s)
+{
+    return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Sha1).toHex());
+}
 
 #endif // PUBLIC_OGLOBAL_H

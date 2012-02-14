@@ -14,6 +14,7 @@ public:
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:
+    void Login(OClient::Connect *connect,QString uname,QString pwdHash,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);
 };
 

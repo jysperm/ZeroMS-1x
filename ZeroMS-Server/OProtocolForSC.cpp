@@ -34,8 +34,18 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             break;
         switch(msg.type)
         {
+            case M_Login:
+                {
+                    QString uname=msg.split(0);
+                    QString pwdHash=msg.split(1);
+                    bool isMain=(msg.split(3)=="sub")?false:true;
+                    bool isForce=(msg.split(4)=="force")?true:false;
+                    bool isShowIp=(msg.split(5)=="hideip")?false:true;
+                    emit Login(connect,uname,pwdHash,isMain,isForce,isShowIp);
+                    break;
+                }
             case M_AskPublicKey:
-                emit AskPublicKey(connect);
+                emit AskPublicKey(connect);break;
             default:
                 ;
         }

@@ -53,3 +53,34 @@ QByteArray OMessage::exec()
     tData.append(data);
     return tData;
 }
+
+QString OMessage::split(int n)
+{
+    QString str(data);
+    while(str.indexOf(" ")>-1)
+        str=str.replace("  "," ");
+    QString temp;
+    while(n>-1)
+    {
+        str.remove(0,temp.length()?temp.length()+1:0);
+        temp=str.left(str.indexOf(" "));
+        n--;
+    }
+    return temp;
+}
+
+QString OMessage::splitTail(int n)
+{
+    int N=n;
+    int len=0;
+    n--;
+    while(n>-1)
+    {
+        len+=split(n).length();
+        n--;
+    }
+    len+=N;
+
+    QString str(data);
+    return str.right(str.length()-len);
+}
