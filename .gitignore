@@ -1,28 +1,20 @@
 ﻿#注意,该文件只新增条目,不要删除!!
+
 *.pro.user
 *.qm
 *.autosave
-
-
 *.exe
-/C-build/*
-/S-build/*
-/build/*
-/build*/*
-/Qt4-Server-build*/*
-/Qt4-PC-Client-build*/*
-/*build*/*
+*~
 *.o
+*.egg-info
+*.obj
+*.pyc
+
+/*build*/*
 
 debug
 release
 ui_*
 Makefile*
 object_script*
-cache
-chatlog
 
-*.pyc
-build
-dist
-*.egg-info

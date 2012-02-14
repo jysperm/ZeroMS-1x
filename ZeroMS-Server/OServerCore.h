@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTextStream>
 #include <QTcpServer>
+#include "ODataBase.h"
 #include "../public/OSettings.h"
 #include "global.h"
 #include "OClient.h"
@@ -19,13 +20,12 @@ public:
     void start();
 private:
     void log(QString msg);
-
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;
     QTcpServer server;
-    OSettings config;
     OProtocolForSC protocol;
+    ODataBase db;
 private slots:
     void Login(OClient::Connect *connect,QString uname,QString pwdHash,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);

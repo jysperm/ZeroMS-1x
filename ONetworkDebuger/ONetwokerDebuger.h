@@ -59,6 +59,7 @@ private slots:
     void on_UdpSendHeadTime_textChanged(const QString &arg1);
     void on_TcpSendHeadTime_textChanged(const QString &arg1);
     void on_toolButton_clicked();
+    void on_toolButton_2_clicked();
 };
 
 //连接对象的命名方法：

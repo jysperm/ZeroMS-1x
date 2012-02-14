@@ -1,3 +1,5 @@
+#include <QStringList>
+#include <QCoreApplication>
 #include "OServerCore.h"
 
 //public:
@@ -23,8 +25,8 @@ void OServerCore::init()
 
 void OServerCore::start()
 {
-    int port=config["SERVER_PORT"].toInt();
-    int maxClient=config["CLIENT_MAX"].toInt();
+    int port=(*config)["SERVER_PORT"].toInt();
+    int maxClient=(*config)["CLIENT_MAX"].toInt();
     server.listen(QHostAddress::Any,port);
     server.setMaxPendingConnections(maxClient);
     log(tr("开始监听%1端口,最大连接数为%2").arg(port).arg(maxClient));
@@ -42,7 +44,7 @@ void OServerCore::onNewConn()
     while(server.hasPendingConnections())
     {
         QTcpSocket *conn=server.nextPendingConnection();
-        int maxClient=config["CLIENT_MAX"].toInt();
+        int maxClient=(*config)["CLIENT_MAX"].toInt();
         if(cl.size() < maxClient)
         {
             OClient *client=new OClient;

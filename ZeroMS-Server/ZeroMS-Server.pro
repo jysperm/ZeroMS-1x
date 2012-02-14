@@ -21,7 +21,8 @@ SOURCES += main.cpp \
     ../public/OSettings.cpp \
     OClient.cpp \
     OServerCore_MsgSlot.cpp \
-    ../public/OGlobal/OGlobal.cpp
+    ../public/OGlobal/OGlobal.cpp \
+    ODataBase.cpp
 
 HEADERS += \
     ../public/OGlobal.h \
@@ -31,7 +32,8 @@ HEADERS += \
     OServerCore.h \
     ../public/OSettings.h \
     global.h \
-    OClient.h
+    OClient.h \
+    ODataBase.h
 
 RESOURCES += \
     res.qrc

@@ -57,7 +57,8 @@ QByteArray OMessage::exec()
 QString OMessage::split(int n)
 {
     QString str(data);
-    while(str.indexOf(" ")>-1)
+    //TODO int a=str.indexOf(" ");
+    while(str.indexOf("  ")>-1)
         str=str.replace("  "," ");
     QString temp;
     while(n>-1)
