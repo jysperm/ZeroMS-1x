@@ -1,11 +1,12 @@
 #include <QStringList>
 #include <QCoreApplication>
+#include <QDateTime>
 #include "OServerCore.h"
 
 //public:
 OServerCore::OServerCore():cin(stdin),cout(stdout)
 {
-
+    qsrand(QDateTime::currentDateTime().toTime_t());
 }
 
 void OServerCore::init()
@@ -16,7 +17,7 @@ void OServerCore::init()
 
     //绑定OProtocolForSC相关的信号槽
     connect(&protocol,SIGNAL(AskPublicKey(OClient::Connect*)),this,SLOT(AskPublicKey(OClient::Connect*)));
-    connect(&protocol,SIGNAL(Login(OClient::Connect*,QString,QString,bool,bool,bool)),this,SLOT(Login(OClient::Connect*,QString,QString,bool,bool,bool)));
+    connect(&protocol,SIGNAL(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)));
 
     //注册该类型，以便可以在信号槽中作为参数传递
     //与此对应的还有OClient.h中结尾的Q_DECLARE_METATYPE(OClient::Connect)

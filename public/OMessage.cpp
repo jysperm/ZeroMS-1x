@@ -67,6 +67,9 @@ QString OMessage::split(int n)
         temp=str.left(str.indexOf(" "));
         n--;
     }
+
+    if(temp.trimmed()=="/")
+        temp="";
     return temp;
 }
 

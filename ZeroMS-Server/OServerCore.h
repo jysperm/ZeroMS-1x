@@ -27,7 +27,7 @@ private:
     OProtocolForSC protocol;
     ODataBase db;
 private slots:
-    void Login(OClient::Connect *connect,QString uname,QString pwdHash,bool isMain,bool isForce,bool isShowIp);
+    void Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);
     void onNewConn();
     void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);

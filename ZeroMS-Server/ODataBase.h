@@ -8,6 +8,7 @@ class ODataBase
 {
 public:
     ODataBase();
+    bool checkPWD(QString uname,QString pwd,QString publicKey);
 private:
     QSqlDatabase *dbConn;
 };
