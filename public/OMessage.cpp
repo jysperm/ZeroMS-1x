@@ -2,12 +2,17 @@
 #include "OMessage.h"
 
 //public:
-OMessage::OMessage():time(0),protocol(0),type(0)
+OMessage::OMessage():protocol(0),type(0),time(0)
 {
 
 }
 
-OMessage::OMessage(int type,QByteArray data):data(data),type(type)
+OMessage::OMessage(int type,QByteArray data):protocol(0),type(type),time(0),data(data)
+{
+
+}
+
+OMessage::OMessage(int type):protocol(0),type(type),time(0)
 {
 
 }

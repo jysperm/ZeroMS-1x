@@ -11,7 +11,7 @@ class OProtocolForSC:public QObject
 public:
     explicit OProtocolForSC();
     void PublicKey(OClient::Connect *connect,QString publicKey);
-    void LoginResult(OClient::Connect *connect);
+    void LoginResult(OClient::Connect *connect,QString status,QHostAddress ip=QHostAddress());
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:

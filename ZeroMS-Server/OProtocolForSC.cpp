@@ -18,6 +18,13 @@ void OProtocolForSC::PublicKey(OClient::Connect *connect,QString publicKey)
     connect->send(&msg);
 }
 
+void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QHostAddress ip)
+{
+    OMessage msg(M_LoginResult);
+    msg.append(status).appendSpace().append(ip.toString());
+    connect->send(&msg);
+}
+
 void OProtocolForSC::checkMsg(OClient::Connect *connect)
 {
     while(true)

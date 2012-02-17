@@ -50,6 +50,13 @@ const int M_ConfigurationValue = 36;
 const int M_CreateConfigurationData = 37;
 const int M_RemoveConfigurationKey = 38;
 
+const QString OK = "ok";
+const QString PWDERR = "pwderr";
+const QString ISONLINE = "isonline";
+const QString UNKNOWN = "unknown";
+const QString NOMAIN = "nomain";
+const QString ALREADY = "already";
+
 inline bool checkVer(int n)
 {
     if(n==2)
