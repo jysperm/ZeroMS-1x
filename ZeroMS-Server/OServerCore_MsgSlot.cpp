@@ -10,7 +10,6 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
 
     if(!connect->publicKey.isEmpty() && db.checkPWD(uname,pwdHash,connect->publicKey))
     {//如果已经申请过公钥，且密码正确
-        connect->publicKey="";
         OClient *client=connect->client;
         if(isMain)
         {//如果是主连接
@@ -39,8 +38,9 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
         {//如果是次要连接
             if(cl.contains(uname))
             {//如果有同名的主连接
-                cl[uname]->addSubConn(connect->conn);
                 QString signature=connect->client->getSignature();
+                connect->client->main=0;
+                cl[uname]->addSubConn(connect->conn);
                 delete cl[signature];
                 cl.remove(signature);
                 (cl[uname]->p2pPorts)<<p2pPort;
@@ -56,6 +56,8 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     {//如果没有申请过公钥，或者密码错误
         protocol.LoginResult(connect,PWDERR);
     }
+
+    connect->publicKey="";
 }
 
 void OServerCore::AskPublicKey(OClient::Connect *connect)

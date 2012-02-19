@@ -19,14 +19,14 @@ OClient::Connect::Connect(QTcpSocket *conn,OClient *client):conn(conn),client(cl
 
 //class OClient
 //public:
-OClient::OClient():isLoged(false)
+OClient::OClient():isLoged(false),isShowIp(false)
 {
 
 }
 
 OClient::~OClient()
 {
-    if(main->conn)
+    if(main && main->conn)
         main->conn->deleteLater();
     for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
         if((*i)->conn)
