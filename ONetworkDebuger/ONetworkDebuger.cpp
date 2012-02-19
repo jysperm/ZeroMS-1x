@@ -2,10 +2,10 @@
 #include <QDesktopWidget>
 #include <QDateTime>
 #include <QMessageBox>
-#include "ONetwokerDebuger.h"
-#include "ui_ONetwokerDebuger.h"
+#include "ONetworkDebuger.h"
+#include "ui_ONetworkDebuger.h"
 
-ONetwokerDebuger::ONetwokerDebuger(QWidget *parent):QWidget(parent),ui(new Ui::ONetwokerDebuger)
+ONetworkDebuger::ONetworkDebuger(QWidget *parent):QMainWindow(parent),ui(new Ui::ONetworkDebuger)
 {
     ui->setupUi(this);
 
@@ -27,13 +27,13 @@ ONetwokerDebuger::ONetwokerDebuger(QWidget *parent):QWidget(parent),ui(new Ui::O
     on_UdpSendHeadTime_textChanged("0");
 }
 
-ONetwokerDebuger::~ONetwokerDebuger()
+ONetworkDebuger::~ONetworkDebuger()
 {
     on_DoInitialize_clicked();
     delete ui;
 }
 
-void ONetwokerDebuger::updateList()
+void ONetworkDebuger::updateList()
 {
     ui->ConnectList->clear();
     QMapIterator<QString,UdpConnect> iUdp(udpList);
@@ -72,7 +72,7 @@ void ONetwokerDebuger::updateList()
     }
 }
 
-void ONetwokerDebuger::on_DoUdpListen_clicked()
+void ONetworkDebuger::on_DoUdpListen_clicked()
 {
     int port=ui->UdpListenPort->value();
     QString name=QString("%1:%2:%3").arg("UDP").arg(QHostAddress(QHostAddress::Any).toString()).arg(port);
@@ -102,7 +102,7 @@ void ONetwokerDebuger::on_DoUdpListen_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::on_UdpDoSend_clicked()
+void ONetworkDebuger::on_UdpDoSend_clicked()
 {
     UdpConnect sender;
     QString sport=ui->UdpSendSelect->currentText();
@@ -174,7 +174,7 @@ void ONetwokerDebuger::on_UdpDoSend_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::on_TcpDoSend_clicked()
+void ONetworkDebuger::on_TcpDoSend_clicked()
 {
     QTcpSocket *sender;
     if(!tcpList.contains(ui->TcpSendSelect->currentText()))
@@ -223,7 +223,7 @@ void ONetwokerDebuger::on_TcpDoSend_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::on_DoTcpListen_clicked()
+void ONetworkDebuger::on_DoTcpListen_clicked()
 {
     int port=ui->TcpListenPort->value();
     QString name=QString("%1:%2:%3").arg("TCP").arg(QHostAddress(QHostAddress::Any).toString()).arg(port);
@@ -243,7 +243,7 @@ void ONetwokerDebuger::on_DoTcpListen_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::onNewConnection()
+void ONetworkDebuger::onNewConnection()
 {
     bool autoAccept=ui->AutoAccept->isChecked();
 
@@ -283,7 +283,7 @@ void ONetwokerDebuger::onNewConnection()
     updateList();
 }
 
-void ONetwokerDebuger::on_DoTcpConnect_clicked()
+void ONetworkDebuger::on_DoTcpConnect_clicked()
 {
     QTcpSocket *conn=new QTcpSocket;
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onSocketError(QAbstractSocket::SocketError)));
@@ -302,7 +302,7 @@ void ONetwokerDebuger::on_DoTcpConnect_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::onSocketNewData()
+void ONetworkDebuger::onSocketNewData()
 {
     QMapIterator<QString,UdpConnect> i(udpList);
     while(i.hasNext())
@@ -362,7 +362,7 @@ void ONetwokerDebuger::onSocketNewData()
     }
 }
 
-void ONetwokerDebuger::onSocketError(QAbstractSocket::SocketError s)
+void ONetworkDebuger::onSocketError(QAbstractSocket::SocketError s)
 {
     QMapIterator<QString,UdpConnect> iUdp(udpList);
     while(iUdp.hasNext())
@@ -391,7 +391,7 @@ void ONetwokerDebuger::onSocketError(QAbstractSocket::SocketError s)
     updateList();
 }
 
-void ONetwokerDebuger::on_DoInitialize_clicked()
+void ONetworkDebuger::on_DoInitialize_clicked()
 {
     QMapIterator<QString,UdpConnect> iUdp(udpList);
     while(iUdp.hasNext())
@@ -420,27 +420,27 @@ void ONetwokerDebuger::on_DoInitialize_clicked()
     updateList();
 }
 
-void ONetwokerDebuger::on_UdpSendAutoCalcLength_clicked(bool checked)
+void ONetworkDebuger::on_UdpSendAutoCalcLength_clicked(bool checked)
 {
     ui->UdpSendHeadLength->setEnabled(!checked);
 }
 
-void ONetwokerDebuger::on_UdpSendAutoFillCurrentTime_clicked(bool checked)
+void ONetworkDebuger::on_UdpSendAutoFillCurrentTime_clicked(bool checked)
 {
     ui->UdpSendHeadTime->setEnabled(!checked);
 }
 
-void ONetwokerDebuger::on_TcpSendAutoCalcLength_clicked(bool checked)
+void ONetworkDebuger::on_TcpSendAutoCalcLength_clicked(bool checked)
 {
     ui->TcpSendHeadLength->setEnabled(!checked);
 }
 
-void ONetwokerDebuger::on_TcpSendAutoFillCurrentTime_clicked(bool checked)
+void ONetworkDebuger::on_TcpSendAutoFillCurrentTime_clicked(bool checked)
 {
     ui->TcpSendHeadTime->setEnabled(!checked);
 }
 
-void ONetwokerDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
+void ONetworkDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
 {
     if(udpList.contains(item->text()))
     {
@@ -461,50 +461,30 @@ void ONetwokerDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
     updateList();
 }
 
-void ONetwokerDebuger::on_UdpSendHeadMsgType_valueChanged(int arg1)
+void ONetworkDebuger::on_UdpSendHeadMsgType_valueChanged(int arg1)
 {
     ui->UdpSendHeadMsgType->setToolTip(QString("%1\n修改后，悬停可看对应的消息名").arg(num2String(arg1)));
 }
 
-void ONetwokerDebuger::on_TcpSendHeadMsgType_valueChanged(int arg1)
+void ONetworkDebuger::on_TcpSendHeadMsgType_valueChanged(int arg1)
 {
     ui->TcpSendHeadMsgType->setToolTip(QString("%1\n修改后，悬停可看对应的消息名").arg(num2String(arg1)));
 }
 
-void ONetwokerDebuger::on_UdpSendHeadTime_textChanged(const QString &arg1)
+void ONetworkDebuger::on_UdpSendHeadTime_textChanged(const QString &arg1)
 {
     QString stime=QDateTime::fromTime_t(arg1.toInt()).toString("yyyy-MM-dd hh:mm:ss");
     ui->UdpSendHeadTime->setToolTip(QString("%1\n修改后，悬停可看时间字符串").arg(stime));
 }
 
-void ONetwokerDebuger::on_TcpSendHeadTime_textChanged(const QString &arg1)
+void ONetworkDebuger::on_TcpSendHeadTime_textChanged(const QString &arg1)
 {
     QString stime=QDateTime::fromTime_t(arg1.toInt()).toString("yyyy-MM-dd hh:mm:ss");
     ui->TcpSendHeadTime->setToolTip(QString("%1\n修改后，悬停可看时间字符串").arg(stime));
 }
 
-void ONetwokerDebuger::on_toolButton_clicked()
+void ONetworkDebuger::on_action_triggered()
 {
-    /*
-    //该函数用来自定义一些自动化测试
-    QTime t;
-    t.start();
-    for(int i=0;i<10;i++)
-    {
-        for(int j=0;j<100;j++)
-        {
-            on_DoTcpConnect_clicked();
-            on_DoTcpConnect_clicked();
-            on_DoTcpConnect_clicked();
-            on_DoTcpConnect_clicked();
-            on_DoTcpConnect_clicked();
-
-            on_DoInitialize_clicked();
-        }
-        qDebug()<<i;
-    }
-    qDebug()<<t.elapsed();*/
-
     QStringList tL=ui->TcpSendContent->toPlainText().split(" ");
     QString u=tL[0];
     QString p=tL[1];
@@ -516,7 +496,7 @@ void ONetwokerDebuger::on_toolButton_clicked()
     ui->TcpSendContent->setText(QString("%1 %2 / main force showip").arg(u).arg(m));
 }
 
-void ONetwokerDebuger::on_toolButton_2_clicked()
+void ONetworkDebuger::on_action_SHA_1_triggered()
 {
     QStringList tL=ui->TcpSendContent->toPlainText().split(" ");
     QString u=tL[0];

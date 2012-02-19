@@ -11,12 +11,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        ONetwokerDebuger.cpp \
-    ../public/OGlobal/OGlobal.cpp
+    ../public/OGlobal/OGlobal.cpp \
+    ONetworkDebuger.cpp
 
-HEADERS  += ONetwokerDebuger.h \
+HEADERS  += \
     ../public/OGlobal.h \
-    ../public/OGlobal/protocol2.0.h
+    ../public/OGlobal/protocol2.0.h \
+    ONetworkDebuger.h
 
-FORMS    += ONetwokerDebuger.ui
+FORMS    += ONetworkDebuger.ui
 

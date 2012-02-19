@@ -7,12 +7,12 @@
 #include <QUdpSocket>
 #include <QTcpServer>
 #include <QTcpSocket>
-#include "ui_ONetwokerDebuger.h"
+#include "ui_ONetworkDebuger.h"
 #include "../public/OGlobal.h"
 
 namespace Ui
 {
-    class ONetwokerDebuger;
+    class ONetworkDebuger;
 }
 
 const QString sqlitter="--------------------";
@@ -26,15 +26,15 @@ public:
     QUdpSocket *conn;//连接对象
 };
 
-class ONetwokerDebuger:public QWidget
+class ONetworkDebuger:public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit ONetwokerDebuger(QWidget *parent = 0);
-    ~ONetwokerDebuger();
+    explicit ONetworkDebuger(QWidget *parent = 0);
+    ~ONetworkDebuger();
     inline void log(QString msg);
 private:
-    Ui::ONetwokerDebuger *ui;
+    Ui::ONetworkDebuger *ui;
     QMap<QString,UdpConnect> udpList;
     QMap<QString,QTcpServer*> tcpServerList;
     QMap<QString,QTcpSocket*> tcpList;
@@ -58,15 +58,15 @@ private slots:
     void on_TcpSendHeadMsgType_valueChanged(int arg1);
     void on_UdpSendHeadTime_textChanged(const QString &arg1);
     void on_TcpSendHeadTime_textChanged(const QString &arg1);
-    void on_toolButton_clicked();
-    void on_toolButton_2_clicked();
+    void on_action_triggered();
+    void on_action_SHA_1_triggered();
 };
 
 //连接对象的命名方法：
 //<协议>:<远程/本地IP>:<端口>
 //(协议大写TCP/UDP),TCP即为远程IP,UDP即为本地IP.
 
-inline void ONetwokerDebuger::log(QString msg)
+inline void ONetworkDebuger::log(QString msg)
 {
     ui->Output->append(msg);
 }

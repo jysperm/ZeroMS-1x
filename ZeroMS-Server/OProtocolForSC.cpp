@@ -39,6 +39,8 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
                     QString uname=msg.split(0);
                     QString pwdHash=msg.split(1);
                     QStringList ports=msg.split(2).split(",");
+                    if(ports.count()==1 && ports[0].isEmpty())
+                        ports=QStringList();
                     QVector<int> p2pPort;
                     for(QList<QString>::iterator i=ports.begin();i!=ports.end();++i)
                         p2pPort.push_back((*i).toInt());
