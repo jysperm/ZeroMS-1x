@@ -1,4 +1,5 @@
 #include "OServerCore.h"
+#include <QDateTime>
 
 //private slots:
 void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp)
@@ -58,6 +59,26 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     }
 
     connect->publicKey="";
+}
+
+void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)
+{
+    QMap<QString,QString> result;
+    QStringListIterator i(keys);
+    while(i.hasNext())
+    {
+        QString key=i.next();
+        if(info.contains(key))
+        {
+            result.insert(key,info[key]);
+        }
+        else
+        {
+            if(key==TIME)
+                result.insert(key,QString::number(QDateTime::currentDateTime().toTime_t()));
+        }
+    }
+    protocol.Info(connect,result);
 }
 
 void OServerCore::AskPublicKey(OClient::Connect *connect)

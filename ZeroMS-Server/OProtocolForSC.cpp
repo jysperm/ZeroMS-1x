@@ -25,6 +25,11 @@ void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QHostA
     connect->send(&msg);
 }
 
+void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
+{
+
+}
+
 void OProtocolForSC::checkMsg(OClient::Connect *connect)
 {
     while(true)
@@ -50,8 +55,15 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
                     emit Login(connect,uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
                     break;
                 }
+            case M_AskInfo:
+                {
+                    QStringList keys=msg.split(0).split(",");
+                    emit AskInfo(connect,keys);
+                    break;
+                }
             case M_AskPublicKey:
-                emit AskPublicKey(connect);break;
+                emit AskPublicKey(connect);
+                break;
             default:
                 ;
         }

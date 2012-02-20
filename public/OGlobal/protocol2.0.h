@@ -56,6 +56,13 @@ const QString ISONLINE = "isonline";
 const QString UNKNOWN = "unknown";
 const QString NOMAIN = "nomain";
 const QString ALREADY = "already";
+const QString OFFLINECACHETIME = "offlinecachetime";
+const QString NOACTIVITYTIME = "noactivitytime";
+const QString VERSION = "version";
+const QString PROTOCOL = "protocol";
+const QString TIME = "time";
+const QString VERNUM = "vernum";
+const QString WEBSITE = "website";
 
 inline bool checkVer(int n)
 {
