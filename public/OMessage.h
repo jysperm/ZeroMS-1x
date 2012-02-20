@@ -14,13 +14,12 @@ public:
     //注意这个是从二进制数据构造，而不是把参数作为消息的数据不恩
     OMessage(QByteArray data);
 
-
     static OMessage fromDataBuff(QByteArray *databuf,bool autoRemove=true);
 
     inline bool isEmpty();
-    inline OMessage& append(QByteArray data);
-    inline OMessage& append(QString data);
-    inline OMessage& appendSpace();
+    inline OMessage &append(QByteArray data);
+    inline OMessage &append(QString data);
+    inline OMessage &appendSpace();
     inline static int QBtoint(QByteArray b);
     QByteArray exec();
 
@@ -41,19 +40,19 @@ inline bool OMessage::isEmpty()
         return false;
 }
 
-inline OMessage& OMessage::append(QByteArray data)
+inline OMessage &OMessage::append(QByteArray data)
 {
     this->data.append(data);
     return *this;
 }
 
-inline OMessage& OMessage::append(QString data)
+inline OMessage &OMessage::append(QString data)
 {
     this->data.append(data);
     return *this;
 }
 
-inline OMessage& OMessage::appendSpace()
+inline OMessage &OMessage::appendSpace()
 {
     data.append(" ");
     return *this;

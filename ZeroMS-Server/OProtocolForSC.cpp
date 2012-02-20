@@ -27,7 +27,17 @@ void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QHostA
 
 void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
 {
-
+    QByteArray data;
+    QMapIterator<QString,QString> i(keys);
+    while(i.hasNext())
+    {
+        i.next();
+        data.append(QString("%1:%2").arg(i.key()).arg(QString(i.value()).replace(";","\\;")));
+        if(i.hasNext())
+            data.append(";");
+    }
+    OMessage msg(M_Info,data);
+    connect->send(&msg);
 }
 
 void OProtocolForSC::checkMsg(OClient::Connect *connect)
