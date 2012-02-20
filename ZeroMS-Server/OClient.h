@@ -45,7 +45,6 @@ public:
     Connect *main;//主连接
     QVector<Connect*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    typedef QVector<Connect*>::Iterator SubConnIt;//次要连接数组迭代器简写
 signals:
     void newMsgData(OClient::Connect *connect);//当已经接收到了一个(或多个)完整的数据包后发射
     //发生错误时发射

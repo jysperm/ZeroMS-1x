@@ -28,9 +28,12 @@ OClient::~OClient()
 {
     if(main && main->conn)
         main->conn->deleteLater();
-    for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
-        if((*i)->conn)
-            (*i)->conn->deleteLater();
+    QMutableVectorIterator<Connect*> i(subConnList);
+    while(i.hasNext())
+    {
+        if(i.next()->conn)
+            i.value()->conn->deleteLater();
+    }
 }
 
 void OClient::init()
@@ -63,9 +66,10 @@ void OClient::checkData(Connect *connect)
 void OClient::onData()
 {
     checkData(main);
-    for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
+    QMutableVectorIterator<Connect*> i(subConnList);
+    while(i.hasNext())
     {
-        checkData(*i);
+        checkData(i.next());
     }
 }
 
@@ -80,14 +84,16 @@ void OClient::onError(QAbstractSocket::SocketError s)
     }
     else
     {
-        for(SubConnIt i=subConnList.begin();i!=subConnList.end();++i)
+        QMutableVectorIterator<Connect*> i(subConnList);
+        while (i.hasNext())
         {
-            QTcpSocket *conn=(*i)->conn;
+            i.next();
+            QTcpSocket *conn=i.value()->conn;
             if(conn->error()==s)
             {
-                emit error(*i,conn->errorString(),s);
+                emit error(i.value(),conn->errorString(),s);
                 conn->deleteLater();
-                subConnList.erase(i);
+                i.remove();
             }
         }
     }

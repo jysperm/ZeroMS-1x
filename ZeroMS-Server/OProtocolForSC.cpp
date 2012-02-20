@@ -49,33 +49,40 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             break;
         switch(msg.type)
         {
-            case M_Login:
-                {
-                    QString uname=msg.split(0);
-                    QString pwdHash=msg.split(1);
-                    QStringList ports=msg.split(2).split(",");
-                    if(ports.count()==1 && ports[0].isEmpty())
-                        ports=QStringList();
-                    QVector<int> p2pPort;
-                    for(QList<QString>::iterator i=ports.begin();i!=ports.end();++i)
-                        p2pPort.push_back((*i).toInt());
-                    bool isMain=(msg.split(3)=="sub")?false:true;
-                    bool isForce=(msg.split(4)=="force")?true:false;
-                    bool isShowIp=(msg.split(5)=="hideip")?false:true;
-                    emit Login(connect,uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
-                    break;
-                }
-            case M_AskInfo:
-                {
-                    QStringList keys=msg.split(0).split(",");
-                    emit AskInfo(connect,keys);
-                    break;
-                }
-            case M_AskPublicKey:
-                emit AskPublicKey(connect);
-                break;
-            default:
-                ;
+        case M_Login:
+        {
+            QString uname=msg.split(0);
+            QString pwdHash=msg.split(1);
+            QStringList ports=msg.split(2).split(",");
+            if(ports.count()==1 && ports[0].isEmpty())
+                ports=QStringList();
+            QVector<int> p2pPort;
+            for(QList<QString>::iterator i=ports.begin();i!=ports.end();++i)
+                p2pPort.push_back((*i).toInt());
+            bool isMain=(msg.split(3)=="sub")?false:true;
+            bool isForce=(msg.split(4)=="force")?true:false;
+            bool isShowIp=(msg.split(5)=="hideip")?false:true;
+            emit Login(connect,uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+            break;
+        }
+        case M_AskInfo:
+        {
+            QStringList keys=msg.split(0).split(",");
+            emit AskInfo(connect,keys);
+            break;
+        }
+        case M_AskPublicKey:
+            emit AskPublicKey(connect);
+            break;
+        default:
+        {
+            QByteArray data;
+            data.append((*config)["UNKNOWN"].toString());
+            OMessage msgMsg(M_Unknown,data);
+            connect->send(&msgMsg);
+            connect->databuf.clear();
+            qDebug()<<Q_FUNC_INFO<<(*config)["UNKNOWN"].toString();
+        }
         }
     }
 }

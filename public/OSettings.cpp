@@ -30,6 +30,8 @@ void OSettings::load()
     }
     DELETE(config);
     config=new QSettings(configFile,QSettings::IniFormat,qApp);
+    config->setIniCodec("UTF-8");
     DELETE(defaultConfig);
     defaultConfig=new QSettings(":/config.ini",QSettings::IniFormat,qApp);
+    defaultConfig->setIniCodec("UTF-8");
 }
