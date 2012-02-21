@@ -61,17 +61,29 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     connect->publicKey="";
 }
 
-void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,QString operation)
+void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove)
 {
     if(connect->client->isLoged)
-    {
-        if(operation==ADD)
-            db.ModifyUserList(connect->client->uname,uname,true);
-        else
+    {//如果已经登录
+        bool isGroup=(uname.left(1)=="*")?true:false;
+        if(isAddOrRemove && !isGroup)
+        {//如果是添加用户
+            if(db.checkUser(uname))
+            {//如果这个用户存在
+                db.ModifyUserList(connect->client->uname,uname,true);
+            }
+        }
+        else if(!isGroup)
+        {//如果是删除用户
             db.ModifyUserList(connect->client->uname,uname,false);
+        }
+        else
+        {//如果是删除群
+            db.removeGroupMember(uname,connect->client->uname);
+        }
     }
-    else
-        protocol.Unknown(connect);
+
+    protocol.Unknown(connect);
 }
 
 void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)

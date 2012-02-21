@@ -18,7 +18,7 @@ void OServerCore::init()
     connect(&protocol,SIGNAL(AskPublicKey(OClient::Connect*)),this,SLOT(AskPublicKey(OClient::Connect*)));
     connect(&protocol,SIGNAL(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)));
     connect(&protocol,SIGNAL(AskInfo(OClient::Connect*,QStringList)),this,SLOT(AskInfo(OClient::Connect*,QStringList)));
-    connect(&protocol,SIGNAL(ModifyUserList(OClient::Connect*,QString,QString)),this,SLOT(ModifyUserList(OClient::Connect*,QString,QString)));
+    connect(&protocol,SIGNAL(ModifyUserList(OClient::Connect*,QString,bool)),this,SLOT(ModifyUserList(OClient::Connect*,QString,bool)));
 
     //注册该类型，以便可以在信号槽中作为参数传递
     //与此对应的还有OClient.h中结尾的Q_DECLARE_METATYPE(OClient::Connect)

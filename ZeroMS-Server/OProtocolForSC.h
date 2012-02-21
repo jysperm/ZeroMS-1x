@@ -19,7 +19,7 @@ public:
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:
-    void ModifyUserList(OClient::Connect *connect,QString uname,QString operation);
+    void ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove);
     void AskInfo(OClient::Connect *connect,QStringList keys);
     void Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);

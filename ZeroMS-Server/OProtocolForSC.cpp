@@ -86,8 +86,8 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
         case M_ModifyUserList:
         {
             QString uname=msg.split(0);
-            QString operation=msg.split(1);
-            emit ModifyUserList(connect,uname,operation);
+            bool isAddOrRemove=(msg.split(1)==REMOVE)?false:true;
+            emit ModifyUserList(connect,uname,isAddOrRemove);
             break;
         }
         default:

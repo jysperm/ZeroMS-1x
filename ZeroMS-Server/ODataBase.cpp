@@ -6,9 +6,11 @@
 #include "ODataBase.h"
 #include "OServerCore.h"
 
-const QString CHECK_PWD = "SELECT `pwd` FROM `user` WHERE `uname` = :uname";
+const QString CHECK_USER = "SELECT `pwd` FROM `user` WHERE `uname` = :uname";
+const QString CHECK_GROUP = "SELECT `groupname` FROM `group` WHERE `groupname` = :groupname";
 const QString CHECK_USERLIST = "SELECT `id` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 const QString USERLIST_ADD = "INSERT INTO `userlist` (`uname`,`user`) VALUES (:uname,:user)";
+const QString GROUP_MEMBER_REMOVE = "DELETE FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
 const QString USERLIST_REMOVE = "DELETE FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 
 ODataBase::ODataBase()
@@ -33,7 +35,7 @@ ODataBase::ODataBase()
 bool ODataBase::checkPWD(QString uname,QString pwd,QString publicKey)
 {
     QSqlQuery query(*dbConn);
-    query.prepare(CHECK_PWD);
+    query.prepare(CHECK_USER);
     query.bindValue(":uname",uname);
     query.exec();
 
@@ -42,6 +44,37 @@ bool ODataBase::checkPWD(QString uname,QString pwd,QString publicKey)
             return true;
 
     return false;
+}
+
+bool ODataBase::checkUser(QString uname)
+{
+    QSqlQuery query(*dbConn);
+    query.prepare(CHECK_USER);
+    query.bindValue(":uname",uname);
+    query.exec();
+
+    return query.next();
+}
+
+bool ODataBase::checkGroup(QString group)
+{
+    QSqlQuery query(*dbConn);
+    query.prepare(CHECK_GROUP);
+    query.bindValue(":groupname",group);
+    query.exec();
+
+    return query.next();
+}
+
+void ODataBase::removeGroupMember(QString group,QString uname)
+{
+    QSqlQuery query(*dbConn);
+    query.prepare(GROUP_MEMBER_REMOVE);
+    query.bindValue(":groupname",group);
+    query.bindValue(":uname",uname);
+    query.exec();
+
+    return;
 }
 
 void ODataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
