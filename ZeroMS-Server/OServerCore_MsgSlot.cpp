@@ -61,6 +61,19 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     connect->publicKey="";
 }
 
+void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,QString operation)
+{
+    if(connect->client->isLoged)
+    {
+        if(operation==ADD)
+            db.ModifyUserList(connect->client->uname,uname,true);
+        else
+            db.ModifyUserList(connect->client->uname,uname,false);
+    }
+    else
+        protocol.Unknown(connect);
+}
+
 void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)
 {
     QMap<QString,QString> result;

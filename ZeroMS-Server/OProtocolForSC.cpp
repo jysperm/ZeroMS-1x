@@ -40,6 +40,15 @@ void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
     connect->send(&msg);
 }
 
+void OProtocolForSC::Unknown(OClient::Connect *connect)
+{
+    QByteArray data;
+    data.append((*config)["UNKNOWN"].toString());
+    OMessage msgMsg(M_Unknown,data);
+    connect->send(&msgMsg);
+    connect->databuf.clear();
+}
+
 void OProtocolForSC::checkMsg(OClient::Connect *connect)
 {
     while(true)
@@ -59,9 +68,9 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             QVector<int> p2pPort;
             for(QList<QString>::iterator i=ports.begin();i!=ports.end();++i)
                 p2pPort.push_back((*i).toInt());
-            bool isMain=(msg.split(3)=="sub")?false:true;
-            bool isForce=(msg.split(4)=="force")?true:false;
-            bool isShowIp=(msg.split(5)=="hideip")?false:true;
+            bool isMain=(msg.split(3)==SUB)?false:true;
+            bool isForce=(msg.split(4)==FORCE)?true:false;
+            bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
             emit Login(connect,uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
             break;
         }
@@ -74,14 +83,16 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
         case M_AskPublicKey:
             emit AskPublicKey(connect);
             break;
+        case M_ModifyUserList:
+        {
+            QString uname=msg.split(0);
+            QString operation=msg.split(1);
+            emit ModifyUserList(connect,uname,operation);
+            break;
+        }
         default:
         {
-            QByteArray data;
-            data.append((*config)["UNKNOWN"].toString());
-            OMessage msgMsg(M_Unknown,data);
-            connect->send(&msgMsg);
-            connect->databuf.clear();
-            qDebug()<<Q_FUNC_INFO<<(*config)["UNKNOWN"].toString();
+            Unknown(connect);
         }
         }
     }

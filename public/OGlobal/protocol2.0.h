@@ -63,6 +63,11 @@ const QString PROTOCOL = "protocol";
 const QString TIME = "time";
 const QString VERNUM = "vernum";
 const QString WEBSITE = "website";
+const QString SUB = "sub";
+const QString FORCE = "force";
+const QString HIDEIP = "hideip";
+const QString ADD = "add";
+const QString REMOVE = "remove";
 
 inline bool checkVer(int n)
 {
