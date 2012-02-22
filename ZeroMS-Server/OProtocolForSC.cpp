@@ -40,9 +40,36 @@ void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
     connect->send(&msg);
 }
 
-void OProtocolForSC::UserInfo(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistCache> userlist)
+void OProtocolForSC::UserList(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
 {
+    QByteArray data;
+    QVectorIterator<OClient::UserlistItem> i(userlist);
+    while(i.hasNext())
+    {
+        OClient::UserlistItem item=i.next();
+        QStringList p2pPorts;
+        QVectorIterator<int> iP2p(item.p2pPorts);
+        while(iP2p.hasNext())
+        {
+            p2pPorts.append(QString::number(iP2p.next()));
+        }
+        data.append(QString("%1:%2:%3:%4:%5:%6").arg(item.uname).arg(item.status).arg(item.groupStatus).
+                    arg(item.ip).arg(p2pPorts.join(",")).arg(item.avatar));
 
+        //去除末尾多余的冒号
+        int iData=0;
+        while(iData++)
+        {
+            if(data.right(iData).left(1)!="")
+                break;
+        }
+        data=data.left(data.length()-(iData-1));
+
+        if(i.hasNext())
+            data.append(";");
+    }
+    OMessage msg(M_UserList,data);
+    connect->send(&msg);
 }
 
 void OProtocolForSC::Unknown(OClient::Connect *connect)

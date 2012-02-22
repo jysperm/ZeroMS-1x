@@ -73,6 +73,15 @@ const QString ONLINE = "online";
 const QString DIFFONLY = "diffonly";
 const QString AVATAR = "avatar";
 const QString NOAVATAR = "noavatar";
+const QString BORED = "bored";
+const QString BUZY = "buzy";
+const QString AWAY = "away";
+const QString OFFLINE = "offline";
+const QString REMOVED = "removed";
+const QString ADMIN = "admin";
+const QString NOTADMIN = "notadmin";
+const QString ALLOW = "allow";
+const QString DENY = "deny";
 
 inline bool checkVer(int n)
 {

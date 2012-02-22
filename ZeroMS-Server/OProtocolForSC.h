@@ -16,7 +16,7 @@ public:
     void LoginResult(OClient::Connect *connect,QString status,QString ip=QString());
     void Unknown(OClient::Connect *connect);
     void Info(OClient::Connect *connect,QMap<QString,QString> keys);
-    void UserInfo(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistCache> userlist);
+    void UserList(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistItem> userlist);
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:
