@@ -85,9 +85,6 @@ void ODataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
     query.bindValue(":user",user);
     query.exec();
 
-    qDebug()<<query.executedQuery();
-    qDebug()<<query.lastQuery();
-
     if(query.next())
     {//如果存在这条记录
         if(!isAddOrRemove)
@@ -108,9 +105,6 @@ void ODataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
             query.bindValue(":uname",uname);
             query.bindValue(":user",user);
             query.exec();
-
-            qDebug()<<query.executedQuery();
-            qDebug()<<query.lastError().text();
         }
     }
 }

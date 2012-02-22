@@ -82,8 +82,8 @@ void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool is
             db.removeGroupMember(uname,connect->client->uname);
         }
     }
-
-    protocol.Unknown(connect);
+    else
+        protocol.Unknown(connect);
 }
 
 void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)
