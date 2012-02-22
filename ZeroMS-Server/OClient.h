@@ -27,6 +27,16 @@ public:
         inline bool isMain();
         inline void send(OMessage *msg);
     };
+    class UserlistCache
+    {
+    public:
+        QString uname;
+        QString status;
+        QString groupStatus;
+        QString ip;
+        QVector<int> p2pPorts;
+        QString avatar;
+    };
 
     explicit OClient();
     virtual ~OClient();
@@ -45,6 +55,7 @@ public:
     Connect *main;//主连接
     QVector<Connect*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
+    QVector<UserlistCache> userlistCache;
 signals:
     void newMsgData(OClient::Connect *connect);//当已经接收到了一个(或多个)完整的数据包后发射
     //发生错误时发射

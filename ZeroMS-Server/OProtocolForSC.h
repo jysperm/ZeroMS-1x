@@ -13,12 +13,14 @@ class OProtocolForSC:public QObject
 public:
     explicit OProtocolForSC();
     void PublicKey(OClient::Connect *connect,QString publicKey);
-    void LoginResult(OClient::Connect *connect,QString status,QHostAddress ip=QHostAddress());
+    void LoginResult(OClient::Connect *connect,QString status,QString ip=QString());
     void Unknown(OClient::Connect *connect);
     void Info(OClient::Connect *connect,QMap<QString,QString> keys);
+    void UserInfo(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistCache> userlist);
 public slots:
     void checkMsg(OClient::Connect *connect);
 signals:
+    void AskUserList(OClient::Connect *connect,QString listname,QString operation,bool isHasAvatar);
     void ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove);
     void AskInfo(OClient::Connect *connect,QStringList keys);
     void Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);

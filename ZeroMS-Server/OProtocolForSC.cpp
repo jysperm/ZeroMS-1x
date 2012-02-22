@@ -18,10 +18,10 @@ void OProtocolForSC::PublicKey(OClient::Connect *connect,QString publicKey)
     connect->send(&msg);
 }
 
-void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QHostAddress ip)
+void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
-    msg.append(status).appendSpace().append(ip.toString());
+    msg.append(status).appendSpace().append(ip);
     connect->send(&msg);
 }
 
@@ -38,6 +38,11 @@ void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
     }
     OMessage msg(M_Info,data);
     connect->send(&msg);
+}
+
+void OProtocolForSC::UserInfo(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistCache> userlist)
+{
+
 }
 
 void OProtocolForSC::Unknown(OClient::Connect *connect)
@@ -88,6 +93,14 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             QString uname=msg.split(0);
             bool isAddOrRemove=(msg.split(1)==REMOVE)?false:true;
             emit ModifyUserList(connect,uname,isAddOrRemove);
+            break;
+        }
+        case M_AskUserList:
+        {
+            QString operation=(msg.split(0)==ALL && msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
+            bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
+            QString listname=msg.split(2);
+            emit AskUserList(connect,listname,operation,isHasAvatar);
             break;
         }
         default:

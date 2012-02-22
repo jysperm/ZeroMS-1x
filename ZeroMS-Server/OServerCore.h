@@ -29,6 +29,7 @@ private:
     ODataBase db;
     QMap<QString,QString> info;
 private slots:
+    void AskUserList(OClient::Connect *connect,QString listname,QString operation,bool isHasAvatar);
     void ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove);
     void AskInfo(OClient::Connect *connect,QStringList keys);
     void Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);

@@ -68,6 +68,11 @@ const QString FORCE = "force";
 const QString HIDEIP = "hideip";
 const QString ADD = "add";
 const QString REMOVE = "remove";
+const QString ALL = "all";
+const QString ONLINE = "online";
+const QString DIFFONLY = "diffonly";
+const QString AVATAR = "avatar";
+const QString NOAVATAR = "noavatar";
 
 inline bool checkVer(int n)
 {

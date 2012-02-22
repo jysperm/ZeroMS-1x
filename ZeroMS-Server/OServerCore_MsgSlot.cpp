@@ -61,6 +61,11 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     connect->publicKey="";
 }
 
+void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString operation,bool isHasAvatar)
+{
+
+}
+
 void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove)
 {
     if(connect->client->isLoged)
@@ -83,7 +88,9 @@ void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool is
         }
     }
     else
+    {//如果没有登录
         protocol.Unknown(connect);
+    }
 }
 
 void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)
