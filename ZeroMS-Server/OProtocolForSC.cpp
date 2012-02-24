@@ -18,6 +18,13 @@ void OProtocolForSC::PublicKey(OClient::Connect *connect,QString publicKey)
     connect->send(&msg);
 }
 
+void UserListChanged(OClient::Connect *connect,QString listname)
+{
+    OMessage msg(M_UserListChanged);
+    msg.append(listname);
+    connect->send(&msg);
+}
+
 void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QString ip)
 {
     OMessage msg(M_LoginResult);

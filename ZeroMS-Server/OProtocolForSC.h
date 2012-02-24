@@ -12,6 +12,7 @@ class OProtocolForSC:public QObject
     Q_OBJECT
 public:
     explicit OProtocolForSC();
+    void UserListChanged(OClient::Connect *connect,QString listname);
     void PublicKey(OClient::Connect *connect,QString publicKey);
     void LoginResult(OClient::Connect *connect,QString status,QString ip=QString());
     void Unknown(OClient::Connect *connect);
