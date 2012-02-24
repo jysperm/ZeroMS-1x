@@ -449,12 +449,12 @@ void ONetworkDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
     }
     if(tcpServerList.contains(item->text()))
     {
-        delete tcpServerList[item->text()];
+        tcpServerList[item->text()]->close();
         tcpServerList.remove(item->text());
     }
     if(tcpList.contains(item->text()))
     {
-        tcpList[item->text()]->abort();
+        tcpList[item->text()]->close();
         tcpList.remove(item->text());
     }
 
