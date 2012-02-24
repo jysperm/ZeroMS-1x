@@ -1,6 +1,7 @@
 ﻿#注意,该文件只新增条目,不要删除!!
 
 *.pro.user
+*.pro.user*
 *.qm
 *.autosave
 *.exe

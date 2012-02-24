@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS `group` (
   `website` text NOT NULL,
   `info` text NOT NULL,
   `avater` varchar(32) NOT NULL,
+  `istemp` tinyint(1) NOT NULL,
   PRIMARY KEY (`gid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 CREATE TABLE IF NOT EXISTS `group_member` (
