@@ -61,9 +61,84 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     connect->publicKey="";
 }
 
+/*
+    class UserlistItem
+    {
+    public:
+        QString uname;
+        QString status;
+        QString groupStatus;
+        QString ip;
+        QVector<int> p2pPorts;
+        QString avatar;
+    };
+  */
+
 void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString operation,bool isHasAvatar)
 {
+    OClient *client=connect->client;
+    QVector<OClient::UserlistItem> allList;
+    if(listname==client->uname)
+    {//如果是在请求一个群的成员列表
+        if(db.checkGroup(listname))
+        {//如果存在这个群
+            QVector<QString> memberList=db.getGroupMembers(listname);
 
+            QVectorIterator<QString> i(memberList);
+            while(i.hasNext())
+            {
+                QString user=i.next();
+                ODataBase::UserInfo userInfo=db.getUserInfo(user);
+                ODataBase::UserGroupStatus groupStatus=db.getGroupStatus(user,listname);
+
+                OClient::UserlistItem item;
+                item.uname=user;
+                item.status=getUserStatus(user);
+                QStringList status;
+                if(groupStatus.isAdmin)
+                    status.append(ADMIN);
+                if(groupStatus.isDeny)
+                    status.append(DENY);
+                item.groupStatus=status.join(",");
+                if(cl[user]->isShowIp)
+                {
+                    item.ip=cl[user]->main->conn->peerAddress().toString();
+
+                    QVectorIterator<int> i(cl[user]->p2pPorts);
+                    while(i.hasNext())
+                        item.p2pPorts.append(i.next());
+                }
+                if(isHasAvatar)
+                    item.avatar=userInfo.avatar;
+
+                allList.append(item);
+            }
+        }
+        else
+        {//如果不存在这个群
+            protocol.Unknown(connect);
+        }
+    }
+    else
+    {//如果是在请求自己的好友列表
+
+    }
+
+
+
+
+    QVector<QString> groups=db.getAllGroup(client->uname);
+    QVectorIterator<QString> iGroup(groups);
+    while(iGroup.hasNext())
+    {
+        ODataBase::GroupInfo info=db.getGroupInfo(iGroup.next());
+        OClient::UserlistItem item;
+        item.uname=QString("%1,%2").arg(info.groupname).arg(info.caption);
+        item.status=ONLINE;
+        if(isHasAvatar)
+            item.avatar=info.avatar;
+        allList.append(item);
+    }
 }
 
 void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove)

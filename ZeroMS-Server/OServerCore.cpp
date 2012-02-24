@@ -49,6 +49,25 @@ void OServerCore::log(QString msg)
     cout<<msg<<endl;
 }
 
+QString OServerCore::getUserStatus(QString uname)
+{
+    if(db.checkUser(uname))
+    {//如果存在这个用户
+        if(cl.contains(uname))
+        {//如果这个用户在线
+            return cl[uname]->status;
+        }
+        else
+        {//如果这个用户不在线
+            return OFFLINE;
+        }
+    }
+    else
+    {//如果不存在这个用户
+        return REMOVED;
+    }
+}
+
 //private slots:
 void OServerCore::onNewConn()
 {

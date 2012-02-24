@@ -20,6 +20,7 @@ public:
     void init();
     void start();
 private:
+    QString getUserStatus(QString uname);
     void log(QString msg);
     QMap<QString,OClient*> cl;
     QTextStream cin;

@@ -19,7 +19,7 @@ OClient::Connect::Connect(QTcpSocket *conn,OClient *client):conn(conn),client(cl
 
 //class OClient
 //public:
-OClient::OClient():isLoged(false),isShowIp(false)
+OClient::OClient():isLoged(false),isShowIp(false),status(ONLINE)
 {
 
 }

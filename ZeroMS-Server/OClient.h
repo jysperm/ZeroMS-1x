@@ -51,11 +51,12 @@ public:
     QString uname;//用户名
     bool isLoged;//是否已经登录
     bool isShowIp;//是否向其他用户展示IP
+    QString status;
 
     Connect *main;//主连接
     QVector<Connect*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    QVector<UserlistItem> userlistCache;
+    QMap<QString,UserlistItem> userlistCache;
 signals:
     void newMsgData(OClient::Connect *connect);//当已经接收到了一个(或多个)完整的数据包后发射
     //发生错误时发射
