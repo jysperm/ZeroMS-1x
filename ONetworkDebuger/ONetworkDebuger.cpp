@@ -441,54 +441,25 @@ void ONetworkDebuger::on_TcpSendAutoFillCurrentTime_clicked(bool checked)
 }
 
 void ONetworkDebuger::on_ConnectList_itemDoubleClicked(QListWidgetItem *item)
-
 {
-
     if(udpList.contains(item->text()))
-
     {
-
         delete udpList[item->text()].conn;
-
         udpList.remove(item->text());
-
-        updateList();
-
-        return ;
-
     }
 
     if(tcpServerList.contains(item->text()))
-
     {
-
         tcpServerList[item->text()]->close();
-
-        //delete tcpServerList[item->text()];
-
         tcpServerList.remove(item->text());
-
-        updateList();
-
-        return ;
-
     }
 
     if(tcpList.contains(item->text()))
-
     {
-
         tcpList[item->text()]->close();
-
-        delete tcpList[item->text()];
-
         tcpList.remove(item->text());
-
-        updateList();
-
-        return ;
-
     }
+
     updateList();
 }
 
