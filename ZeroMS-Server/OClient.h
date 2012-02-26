@@ -30,6 +30,7 @@ public:
     class UserlistItem
     {
     public:
+        inline bool operator==(const UserlistItem other) const;
         QString uname;
         QString status;
         QString groupStatus;
@@ -56,7 +57,7 @@ public:
     Connect *main;//主连接
     QVector<Connect*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    QMap<QString,UserlistItem> userlistCache;
+    QMap<QString,QVector<UserlistItem> > userlistCache;
 signals:
     void newMsgData(OClient::Connect *connect);//当已经接收到了一个(或多个)完整的数据包后发射
     //发生错误时发射
@@ -70,6 +71,16 @@ private slots:
 
 //见OServerCore::OServerCore()中的注释
 Q_DECLARE_METATYPE(OClient::Connect);
+
+inline bool OClient::UserlistItem::operator==(const UserlistItem other) const
+{
+    return (this->uname==other.uname &&
+       this->status==other.status &&
+       this->groupStatus==other.groupStatus &&
+       this->ip==other.ip &&
+       this->p2pPorts==other.p2pPorts &&
+       this->avatar==other.avatar);
+}
 
 inline bool OClient::Connect::isMain()
 {
@@ -87,6 +98,12 @@ inline QString OClient::getSignature()
         return uname;
     else
         return QString("#%1:%2").arg(main->conn->peerAddress().toString()).arg(main->conn->peerPort());
+}
+
+inline QDebug &operator<<(QDebug &debug, const OClient::UserlistItem &item)
+{
+    debug<<item.uname<<item.status<<item.groupStatus<<item.ip<<item.avatar;
+    return debug;
 }
 
 #endif // OCLIENT_H

@@ -49,10 +49,19 @@ public:
         unsigned int regtime;
     };
 
+    class UserListItem
+    {
+    public:
+        int id;
+        QString uname;
+        QString user;
+    };
+
     ODataBase();
     bool checkPWD(QString uname,QString pwd,QString publicKey);
     bool checkUser(QString uname);
     bool checkGroup(QString group);
+    bool checkGroupMember(QString group,QString uname);
     void removeGroupMember(QString group,QString uname);
     void ModifyUserList(QString uname,QString user,bool isAddOrRemove);
     QVector<QString> getAllGroup(QString uname=QString());
@@ -60,6 +69,7 @@ public:
     GroupInfo getGroupInfo(QString group);
     UserInfo getUserInfo(QString uname);
     UserGroupStatus getGroupStatus(QString uname,QString group);
+    QVector<UserListItem> getUserList(QString uname,QString user=QString());
 private:
     QSqlDatabase *dbConn;
 };

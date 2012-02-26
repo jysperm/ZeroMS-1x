@@ -8,9 +8,12 @@
 
 const QString CHECK_USER = "SELECT `pwd` FROM `user` WHERE `uname` = :uname";
 const QString CHECK_GROUP = "SELECT `groupname` FROM `group` WHERE `groupname` = :groupname";
+const QString CHECK_GROUP_MEMBER = "SELECT `groupname` FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
 const QString CHECK_USERLIST = "SELECT `id` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 const QString ALL_GROUP = "SELECT `groupname` FROM `group`";
 const QString GET_GROUP_MEMBER = "SELECT `uname` FROM `group_member` WHERE `groupname` = :groupname";
+const QString GET_USERLIST = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname";
+const QString GET_USERLIST_BY_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 const QString QUERY_GROUP_MEMBER_BY_UNAME = "SELECT `groupname` FROM `group_member` WHERE `uname` = :uname";
 const QString GET_GROUP_STATUS = "SELECT `id`,`group`,`uname`,`isadmin`,`isdeny`,`regtime` FROM `group_member` WHERE `uname` = :uname";
 const QString GET_USER_INFO = "SELECT `uid`,`uname`,`pwd`,`lastlogintime`,`lastloginip`,`regtime`,`onlinetime`,`website`,`info`,`email`,`avatar` FROM `user` WHERE `uname` = :uname";
@@ -67,6 +70,17 @@ bool ODataBase::checkGroup(QString group)
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_GROUP);
     query.bindValue(":groupname",group);
+    query.exec();
+
+    return query.next();
+}
+
+bool ODataBase::checkGroupMember(QString group,QString uname)
+{
+    QSqlQuery query(*dbConn);
+    query.prepare(CHECK_GROUP_MEMBER);
+    query.bindValue(":groupname",group);
+    query.bindValue(":uname",uname);
     query.exec();
 
     return query.next();
@@ -158,6 +172,35 @@ ODataBase::UserGroupStatus ODataBase::getGroupStatus(QString uname,QString group
     info.regtime=query.value(5).toUInt();
 
     return info;
+}
+
+QVector<ODataBase::UserListItem> ODataBase::getUserList(QString uname,QString user)
+{
+    QSqlQuery query(*dbConn);
+    if(user.isEmpty())
+    {
+        query.prepare(GET_USERLIST);
+        query.bindValue(":uname",uname);
+    }
+    else
+    {
+        query.prepare(GET_USERLIST_BY_USER);
+        query.bindValue(":user",user);
+    }
+
+    query.exec();
+
+    QVector<UserListItem> result;
+    while(query.next())
+    {
+        UserListItem item;
+        item.id=query.value(0).toInt();
+        item.uname=query.value(1).toString();
+        item.user=query.value(2).toString();
+        result.append(item);
+    }
+
+    return result;
 }
 
 ODataBase::GroupInfo ODataBase::getGroupInfo(QString group)

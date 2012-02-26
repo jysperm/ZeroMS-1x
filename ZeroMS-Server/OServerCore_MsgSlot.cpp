@@ -61,27 +61,14 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     connect->publicKey="";
 }
 
-/*
-    class UserlistItem
-    {
-    public:
-        QString uname;
-        QString status;
-        QString groupStatus;
-        QString ip;
-        QVector<int> p2pPorts;
-        QString avatar;
-    };
-  */
-
 void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString operation,bool isHasAvatar)
 {
     OClient *client=connect->client;
     QVector<OClient::UserlistItem> allList;
-    if(listname==client->uname)
+    if(listname!=client->uname)
     {//如果是在请求一个群的成员列表
-        if(db.checkGroup(listname))
-        {//如果存在这个群
+        if(db.checkGroup(listname) && db.checkGroupMember(listname,client->uname))
+        {//如果存在这个群,且是这个群的成员
             QVector<QString> memberList=db.getGroupMembers(listname);
 
             QVectorIterator<QString> i(memberList);
@@ -92,6 +79,22 @@ void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString
                 ODataBase::UserGroupStatus groupStatus=db.getGroupStatus(user,listname);
 
                 OClient::UserlistItem item;
+                if(!cl.contains(user))
+                {//如果这个用户不在线
+                    if(operation==ONLINE)
+                        continue;
+                }
+                else
+                {//如果这个用户在线
+                    if(cl[user]->isShowIp)
+                    {
+                        item.ip=cl[user]->main->conn->peerAddress().toString();
+
+                        QVectorIterator<int> i(cl[user]->p2pPorts);
+                        while(i.hasNext())
+                            item.p2pPorts.append(i.next());
+                    }
+                }
                 item.uname=user;
                 item.status=getUserStatus(user);
                 QStringList status;
@@ -100,14 +103,6 @@ void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString
                 if(groupStatus.isDeny)
                     status.append(DENY);
                 item.groupStatus=status.join(",");
-                if(cl[user]->isShowIp)
-                {
-                    item.ip=cl[user]->main->conn->peerAddress().toString();
-
-                    QVectorIterator<int> i(cl[user]->p2pPorts);
-                    while(i.hasNext())
-                        item.p2pPorts.append(i.next());
-                }
                 if(isHasAvatar)
                     item.avatar=userInfo.avatar;
 
@@ -115,30 +110,99 @@ void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString
             }
         }
         else
-        {//如果不存在这个群
+        {//如果不存在这个群，或不是这个群的成员
             protocol.Unknown(connect);
+            return;
         }
     }
     else
     {//如果是在请求自己的好友列表
+        QVector<QString> groups=db.getAllGroup(client->uname);
+        QVectorIterator<QString> iGroup(groups);
+        while(iGroup.hasNext())
+        {
+            ODataBase::GroupInfo info=db.getGroupInfo(iGroup.next());
+            OClient::UserlistItem item;
+            item.uname=QString("*%1,%2").arg(info.groupname).arg(info.caption);
+            item.status=ONLINE;
+            if(isHasAvatar)
+                item.avatar=info.avatar;
+            allList.append(item);
+        }
 
+        QVector<ODataBase::UserListItem> userlist=db.getUserList(client->uname);
+        QVectorIterator<ODataBase::UserListItem> iUserlist(userlist);
+        while(iUserlist.hasNext())
+        {
+            ODataBase::UserListItem listItem=iUserlist.next();
+            OClient::UserlistItem item;
+            ODataBase::UserInfo userInfo=db.getUserInfo(listItem.user);
+            if(!cl.contains(listItem.user))
+            {//如果这个用户不在线
+                if(operation==ONLINE)
+                    continue;
+            }
+            else
+            {//如果这个用户在线
+                if(cl[listItem.user]->isShowIp)
+                {
+                    item.ip=cl[listItem.user]->main->conn->peerAddress().toString();
+
+                    QVectorIterator<int> i(cl[listItem.user]->p2pPorts);
+                    while(i.hasNext())
+                        item.p2pPorts.append(i.next());
+                }
+            }
+            item.uname=listItem.user;
+            item.status=getUserStatus(listItem.user);
+            if(isHasAvatar)
+                item.avatar=userInfo.avatar;
+
+            allList.append(item);
+        }
     }
 
+    QVector<OClient::UserlistItem> *cache=&(connect->client->userlistCache[listname]);
+    QVector<OClient::UserlistItem> result;
 
-
-
-    QVector<QString> groups=db.getAllGroup(client->uname);
-    QVectorIterator<QString> iGroup(groups);
-    while(iGroup.hasNext())
+    QVectorIterator<OClient::UserlistItem> iAll(allList),iCache(*cache);
+    while(iAll.hasNext())
     {
-        ODataBase::GroupInfo info=db.getGroupInfo(iGroup.next());
-        OClient::UserlistItem item;
-        item.uname=QString("%1,%2").arg(info.groupname).arg(info.caption);
-        item.status=ONLINE;
-        if(isHasAvatar)
-            item.avatar=info.avatar;
-        allList.append(item);
+        OClient::UserlistItem item=iAll.next();
+
+        if(!iCache.findNext(item))
+            result.append(item);
+        iCache.toFront();
     }
+
+    while(iCache.hasNext())
+    {
+        OClient::UserlistItem item=iCache.next();
+
+        if(!iAll.findNext(item))
+        {
+            if(item.uname.left(1)=="*")
+            {//如果是一个群
+                item.status=REMOVED;
+            }
+            else if(!db.getUserList(client->uname,item.uname).isEmpty())
+            {//如果是一个用户，且这个用户还在用户列表中
+               item.status=OFFLINE;
+            }
+            else
+            {//如果这个用户已经不在用户列表中了
+                item.status=REMOVED;
+            }
+
+            result.append(item);
+        }
+    }
+
+    *cache=allList;
+
+    protocol.UserList(connect,listname,operation,result);
+
+    qDebug()<<allList;
 }
 
 void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove)
