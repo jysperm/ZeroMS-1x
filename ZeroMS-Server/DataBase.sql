@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS `group` (
   `regtime` int(11) unsigned NOT NULL,
   `website` text NOT NULL,
   `info` text NOT NULL,
-  `avater` varchar(32) NOT NULL,
+  `avatar` varchar(32) NOT NULL,
   `istemp` tinyint(1) NOT NULL,
   PRIMARY KEY (`gid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;

@@ -15,7 +15,7 @@ const QString GET_GROUP_MEMBER = "SELECT `uname` FROM `group_member` WHERE `grou
 const QString GET_USERLIST = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname";
 const QString GET_USERLIST_BY_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 const QString QUERY_GROUP_MEMBER_BY_UNAME = "SELECT `groupname` FROM `group_member` WHERE `uname` = :uname";
-const QString GET_GROUP_STATUS = "SELECT `id`,`group`,`uname`,`isadmin`,`isdeny`,`regtime` FROM `group_member` WHERE `uname` = :uname";
+const QString GET_GROUP_STATUS = "SELECT `id`,`groupname`,`uname`,`isadmin`,`isdeny`,`regtime` FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
 const QString GET_USER_INFO = "SELECT `uid`,`uname`,`pwd`,`lastlogintime`,`lastloginip`,`regtime`,`onlinetime`,`website`,`info`,`email`,`avatar` FROM `user` WHERE `uname` = :uname";
 const QString GET_GROUP_INFO = "SELECT `gid`,`groupname`,`caption`,`master`,`regtime`,`website`,`info`,`avatar`,`istemp` FROM `group` WHERE `groupname` = :groupname";
 const QString USERLIST_ADD = "INSERT INTO `userlist` (`uname`,`user`) VALUES (:uname,:user)";
@@ -139,6 +139,8 @@ ODataBase::UserInfo ODataBase::getUserInfo(QString uname)
     query.bindValue(":uname",uname);
     query.exec();
 
+    query.next();
+
     UserInfo info;
     info.uid=query.value(0).toInt();
     info.uname=query.value(1).toString();
@@ -162,6 +164,8 @@ ODataBase::UserGroupStatus ODataBase::getGroupStatus(QString uname,QString group
     query.bindValue(":groupname",group);
     query.bindValue(":uname",uname);
     query.exec();
+
+    query.next();
 
     UserGroupStatus info;
     info.id=query.value(0).toInt();
@@ -209,6 +213,8 @@ ODataBase::GroupInfo ODataBase::getGroupInfo(QString group)
     query.prepare(GET_GROUP_INFO);
     query.bindValue(":groupname",group);
     query.exec();
+
+    query.next();
 
     GroupInfo info;
     info.gid=query.value(0).toInt();

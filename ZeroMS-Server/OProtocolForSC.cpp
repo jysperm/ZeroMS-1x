@@ -50,6 +50,7 @@ void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
 void OProtocolForSC::UserList(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
 {
     QByteArray data;
+    data.append(QString("%1 %2 ").arg(operation).arg(listname));
     QVectorIterator<OClient::UserlistItem> i(userlist);
     while(i.hasNext())
     {
@@ -67,7 +68,7 @@ void OProtocolForSC::UserList(OClient::Connect *connect,QString listname,QString
         int iData=0;
         while(iData++)
         {
-            if(data.right(iData).left(1)!="")
+            if(data.right(iData).left(1)!=":")
                 break;
         }
         data=data.left(data.length()-(iData-1));
@@ -131,7 +132,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
         }
         case M_AskUserList:
         {
-            QString operation=(msg.split(0)==ALL && msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
+            QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
             bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
             QString listname=msg.split(2);
             emit AskUserList(connect,listname,operation,isHasAvatar);

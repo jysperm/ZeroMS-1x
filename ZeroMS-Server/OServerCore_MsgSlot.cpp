@@ -9,7 +9,9 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
     if(connect->client->isLoged)//如果已经登录了
         protocol.LoginResult(connect,ALREADY);
 
-    if(!connect->publicKey.isEmpty() && db.checkPWD(uname,pwdHash,connect->publicKey))
+    //测试用代码
+    if((true) || !connect->publicKey.isEmpty() && db.checkPWD(uname,pwdHash,connect->publicKey))
+    //if(!connect->publicKey.isEmpty() && db.checkPWD(uname,pwdHash,connect->publicKey))
     {//如果已经申请过公钥，且密码正确
         OClient *client=connect->client;
         if(isMain)
@@ -67,6 +69,7 @@ void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString
     QVector<OClient::UserlistItem> allList;
     if(listname!=client->uname)
     {//如果是在请求一个群的成员列表
+        listname=listname.remove(0,1);//移除星号
         if(db.checkGroup(listname) && db.checkGroupMember(listname,client->uname))
         {//如果存在这个群,且是这个群的成员
             QVector<QString> memberList=db.getGroupMembers(listname);
@@ -163,46 +166,50 @@ void OServerCore::AskUserList(OClient::Connect *connect,QString listname,QString
     }
 
     QVector<OClient::UserlistItem> *cache=&(connect->client->userlistCache[listname]);
-    QVector<OClient::UserlistItem> result;
 
-    QVectorIterator<OClient::UserlistItem> iAll(allList),iCache(*cache);
-    while(iAll.hasNext())
+    if(operation==DIFFONLY)
     {
-        OClient::UserlistItem item=iAll.next();
+        QVector<OClient::UserlistItem> result;
 
-        if(!iCache.findNext(item))
-            result.append(item);
-        iCache.toFront();
-    }
-
-    while(iCache.hasNext())
-    {
-        OClient::UserlistItem item=iCache.next();
-
-        if(!iAll.findNext(item))
+        QVectorIterator<OClient::UserlistItem> iAll(allList),iCache(*cache);
+        while(iAll.hasNext())
         {
-            if(item.uname.left(1)=="*")
-            {//如果是一个群
-                item.status=REMOVED;
-            }
-            else if(!db.getUserList(client->uname,item.uname).isEmpty())
-            {//如果是一个用户，且这个用户还在用户列表中
-               item.status=OFFLINE;
-            }
-            else
-            {//如果这个用户已经不在用户列表中了
-                item.status=REMOVED;
-            }
+            OClient::UserlistItem item=iAll.next();
 
-            result.append(item);
+            if(!iCache.findNext(item))
+                result.append(item);
+            iCache.toFront();
         }
+
+        while(iCache.hasNext())
+        {
+            OClient::UserlistItem item=iCache.next();
+
+            iAll.toFront();
+            if(!iAll.findNext(item))
+            {
+                if(item.uname.left(1)=="*")
+                {//如果是一个群
+                    item.status=REMOVED;
+                }
+                else if(!db.getUserList(client->uname,item.uname).isEmpty())
+                {//如果是一个用户，且这个用户还在用户列表中
+                   item.status=OFFLINE;
+                }
+                else
+                {//如果这个用户已经不在用户列表中了
+                    item.status=REMOVED;
+                }
+
+                result.append(item);
+            }
+        }
+        protocol.UserList(connect,listname,operation,result);
     }
 
     *cache=allList;
 
-    protocol.UserList(connect,listname,operation,result);
-
-    qDebug()<<allList;
+    protocol.UserList(connect,listname,operation,allList);
 }
 
 void OServerCore::ModifyUserList(OClient::Connect *connect,QString uname,bool isAddOrRemove)
