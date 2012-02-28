@@ -49,6 +49,8 @@ const int M_AskConfigurationData = 35;
 const int M_ConfigurationValue = 36;
 const int M_CreateConfigurationData = 37;
 const int M_RemoveConfigurationKey = 38;
+const int M_ProcessError = 39;
+const int M_OK = 40;
 
 const QString OK = "ok";
 const QString PWDERR = "pwderr";
@@ -172,6 +174,10 @@ inline QString num2String(int type)
             return "M_CreateConfigurationData";
         case 38:
             return "M_RemoveConfigurationKey";
+        case 39:
+            return "M_ProcessError";
+        case 40:
+            return "M_OK";
         default:
             return "";
     }
