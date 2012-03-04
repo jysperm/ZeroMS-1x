@@ -68,6 +68,11 @@ QString OServerCore::getUserStatus(QString uname)
     }
 }
 
+void OServerCore::userListChange(QString uname)
+{
+
+}
+
 //private slots:
 void OServerCore::onNewConn()
 {

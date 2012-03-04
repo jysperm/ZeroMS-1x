@@ -21,6 +21,7 @@ public:
     void start();
 private:
     QString getUserStatus(QString uname);
+    void userListChange(QString uname);
     void log(QString msg);
     QMap<QString,OClient*> cl;
     QTextStream cin;
