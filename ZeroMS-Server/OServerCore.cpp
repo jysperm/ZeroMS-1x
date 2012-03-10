@@ -100,6 +100,7 @@ void OServerCore::userListChange(QString uname)
             }
         }
     }
+
 }
 
 //private slots:
