@@ -68,6 +68,40 @@ QString OServerCore::getUserStatus(QString uname)
     }
 }
 
+void OServerCore::userListChange(QString uname)
+{
+    QVector<ODataBase::UserListItem> userlist=db.getUserListByUser(uname);
+    QVectorIterator<ODataBase::UserListItem> iUserList(userlist);
+    while(iUserList.hasNext())
+    {
+        ODataBase::UserListItem item=iUserList.next();
+
+        if(getUserStatus(item.user)==ONLINE)
+        {
+            protocol.UserListChanged(cl[item.user]->main,item.user);
+        }
+    }
+
+    QVector<QString> groups=db.getAllGroup(uname);
+    QVectorIterator<QString> iGroups(groups);
+    while(iGroups.hasNext())
+    {
+        QString group=iGroups.next();
+        QVector<QString> members=db.getGroupMembers(group);
+
+        QVectorIterator<QString> iMember(members);
+        while(iMember.hasNext())
+        {
+            QString user=iMember.next();
+
+            if(getUserStatus(user)==ONLINE)
+            {
+                protocol.UserListChanged(cl[user]->main,QString("*%1").arg(group));
+            }
+        }
+    }
+}
+
 //private slots:
 void OServerCore::onNewConn()
 {

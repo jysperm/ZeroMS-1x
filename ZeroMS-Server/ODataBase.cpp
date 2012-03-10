@@ -13,7 +13,8 @@ const QString CHECK_USERLIST = "SELECT `id` FROM `userlist` WHERE `uname` = :una
 const QString ALL_GROUP = "SELECT `groupname` FROM `group`";
 const QString GET_GROUP_MEMBER = "SELECT `uname` FROM `group_member` WHERE `groupname` = :groupname";
 const QString GET_USERLIST = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname";
-const QString GET_USERLIST_BY_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
+const QString GET_USERLIST_BY_UNAME_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
+const QString GET_USERLIST_BY_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `user` = :user";
 const QString QUERY_GROUP_MEMBER_BY_UNAME = "SELECT `groupname` FROM `group_member` WHERE `uname` = :uname";
 const QString GET_GROUP_STATUS = "SELECT `id`,`groupname`,`uname`,`isadmin`,`isdeny`,`regtime` FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
 const QString GET_USER_INFO = "SELECT `uid`,`uname`,`pwd`,`lastlogintime`,`lastloginip`,`regtime`,`onlinetime`,`website`,`info`,`email`,`avatar` FROM `user` WHERE `uname` = :uname";
@@ -188,9 +189,32 @@ QVector<ODataBase::UserListItem> ODataBase::getUserList(QString uname,QString us
     }
     else
     {
-        query.prepare(GET_USERLIST_BY_USER);
+        query.prepare(GET_USERLIST_BY_UNAME_USER);
+        query.bindValue(":uname",uname);
         query.bindValue(":user",user);
     }
+
+    query.exec();
+
+    QVector<UserListItem> result;
+    while(query.next())
+    {
+        UserListItem item;
+        item.id=query.value(0).toInt();
+        item.uname=query.value(1).toString();
+        item.user=query.value(2).toString();
+        result.append(item);
+    }
+
+    return result;
+}
+
+QVector<ODataBase::UserListItem> ODataBase::getUserListByUser(QString user)
+{
+    QSqlQuery query(*dbConn);
+
+    query.prepare(GET_USERLIST_BY_USER);
+    query.bindValue(":user",user);
 
     query.exec();
 

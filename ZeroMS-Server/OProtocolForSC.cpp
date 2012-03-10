@@ -18,7 +18,7 @@ void OProtocolForSC::PublicKey(OClient::Connect *connect,QString publicKey)
     connect->send(&msg);
 }
 
-void UserListChanged(OClient::Connect *connect,QString listname)
+void OProtocolForSC::UserListChanged(OClient::Connect *connect,QString listname)
 {
     OMessage msg(M_UserListChanged);
     msg.append(listname);

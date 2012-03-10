@@ -70,6 +70,7 @@ public:
     UserInfo getUserInfo(QString uname);
     UserGroupStatus getGroupStatus(QString uname,QString group);
     QVector<UserListItem> getUserList(QString uname,QString user=QString());
+    QVector<UserListItem> getUserListByUser(QString user);
 private:
     QSqlDatabase *dbConn;
 };
