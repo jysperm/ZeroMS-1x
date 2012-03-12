@@ -36,6 +36,7 @@ void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,
             client->isShowIp=isShowIp;
             (client->p2pPorts)<<p2pPort;
             protocol.LoginResult(connect,OK);
+            userListChange(uname);
         }
         else
         {//如果是次要连接

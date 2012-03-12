@@ -76,7 +76,7 @@ void OServerCore::userListChange(QString uname)
     {
         ODataBase::UserListItem item=iUserList.next();
 
-        if(getUserStatus(item.user)==ONLINE)
+        if(cl.contains(item.user))
         {
             protocol.UserListChanged(cl[item.user]->main,item.user);
         }
@@ -94,7 +94,7 @@ void OServerCore::userListChange(QString uname)
         {
             QString user=iMember.next();
 
-            if(getUserStatus(user)==ONLINE)
+            if(cl.contains(user))
             {
                 protocol.UserListChanged(cl[user]->main,QString("*%1").arg(group));
             }
@@ -145,6 +145,7 @@ void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket:
         QString uname=connect->client->getSignature();
         delete cl[uname];
         cl.remove(uname);
+        userListChange(uname);
     }
 }
 
