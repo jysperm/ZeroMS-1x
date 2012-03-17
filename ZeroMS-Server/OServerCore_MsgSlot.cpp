@@ -4,10 +4,11 @@
 //private slots:
 void OServerCore::Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp)
 {
-    qDebug()<<Q_FUNC_INFO;
-
     if(connect->client->isLoged)//如果已经登录了
+    {
         protocol.LoginResult(connect,ALREADY);
+        return;
+    }
 
     //测试用代码
     if((true) || !connect->publicKey.isEmpty() && db.checkPWD(uname,pwdHash,connect->publicKey))

@@ -76,9 +76,9 @@ void OServerCore::userListChange(QString uname)
     {
         ODataBase::UserListItem item=iUserList.next();
 
-        if(cl.contains(item.user))
+        if(cl.contains(item.uname))
         {
-            protocol.UserListChanged(cl[item.user]->main,item.user);
+            protocol.UserListChanged(cl[item.uname]->main,item.uname);
         }
     }
 
