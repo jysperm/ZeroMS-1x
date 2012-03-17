@@ -26,6 +26,7 @@ signals:
     void AskInfo(OClient::Connect *connect,QStringList keys);
     void Login(OClient::Connect *connect,QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey(OClient::Connect *connect);
+    void State(OClient::Connect *connect,QString status);
 };
 
 #endif // OPROTOCOLFORSC_H

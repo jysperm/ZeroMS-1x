@@ -261,6 +261,16 @@ void OServerCore::AskInfo(OClient::Connect *connect,QStringList keys)
     protocol.Info(connect,result);
 }
 
+void OServerCore::State(OClient::Connect *connect,QString status)
+{
+    if(connect->client->status!=status)
+    {
+        connect->client->status=status;
+        userListChange(connect->client->uname);
+    }
+}
+
+
 void OServerCore::AskPublicKey(OClient::Connect *connect)
 {
     QByteArray key;

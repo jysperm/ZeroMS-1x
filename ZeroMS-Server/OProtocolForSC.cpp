@@ -138,6 +138,14 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             emit AskUserList(connect,listname,operation,isHasAvatar);
             break;
         }
+        case M_State:
+        {
+            QString status=msg.split(0);
+            if(!(status==BORED || status==BUZY || status==AWAY))
+                status==ONLINE;
+            emit State(connect,status);
+            break;
+        }
         default:
         {
             Unknown(connect);

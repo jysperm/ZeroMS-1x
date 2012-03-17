@@ -38,6 +38,7 @@ private slots:
     void AskPublicKey(OClient::Connect *connect);
     void onNewConn();
     void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);
+    void State(OClient::Connect *connect,QString stauts);
 };
 
 #endif // OSERVERCORE_H
