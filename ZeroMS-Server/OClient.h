@@ -27,17 +27,7 @@ public:
         inline bool isMain();
         inline void send(OMessage *msg);
     };
-    class UserlistItem
-    {
-    public:
-        inline bool operator==(const UserlistItem other) const;
-        QString uname;
-        QString status;
-        QString groupStatus;
-        QString ip;
-        QVector<int> p2pPorts;
-        QString avatar;
-    };
+
 
     explicit OClient();
     virtual ~OClient();
@@ -71,16 +61,6 @@ private slots:
 
 //见OServerCore::OServerCore()中的注释
 Q_DECLARE_METATYPE(OClient::Connect);
-
-inline bool OClient::UserlistItem::operator==(const UserlistItem other) const
-{
-    return (this->uname==other.uname &&
-       this->status==other.status &&
-       this->groupStatus==other.groupStatus &&
-       this->ip==other.ip &&
-       this->p2pPorts==other.p2pPorts &&
-       this->avatar==other.avatar);
-}
 
 inline bool OClient::Connect::isMain()
 {

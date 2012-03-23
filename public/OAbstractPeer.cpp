@@ -1,38 +1,47 @@
 #include <QTcpSocket>
 #include <QDateTime>
 #include <QStringList>
-#include "OProtocolForSC.h"
-#include "../public/OMessage.h"
-#include "../public/OGlobal.h"
+#include "OAbstractPeer.h"
+#include "OMessage.h"
 
-OProtocolForSC::OProtocolForSC()
+OAbstractPeer::OAbstractPeer(QTcpSocket *connect):conn(connect)
 {
 
 }
 
-void OProtocolForSC::PublicKey(OClient::Connect *connect,QString publicKey)
+OAbstractPeer::~OAbstractPeer()
+{
+
+}
+
+void OAbstractPeer::init()
+{
+
+}
+
+void OAbstractPeer::PublicKey(QString publicKey)
 {
     QByteArray key;
     key.append(publicKey);
     OMessage msg(M_PublicKey,key);
-    connect->send(&msg);
+    send(&msg);
 }
 
-void OProtocolForSC::UserListChanged(OClient::Connect *connect,QString listname)
+void OAbstractPeer::UserListChanged(QString listname)
 {
     OMessage msg(M_UserListChanged);
     msg.append(listname);
-    connect->send(&msg);
+    send(&msg);
 }
 
-void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QString ip)
+void OAbstractPeer::LoginResult(QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
     msg.append(status).appendSpace().append(ip);
-    connect->send(&msg);
+    send(&msg);
 }
 
-void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
+void OAbstractPeer::Info(QMap<QString,QString> keys)
 {
     QByteArray data;
     QMapIterator<QString,QString> i(keys);
@@ -44,17 +53,17 @@ void OProtocolForSC::Info(OClient::Connect *connect,QMap<QString,QString> keys)
             data.append(";");
     }
     OMessage msg(M_Info,data);
-    connect->send(&msg);
+    send(&msg);
 }
 
-void OProtocolForSC::UserList(OClient::Connect *connect,QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
+void OAbstractPeer::UserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
 {
     QByteArray data;
     data.append(QString("%1 %2 ").arg(operation).arg(listname));
-    QVectorIterator<OClient::UserlistItem> i(userlist);
+    QVectorIterator<OUserlistItem> i(userlist);
     while(i.hasNext())
     {
-        OClient::UserlistItem item=i.next();
+        OUserlistItem item=i.next();
         QStringList p2pPorts;
         QVectorIterator<int> iP2p(item.p2pPorts);
         while(iP2p.hasNext())
@@ -77,23 +86,23 @@ void OProtocolForSC::UserList(OClient::Connect *connect,QString listname,QString
             data.append(";");
     }
     OMessage msg(M_UserList,data);
-    connect->send(&msg);
+    send(&msg);
 }
 
-void OProtocolForSC::Unknown(OClient::Connect *connect)
+void OAbstractPeer::Unknown()
 {
     QByteArray data;
     data.append((*config)["UNKNOWN"].toString());
     OMessage msgMsg(M_Unknown,data);
-    connect->send(&msgMsg);
-    connect->databuf.clear();
+    send(&msgMsg);
+    databuf.clear();
 }
 
-void OProtocolForSC::checkMsg(OClient::Connect *connect)
+void OAbstractPeer::checkMsg()
 {
     while(true)
     {
-        OMessage msg=OMessage::fromDataBuff(&connect->databuf);
+        OMessage msg=OMessage::fromDataBuff(&databuf);
         if(msg.isEmpty())
             break;
         switch(msg.type)
@@ -111,7 +120,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             bool isMain=(msg.split(3)==SUB)?false:true;
             bool isForce=(msg.split(4)==FORCE)?true:false;
             bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
-            emit Login(connect,uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+            emit Login(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
             break;
         }
         case M_AskInfo:
@@ -121,7 +130,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             break;
         }
         case M_AskPublicKey:
-            emit AskPublicKey(connect);
+            emit AskPublicKey();
             break;
         case M_ModifyUserList:
         {
@@ -129,7 +138,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             QString uname=msg.split(1);
             bool isAddOrRemove=(msg.split(2)==REMOVE)?false:true;
             QString messages=msg.split(3);
-            emit ModifyUserList(connect,listname,uname,isAddOrRemove,messages);
+            emit ModifyUserList(listname,uname,isAddOrRemove,messages);
             break;
         }
         case M_AskUserList:
@@ -137,7 +146,7 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
             bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
             QString listname=msg.split(2);
-            emit AskUserList(connect,listname,operation,isHasAvatar);
+            emit AskUserList(listname,operation,isHasAvatar);
             break;
         }
         case M_State:
@@ -145,13 +154,14 @@ void OProtocolForSC::checkMsg(OClient::Connect *connect)
             QString status=msg.split(0);
             if(!(status==BORED || status==BUZY || status==AWAY))
                 status==ONLINE;
-            emit State(connect,status);
+            emit State(status);
             break;
         }
         default:
         {
-            Unknown(connect);
+            Unknown();
         }
         }
     }
 }
+
