@@ -13,7 +13,7 @@ class OClientPeer:public OAbstractPeer
 {
     Q_OBJECT
 public:
-    explicit OClientPeer();
+    explicit OClientPeer(QTcpSocket *connect=0);
 
     inline bool isMain();
     OPeerType getPeerType();

@@ -17,7 +17,10 @@ OAbstractPeer::~OAbstractPeer()
 void OAbstractPeer::onError(QAbstractSocket::SocketError s)
 {
     if(conn)
-    {//如果存在连接，那么发射error信号，然后断开conn的所有信号槽，回收conn，清空缓冲区
+    {
+        //如果存在连接，那么发射error信号，然后断开conn的所有信号槽，回收conn，清空缓冲区
+        //这个类的情况就是这样：如果出错了，就表示这个类将要被销毁了
+        //发射信号也是为了通知它的所有者销毁该类
         emit error(this,conn->errorString(),s);
         disconnect(conn,this);
         collect();

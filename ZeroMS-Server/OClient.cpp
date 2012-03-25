@@ -5,6 +5,11 @@ OPeerType OClientPeer::getPeerType()
     return ClientPeer;
 }
 
+OClientPeer(QTcpSocket *connect):OAbstractPeer(connect)
+{
+
+}
+
 //class OClient::Connect
 //public:
 OClient::Connect::Connect():conn(0),client(0)
