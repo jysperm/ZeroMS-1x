@@ -11,15 +11,34 @@ OAbstractPeer::OAbstractPeer(QTcpSocket *connect):conn(connect)
 
 OAbstractPeer::~OAbstractPeer()
 {
+    collect();
+}
 
+void OAbstractPeer::onError(QAbstractSocket::SocketError s)
+{
+    if(conn)
+    {//如果存在连接，那么发射error信号，然后断开conn的所有信号槽，回收conn，清空缓冲区
+        emit error(this,conn->errorString(),s);
+        disconnect(conn,this);
+        collect();
+    }
 }
 
 void OAbstractPeer::init()
 {
-
+    if(!conn)
+        qErrnoWarning(Q_FUNC_INFO+tr(" 必须在给conn设置值后再调用init()"));
+    connect(conn,SIGNAL(readyRead()),this,SLOT(checkMsg()));
+    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 }
 
-void OAbstractPeer::PublicKey(QString publicKey)
+void OAbstractPeer::collect()
+{
+    delete conn;
+    conn=0;
+}
+
+void OAbstractPeer::SCPublicKey(QString publicKey)
 {
     QByteArray key;
     key.append(publicKey);
@@ -27,21 +46,21 @@ void OAbstractPeer::PublicKey(QString publicKey)
     send(&msg);
 }
 
-void OAbstractPeer::UserListChanged(QString listname)
+void OAbstractPeer::SCUserListChanged(QString listname)
 {
     OMessage msg(M_UserListChanged);
     msg.append(listname);
     send(&msg);
 }
 
-void OAbstractPeer::LoginResult(QString status,QString ip)
+void OAbstractPeer::SCLoginResult(QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
-    msg.append(status).appendSpace().append(ip);
+    msg.append(status).aSpc().append(ip);
     send(&msg);
 }
 
-void OAbstractPeer::Info(QMap<QString,QString> keys)
+void OAbstractPeer::SCInfo(QMap<QString,QString> keys)
 {
     QByteArray data;
     QMapIterator<QString,QString> i(keys);
@@ -56,7 +75,7 @@ void OAbstractPeer::Info(QMap<QString,QString> keys)
     send(&msg);
 }
 
-void OAbstractPeer::UserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
+void OAbstractPeer::SCUserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
 {
     QByteArray data;
     data.append(QString("%1 %2 ").arg(operation).arg(listname));
@@ -89,7 +108,7 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OClient:
     send(&msg);
 }
 
-void OAbstractPeer::Unknown()
+void OAbstractPeer::SCUnknown()
 {
     QByteArray data;
     data.append((*config)["UNKNOWN"].toString());
@@ -98,6 +117,8 @@ void OAbstractPeer::Unknown()
     databuf.clear();
 }
 
+
+
 void OAbstractPeer::checkMsg()
 {
     while(true)
@@ -105,62 +126,75 @@ void OAbstractPeer::checkMsg()
         OMessage msg=OMessage::fromDataBuff(&databuf);
         if(msg.isEmpty())
             break;
-        switch(msg.type)
+        if(getPeerType()==ClientPeer)
         {
-        case M_Login:
-        {
-            QString uname=msg.split(0);
-            QString pwdHash=msg.split(1);
-            QStringList ports=msg.split(2).split(",");
-            QVector<int> p2pPort;
+            switch(msg.type)
+            {
+                case M_Login:
+                {
+                    QString uname=msg.split(0);
+                    QString pwdHash=msg.split(1);
+                    QStringList ports=msg.split(2).split(",");
+                    QVector<int> p2pPort;
 
-            QListIterator<QString> i(ports);
-            while(i.hasNext())
-                p2pPort.append(i.next().toInt());
-            bool isMain=(msg.split(3)==SUB)?false:true;
-            bool isForce=(msg.split(4)==FORCE)?true:false;
-            bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
-            emit Login(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
-            break;
+                    QListIterator<QString> i(ports);
+                    while(i.hasNext())
+                        p2pPort.append(i.next().toInt());
+                    bool isMain=(msg.split(3)==SUB)?false:true;
+                    bool isForce=(msg.split(4)==FORCE)?true:false;
+                    bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
+                    emit CSLogin(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+                    break;
+                }
+                case M_AskInfo:
+                {
+                    QStringList keys=msg.split(0).split(",");
+                    emit CSAskInfo(connect,keys);
+                    break;
+                }
+                case M_AskPublicKey:
+                    emit CSAskPublicKey();
+                    break;
+                case M_ModifyUserList:
+                {
+                    QString listname=msg.split(0);
+                    QString uname=msg.split(1);
+                    bool isAddOrRemove=(msg.split(2)==REMOVE)?false:true;
+                    QString messages=msg.split(3);
+                    emit CSModifyUserList(listname,uname,isAddOrRemove,messages);
+                    break;
+                }
+                case M_AskUserList:
+                {
+                    QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
+                    bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
+                    QString listname=msg.split(2);
+                    emit CSAskUserList(listname,operation,isHasAvatar);
+                    break;
+                }
+                case M_State:
+                {
+                    QString status=msg.split(0);
+                    if(!(status==BORED || status==BUZY || status==AWAY))
+                        status==ONLINE;
+                    emit CSState(status);
+                    break;
+                }
+                default:
+                {
+                    SCUnknown();
+                }
+            }
         }
-        case M_AskInfo:
+        else
         {
-            QStringList keys=msg.split(0).split(",");
-            emit AskInfo(connect,keys);
-            break;
-        }
-        case M_AskPublicKey:
-            emit AskPublicKey();
-            break;
-        case M_ModifyUserList:
-        {
-            QString listname=msg.split(0);
-            QString uname=msg.split(1);
-            bool isAddOrRemove=(msg.split(2)==REMOVE)?false:true;
-            QString messages=msg.split(3);
-            emit ModifyUserList(listname,uname,isAddOrRemove,messages);
-            break;
-        }
-        case M_AskUserList:
-        {
-            QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
-            bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
-            QString listname=msg.split(2);
-            emit AskUserList(listname,operation,isHasAvatar);
-            break;
-        }
-        case M_State:
-        {
-            QString status=msg.split(0);
-            if(!(status==BORED || status==BUZY || status==AWAY))
-                status==ONLINE;
-            emit State(status);
-            break;
-        }
-        default:
-        {
-            Unknown();
-        }
+            switch(msg.type)
+            {
+                default:
+                {
+                    SCUnknown();
+                }
+            }
         }
     }
 }

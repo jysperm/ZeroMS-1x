@@ -28,7 +28,7 @@ void OProtocolForSC::UserListChanged(OClient::Connect *connect,QString listname)
 void OProtocolForSC::LoginResult(OClient::Connect *connect,QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
-    msg.append(status).appendSpace().append(ip);
+    msg.append(status).aSpc().append(ip);
     connect->send(&msg);
 }
 

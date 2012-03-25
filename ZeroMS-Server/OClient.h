@@ -6,29 +6,27 @@
 #include <QHostAddress>
 #include <QVector>
 #include "global.h"
+#include "../public/OAbstractPeer.h"
 #include "../public/OMessage.h"
+
+class OClientPeer:public OAbstractPeer
+{
+    Q_OBJECT
+public:
+    explicit OClientPeer();
+
+    inline bool isMain();
+    OPeerType getPeerType();
+
+    OClient *client;
+    QString publicKey;//公钥
+};
 
 class OClient:public QObject
 {
     //该类抽象一个客户端对象
     Q_OBJECT
 public:
-    class Connect
-    {
-        //该类抽象一个客户端连接(SB2.x是允许多连接的)
-    public:
-        Connect();
-        Connect(OClient *client);
-        Connect(QTcpSocket *conn,OClient *client);
-        QTcpSocket *conn;//连接对象
-        QByteArray databuf;//数据缓冲
-        OClient *client;//属于哪个客户端对象
-        QString publicKey;//公钥
-        inline bool isMain();
-        inline void send(OMessage *msg);
-    };
-
-
     explicit OClient();
     virtual ~OClient();
 
@@ -42,34 +40,21 @@ public:
     QString uname;//用户名
     bool isLoged;//是否已经登录
     bool isShowIp;//是否向其他用户展示IP
-    QString status;
+    QString status;//在线状态
 
-    Connect *main;//主连接
-    QVector<Connect*> subConnList;//次要连接数组
+    OClientPeer *main;//主连接
+    QVector<OClientPeer*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    QMap<QString,QVector<UserlistItem> > userlistCache;
+    QMap<QString,QVector<OUserlistItem> > userlistCache;
+public slots:
+    void onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);
 signals:
-    void newMsgData(OClient::Connect *connect);//当已经接收到了一个(或多个)完整的数据包后发射
-    //发生错误时发射
-    void error(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);
-    //需要记录进日志时发射
-    void log(QString msg);
-private slots:
-    void onData();
-    void onError(QAbstractSocket::SocketError s);
+    void lostMainConnect(OClient *client);
 };
 
-//见OServerCore::OServerCore()中的注释
-Q_DECLARE_METATYPE(OClient::Connect);
-
-inline bool OClient::Connect::isMain()
+inline bool OClientPeer::isMain()
 {
     return this==client->main;
-}
-
-inline void OClient::Connect::send(OMessage *msg)
-{
-    conn->write(msg->exec());
 }
 
 inline QString OClient::getSignature()

@@ -1,5 +1,10 @@
 #include "OClient.h"
 
+OPeerType OClientPeer::getPeerType()
+{
+    return ClientPeer;
+}
+
 //class OClient::Connect
 //public:
 OClient::Connect::Connect():conn(0),client(0)
@@ -62,39 +67,14 @@ void OClient::checkData(Connect *connect)
     }
 }
 
-//private slots:
-void OClient::onData()
+void OClient::onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s)
 {
-    checkData(main);
-    QMutableVectorIterator<Connect*> i(subConnList);
-    while(i.hasNext())
+    if(peer==&main)
     {
-        checkData(i.next());
-    }
-}
-
-void OClient::onError(QAbstractSocket::SocketError s)
-{
-    //如果是主连接发生错误，便直接发射信号，等待服务器核心销毁自己
-    //如果是次要连接发生错误，则先发射信号通知服务器核心，然后自己销毁这个连接
-
-    if(main->conn->error()==s)
-    {
-        emit error(main,main->conn->errorString(),s);
+        emit lostMainConnect(this);
     }
     else
     {
-        QMutableVectorIterator<Connect*> i(subConnList);
-        while (i.hasNext())
-        {
-            i.next();
-            QTcpSocket *conn=i.value()->conn;
-            if(conn->error()==s)
-            {
-                emit error(i.value(),conn->errorString(),s);
-                conn->deleteLater();
-                i.remove();
-            }
-        }
+
     }
 }

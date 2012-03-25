@@ -19,7 +19,7 @@ public:
     inline bool isEmpty();
     inline OMessage &append(QByteArray data);
     inline OMessage &append(QString data);
-    inline OMessage &appendSpace();
+    inline OMessage &aSpc();
     inline static int QBtoint(QByteArray b);
     QByteArray exec();
 
@@ -52,7 +52,7 @@ inline OMessage &OMessage::append(QString data)
     return *this;
 }
 
-inline OMessage &OMessage::appendSpace()
+inline OMessage &OMessage::aSpc()
 {
     data.append(" ");
     return *this;

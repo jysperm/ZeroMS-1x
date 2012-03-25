@@ -6,10 +6,16 @@
 #include "OMessage.h"
 #include "OGlobal.h"
 
+enum OPeerType
+{
+   ServerPeer,ClientPeer
+};
+
 class OUserlistItem
 {
 public:
     inline bool operator==(const UserlistItem other) const;
+
     QString uname;
     QString status;
     QString groupStatus;
@@ -25,26 +31,33 @@ public:
     explicit OAbstractPeer(QTcpSocket *connect=0);
     virtual ~OAbstractPeer();
     void init();//初始化
+    void collect();
 
-    void UserListChanged(QString listname);
-    void PublicKey(QString publicKey);
-    void LoginResult(QString status,QString ip=QString());
-    void Unknown();
-    void Info(QMap<QString,QString> keys);
-    void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
+    virtual OPeerType getPeerType()=0;
+    inline void send(OMessage *msg);
+
+    void SCUserListChanged(QString listname);
+    void SCPublicKey(QString publicKey);
+    void SCLoginResult(QString status,QString ip=QString());
+    void SCUnknown();
+    void SCInfo(QMap<QString,QString> keys);
+    void SCUserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
 public slots:
     void checkMsg();
 signals:
-    void AskUserList(QString listname,QString operation,bool isHasAvatar);
-    void ModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
-    void AskInfo(QStringList keys);
-    void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
-    void AskPublicKey();
-    void State(QString status);
+    void error(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);
+
+    void CSAskUserList(QString listname,QString operation,bool isHasAvatar);
+    void CSModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
+    void CSAskInfo(QStringList keys);
+    void CSLogin(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
+    void CSAskPublicKey();
+    void CSState(QString status);
 protected:
-    inline void send(OMessage *msg);
     QTcpSocket *conn;//连接对象
     QByteArray databuf;//数据缓冲
+private slots:
+    void onError(QAbstractSocket::SocketError s);
 };
 
 inline bool OUserlistItem::operator==(const OUserlistItem other) const
