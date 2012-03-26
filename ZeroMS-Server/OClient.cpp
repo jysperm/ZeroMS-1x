@@ -48,18 +48,14 @@ OClient::~OClient()
 
 void OClient::init()
 {
-    if(main->conn)
-    {
-        connect(main->conn,SIGNAL(readyRead()),this,SLOT(onData()));
-        connect(main->conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
-    }
+    connect(main->conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 }
 
-void OClient::addSubConn(QTcpSocket *conn)
+void OClient::addSubConn(OClientPeer *peer)
 {
-    connect(conn,SIGNAL(readyRead()),this,SLOT(onData()));
-    connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
-    subConnList.push_back(new Connect(conn,this));
+    peer->client=this;
+    connect(peer,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
+    subConnList.push_back(peer);
 }
 
 void OClient::checkData(Connect *connect)
@@ -72,7 +68,7 @@ void OClient::checkData(Connect *connect)
     }
 }
 
-void OClient::onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s)
+void OClient::onError(OClientPeer *peer,QString msg,QAbstractSocket::SocketError s)
 {
     if(peer==&main)
     {
@@ -80,6 +76,7 @@ void OClient::onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketErr
     }
     else
     {
-
+        subConnList.remove(peer);
+        delete peer;
     }
 }

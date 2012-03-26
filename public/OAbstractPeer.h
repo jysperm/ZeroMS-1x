@@ -17,7 +17,7 @@ class OUserlistItem
 {
     //抽象一个好友列表条目，见 http://0-ms.org/wiki/show/UserList
 public:
-    inline bool operator==(const UserlistItem other) const;
+    inline bool operator==(const OUserlistItem other) const;
 
     QString uname;
     QString status;
@@ -42,26 +42,26 @@ public:
     virtual OPeerType getPeerType()=0;
     inline void send(OMessage *msg);//发送消息
 
-    void SCUserListChanged(QString listname);
-    void SCPublicKey(QString publicKey);
-    void SCLoginResult(QString status,QString ip=QString());
-    void SCUnknown();
-    void SCInfo(QMap<QString,QString> keys);
-    void SCUserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
+    void UserListChanged(QString listname);
+    void PublicKey(QString publicKey);
+    void LoginResult(QString status,QString ip=QString());
+    void Unknown();
+    void Info(QMap<QString,QString> keys);
+    void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
+
+    QTcpSocket *conn;//连接对象
+    QByteArray databuf;//数据缓冲
 public slots:
     void checkMsg();//分拣消息
 signals:
     void error(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);//当连接发生错误时发射
 
-    void CSAskUserList(QString listname,QString operation,bool isHasAvatar);
-    void CSModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
-    void CSAskInfo(QStringList keys);
-    void CSLogin(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
-    void CSAskPublicKey();
-    void CSState(QString status);
-protected:
-    QTcpSocket *conn;//连接对象
-    QByteArray databuf;//数据缓冲
+    void AskUserList(QString listname,QString operation,bool isHasAvatar);
+    void ModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
+    void AskInfo(QStringList keys);
+    void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
+    void AskPublicKey();
+    void State(QString status);
 private slots:
     void onError(QAbstractSocket::SocketError s);//用于与conn的error()信号绑定
 };
@@ -74,6 +74,12 @@ inline bool OUserlistItem::operator==(const OUserlistItem other) const
            this->ip==other.ip &&
            this->p2pPorts==other.p2pPorts &&
            this->avatar==other.avatar);
+}
+
+inline QDebug &operator<<(QDebug &debug, const OUserlistItem &item)
+{
+    debug<<item.uname<<item.status<<item.groupStatus<<item.ip<<item.avatar;
+    return debug;
 }
 
 inline void OAbstractPeer::send(OMessage *msg)

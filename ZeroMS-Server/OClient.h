@@ -8,19 +8,7 @@
 #include "global.h"
 #include "../public/OAbstractPeer.h"
 #include "../public/OMessage.h"
-
-class OClientPeer:public OAbstractPeer
-{
-    Q_OBJECT
-public:
-    explicit OClientPeer(QTcpSocket *connect=0);
-
-    inline bool isMain();
-    OPeerType getPeerType();
-
-    OClient *client;
-    QString publicKey;//公钥
-};
+#include "OClientPeer.h"
 
 class OClient:public QObject
 {
@@ -34,8 +22,7 @@ public:
     inline QString getSignature();
 
     void init();//初始化，绑定主连接的信号槽
-    void addSubConn(QTcpSocket *conn);//增加次要连接，自动绑定信号槽
-    void checkData(Connect *connect);//接收数据
+    void addSubConn(OClientPeer *peer);//增加次要连接，自动绑定信号槽
 
     QString uname;//用户名
     bool isLoged;//是否已经登录
@@ -63,12 +50,6 @@ inline QString OClient::getSignature()
         return uname;
     else
         return QString("#%1:%2").arg(main->conn->peerAddress().toString()).arg(main->conn->peerPort());
-}
-
-inline QDebug &operator<<(QDebug &debug, const OClient::UserlistItem &item)
-{
-    debug<<item.uname<<item.status<<item.groupStatus<<item.ip<<item.avatar;
-    return debug;
 }
 
 #endif // OCLIENT_H

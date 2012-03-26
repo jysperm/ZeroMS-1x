@@ -41,7 +41,7 @@ void OAbstractPeer::collect()
     conn=0;
 }
 
-void OAbstractPeer::SCPublicKey(QString publicKey)
+void OAbstractPeer::PublicKey(QString publicKey)
 {
     QByteArray key;
     key.append(publicKey);
@@ -49,21 +49,21 @@ void OAbstractPeer::SCPublicKey(QString publicKey)
     send(&msg);
 }
 
-void OAbstractPeer::SCUserListChanged(QString listname)
+void OAbstractPeer::UserListChanged(QString listname)
 {
     OMessage msg(M_UserListChanged);
     msg.append(listname);
     send(&msg);
 }
 
-void OAbstractPeer::SCLoginResult(QString status,QString ip)
+void OAbstractPeer::LoginResult(QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
     msg.append(status).aSpc().append(ip);
     send(&msg);
 }
 
-void OAbstractPeer::SCInfo(QMap<QString,QString> keys)
+void OAbstractPeer::Info(QMap<QString,QString> keys)
 {
     QByteArray data;
     QMapIterator<QString,QString> i(keys);
@@ -78,7 +78,7 @@ void OAbstractPeer::SCInfo(QMap<QString,QString> keys)
     send(&msg);
 }
 
-void OAbstractPeer::SCUserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
+void OAbstractPeer::UserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
 {
     QByteArray data;
     data.append(QString("%1 %2 ").arg(operation).arg(listname));
@@ -96,13 +96,8 @@ void OAbstractPeer::SCUserList(QString listname,QString operation,QVector<OClien
                     arg(item.ip).arg(p2pPorts.join(",")).arg(item.avatar));
 
         //去除末尾多余的冒号
-        int iData=0;
-        while(iData++)
-        {
-            if(data.right(iData).left(1)!=":")
-                break;
-        }
-        data=data.left(data.length()-(iData-1));
+        while(QString(data.right(1))==":")
+            data.remove(data.length()-1-1,1);
 
         if(i.hasNext())
             data.append(";");
@@ -111,7 +106,7 @@ void OAbstractPeer::SCUserList(QString listname,QString operation,QVector<OClien
     send(&msg);
 }
 
-void OAbstractPeer::SCUnknown()
+void OAbstractPeer::Unknown()
 {
     QByteArray data;
     data.append((*config)["UNKNOWN"].toString());
@@ -120,10 +115,11 @@ void OAbstractPeer::SCUnknown()
     databuf.clear();
 }
 
-
-
 void OAbstractPeer::checkMsg()
 {
+    if(!conn->atEnd())
+        databuf.append(conn->readAll());
+
     while(true)
     {
         OMessage msg=OMessage::fromDataBuff(&databuf);
@@ -146,17 +142,17 @@ void OAbstractPeer::checkMsg()
                     bool isMain=(msg.split(3)==SUB)?false:true;
                     bool isForce=(msg.split(4)==FORCE)?true:false;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
-                    emit CSLogin(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+                    emit Login(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
                     break;
                 }
                 case M_AskInfo:
                 {
                     QStringList keys=msg.split(0).split(",");
-                    emit CSAskInfo(connect,keys);
+                    emit AskInfo(connect,keys);
                     break;
                 }
                 case M_AskPublicKey:
-                    emit CSAskPublicKey();
+                    emit AskPublicKey();
                     break;
                 case M_ModifyUserList:
                 {
@@ -164,7 +160,7 @@ void OAbstractPeer::checkMsg()
                     QString uname=msg.split(1);
                     bool isAddOrRemove=(msg.split(2)==REMOVE)?false:true;
                     QString messages=msg.split(3);
-                    emit CSModifyUserList(listname,uname,isAddOrRemove,messages);
+                    emit ModifyUserList(listname,uname,isAddOrRemove,messages);
                     break;
                 }
                 case M_AskUserList:
@@ -172,7 +168,7 @@ void OAbstractPeer::checkMsg()
                     QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
                     bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
                     QString listname=msg.split(2);
-                    emit CSAskUserList(listname,operation,isHasAvatar);
+                    emit AskUserList(listname,operation,isHasAvatar);
                     break;
                 }
                 case M_State:
@@ -180,12 +176,12 @@ void OAbstractPeer::checkMsg()
                     QString status=msg.split(0);
                     if(!(status==BORED || status==BUZY || status==AWAY))
                         status==ONLINE;
-                    emit CSState(status);
+                    emit State(status);
                     break;
                 }
                 default:
                 {
-                    SCUnknown();
+                    Unknown();
                 }
             }
         }
@@ -195,7 +191,7 @@ void OAbstractPeer::checkMsg()
             {
                 default:
                 {
-                    SCUnknown();
+                    Unknown();
                 }
             }
         }

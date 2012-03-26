@@ -1,5 +1,6 @@
 #include <QCoreApplication>
 #include <QTextCodec>
+#include <QDateTime>
 #include "OServerCore.h"
 
 OServerCore *servercore;

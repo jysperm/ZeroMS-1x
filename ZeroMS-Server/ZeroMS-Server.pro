@@ -16,32 +16,36 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     ../public/OMessage.cpp \
-    OProtocolForSC.cpp \
     OServerCore.cpp \
     ../public/OSettings.cpp \
     OClient.cpp \
     OServerCore_MsgSlot.cpp \
     ../public/OGlobal/OGlobal.cpp \
     ODataBase.cpp \
-    ../public/OAbstractPeer.cpp
+    ../public/OAbstractPeer.cpp \
+    OClientPeer.cpp
 
 HEADERS += \
     ../public/OGlobal.h \
     ../public/OGlobal/protocol2.0.h \
     ../public/OMessage.h \
-    OProtocolForSC.h \
     OServerCore.h \
     ../public/OSettings.h \
     global.h \
     OClient.h \
     ODataBase.h \
-    ../public/OAbstractPeer.h
+    ../public/OAbstractPeer.h \
+    OClientPeer.h
 
 RESOURCES += \
     res.qrc
 
 OTHER_FILES += \
     config.ini
+
+
+
+
 
 
 
