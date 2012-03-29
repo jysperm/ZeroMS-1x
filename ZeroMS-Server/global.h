@@ -13,6 +13,6 @@ const QString SERVER =QObject::trUtf8("ZeroMS-Server");
 const QString PROTOCOL =QObject::trUtf8("2.0");
 
 extern OSettings *config;
-extern OServerCore *servercore;
+extern OServerCore *core;
 
 #endif // GLOBAL_H

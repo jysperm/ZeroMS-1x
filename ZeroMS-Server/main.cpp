@@ -3,7 +3,7 @@
 #include <QDateTime>
 #include "OServerCore.h"
 
-OServerCore *servercore;
+OServerCore *core;
 OSettings *config;
 
 int main(int argc, char *argv[])
@@ -17,9 +17,9 @@ int main(int argc, char *argv[])
 
     config=new OSettings;
 
-    servercore=new OServerCore;
-    servercore->init();
-    servercore->start();
+    core=new OServerCore;
+    core->init();
+    core->start();
 
     return a.exec();
 }

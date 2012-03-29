@@ -19,7 +19,6 @@ SOURCES += main.cpp \
     OServerCore.cpp \
     ../public/OSettings.cpp \
     OClient.cpp \
-    OServerCore_MsgSlot.cpp \
     ../public/OGlobal/OGlobal.cpp \
     ODataBase.cpp \
     ../public/OAbstractPeer.cpp \

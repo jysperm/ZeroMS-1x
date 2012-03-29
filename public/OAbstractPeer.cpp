@@ -22,15 +22,12 @@ void OAbstractPeer::onError(QAbstractSocket::SocketError s)
         //这个类的情况就是这样：如果出错了，就表示这个类将要被销毁了
         //发射信号也是为了通知它的所有者销毁该类
         emit error(this,conn->errorString(),s);
-        disconnect(conn,this);
         collect();
     }
 }
 
 void OAbstractPeer::init()
 {
-    if(!conn)
-        qErrnoWarning(Q_FUNC_INFO+tr(" 必须在给conn设置值后再调用init()"));
     connect(conn,SIGNAL(readyRead()),this,SLOT(checkMsg()));
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 }
@@ -78,7 +75,7 @@ void OAbstractPeer::Info(QMap<QString,QString> keys)
     send(&msg);
 }
 
-void OAbstractPeer::UserList(QString listname,QString operation,QVector<OClient::UserlistItem> userlist)
+void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlistItem> userlist)
 {
     QByteArray data;
     data.append(QString("%1 %2 ").arg(operation).arg(listname));
@@ -148,7 +145,7 @@ void OAbstractPeer::checkMsg()
                 case M_AskInfo:
                 {
                     QStringList keys=msg.split(0).split(",");
-                    emit AskInfo(connect,keys);
+                    emit AskInfo(keys);
                     break;
                 }
                 case M_AskPublicKey:

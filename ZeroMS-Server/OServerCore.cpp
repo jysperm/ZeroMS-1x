@@ -14,18 +14,6 @@ void OServerCore::init()
     log(tr("零毫秒服务器启动 %1 %2").arg(SERVER).arg(::VERSION));
     connect(&server,SIGNAL(newConnection()),this,SLOT(onNewConn()));
 
-    //绑定OProtocolForSC相关的信号槽
-    connect(&protocol,SIGNAL(AskPublicKey(OClient::Connect*)),this,SLOT(AskPublicKey(OClient::Connect*)));
-    connect(&protocol,SIGNAL(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(Login(OClient::Connect*,QString,QString,QVector<int>,bool,bool,bool)));
-    connect(&protocol,SIGNAL(AskInfo(OClient::Connect*,QStringList)),this,SLOT(AskInfo(OClient::Connect*,QStringList)));
-    connect(&protocol,SIGNAL(ModifyUserList(OClient::Connect*,QString,bool)),this,SLOT(ModifyUserList(OClient::Connect*,QString,bool)));
-    connect(&protocol,SIGNAL(AskUserList(OClient::Connect*,QString,QString,bool)),this,SLOT(AskUserList(OClient::Connect*,QString,QString,bool)));
-    connect(&protocol,SIGNAL(State(OClient::Connect*,QString)),this,SLOT(State(OClient::Connect*,QString)));
-
-    //注册该类型，以便可以在信号槽中作为参数传递
-    //与此对应的还有OClient.h中结尾的Q_DECLARE_METATYPE(OClient::Connect)
-    qRegisterMetaType<OClient::Connect>("OClient::Connect");
-
     //用于AskInfo
     info.insert(OFFLINECACHETIME,(*config)["OFFLINE_CACHE_TIME"].toString());
     info.insert(NOACTIVITYTIME,(*config)["NOACTIVITY_TIME"].toString());
@@ -79,7 +67,7 @@ void OServerCore::userListChange(QString uname)
 
         if(cl.contains(item.uname))
         {
-            protocol.UserListChanged(cl[item.uname]->main,item.uname);
+            cl[item.uname]->main->UserListChanged(item.uname);
         }
     }
 
@@ -97,7 +85,7 @@ void OServerCore::userListChange(QString uname)
 
             if(cl.contains(user))
             {
-                protocol.UserListChanged(cl[user]->main,QString("*%1").arg(group));
+                cl[user]->main->UserListChanged(QString("*%1").arg(group));
             }
         }
     }
@@ -114,21 +102,20 @@ void OServerCore::onNewConn()
         if(cl.size() < maxClient)
         {
             OClient *client=new OClient;
-            OClient::Connect *mainConn=new OClient::Connect(conn,client);
-            client->main=mainConn;
-            connect(client,SIGNAL(error(OClient::Connect*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OClient::Connect*,QString,QAbstractSocket::SocketError)));
-            connect(client,SIGNAL(newMsgData(OClient::Connect*)),&protocol,SLOT(checkMsg(OClient::Connect*)));
+            OClientPeer *mainPeer=new OClientPeer(conn);
+            client->main=mainPeer;
+            connect(client,SIGNAL(lostMainConnect(OClient*)),this,SLOT(onError(OClient*)));
             client->init();
-            QString uname=client->getSignature();
-            if(cl.contains(uname))
+            QString signature=client->getSignature();
+            if(cl.contains(signature))
             {
                 //这里的情况是，存在与新连接同IP同端口的连接
                 //这里显然应该直接销毁旧的连接
-                delete cl[uname];
-                cl.remove(uname);
+                delete cl[signature];
+                cl.remove(signature);
             }
-            cl.insert(uname,client);
-            log(tr("%1 连接到服务器").arg(uname));
+            cl.insert(signature,client);
+            log(tr("%1 连接到服务器").arg(signature));
         }
         else
         {
@@ -138,15 +125,12 @@ void OServerCore::onNewConn()
     }
 }
 
-void OServerCore::onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s)
+void OServerCore::onError(OClient *client)
 {
-    log(tr("%1(%2) 因错误断开连接:%3").arg(connect->client->getSignature()).arg((connect->isMain())?"主要":"次要").arg(msg));
-    if(connect->isMain())
-    {
-        QString uname=connect->client->getSignature();
-        delete cl[uname];
-        cl.remove(uname);
-        userListChange(uname);
-    }
+    log(tr("%1 断开连接.").arg(client->getSignature()));
+
+    QString uname=client->getSignature();
+    delete client;
+    cl.remove(uname);
 }
 

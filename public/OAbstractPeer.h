@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QStringList>
 #include "OMessage.h"
 #include "OGlobal.h"
 

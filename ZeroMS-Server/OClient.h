@@ -18,7 +18,8 @@ public:
     explicit OClient();
     virtual ~OClient();
 
-    //获得唯一标识,登录后等同用户名，未登录  #IP:端口
+    //获得唯一标识,登录后等同用户名，未登录为  #IP:端口
+    //等于在core->cl中的键名
     inline QString getSignature();
 
     void init();//初始化，绑定主连接的信号槽
@@ -30,11 +31,11 @@ public:
     QString status;//在线状态
 
     OClientPeer *main;//主连接
-    QVector<OClientPeer*> subConnList;//次要连接数组
+    QList<OClientPeer*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
     QMap<QString,QVector<OUserlistItem> > userlistCache;
 public slots:
-    void onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);
+    void onError(OClientPeer *peer,QString msg,QAbstractSocket::SocketError s);
 signals:
     void lostMainConnect(OClient *client);
 };

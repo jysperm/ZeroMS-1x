@@ -30,13 +30,8 @@ private:
     ODataBase db;
     QMap<QString,QString> info;
 private slots:
-    void AskUserList(OClientPeer *connect,QString listname,QString operation,bool isHasAvatar);
-    void ModifyUserList(OClient::Connect *connect,QString listname,QString uname,bool isAddOrRemove,QString message);
-    void AskInfo(OClient::Connect *connect,QStringList keys);
-    void AskPublicKey(OClient::Connect *connect);
     void onNewConn();
-    void onError(OClient::Connect *connect,QString msg,QAbstractSocket::SocketError s);
-    void State(OClient::Connect *connect,QString stauts);
+    void onError(OClient *client);
 };
 
 #endif // OSERVERCORE_H
