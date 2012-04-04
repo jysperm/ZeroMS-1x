@@ -132,8 +132,8 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
             while(i.hasNext())
             {
                 QString user=i.next();
-                ODataBase::UserInfo userInfo=core->db.getUserInfo(user);
-                ODataBase::UserGroupStatus groupStatus=core->db.getGroupStatus(user,listname);
+                OServerDataBase::UserInfo userInfo=core->db.getUserInfo(user);
+                OServerDataBase::UserGroupStatus groupStatus=core->db.getGroupStatus(user,listname);
 
                 OUserlistItem item;
                 if(!core->cl.contains(user))
@@ -178,7 +178,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
         QVectorIterator<QString> iGroup(groups);
         while(iGroup.hasNext())
         {
-            ODataBase::GroupInfo info=core->db.getGroupInfo(iGroup.next());
+            OServerDataBase::GroupInfo info=core->db.getGroupInfo(iGroup.next());
             OUserlistItem item;
             item.uname=QString("*%1,%2").arg(info.groupname).arg(info.caption);
             item.status=ONLINE;
@@ -187,13 +187,13 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
             allList.append(item);
         }
 
-        QVector<ODataBase::UserListItem> userlist=core->db.getUserList(client->uname);
-        QVectorIterator<ODataBase::UserListItem> iUserlist(userlist);
+        QVector<OServerDataBase::UserListItem> userlist=core->db.getUserList(client->uname);
+        QVectorIterator<OServerDataBase::UserListItem> iUserlist(userlist);
         while(iUserlist.hasNext())
         {
-            ODataBase::UserListItem listItem=iUserlist.next();
+            OServerDataBase::UserListItem listItem=iUserlist.next();
             OUserlistItem item;
-            ODataBase::UserInfo userInfo=core->db.getUserInfo(listItem.user);
+            OServerDataBase::UserInfo userInfo=core->db.getUserInfo(listItem.user);
             if(!core->cl.contains(listItem.user))
             {//如果这个用户不在线
                 if(operation==ONLINE)

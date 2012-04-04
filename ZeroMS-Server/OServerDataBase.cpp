@@ -3,7 +3,7 @@
 #include <QStringList>
 #include <QSqlError>
 #include <QSqlQuery>
-#include "ODataBase.h"
+#include "OServerDataBase.h"
 #include "OServerCore.h"
 
 const QString CHECK_USER = "SELECT `pwd` FROM `user` WHERE `uname` = :uname";
@@ -23,7 +23,7 @@ const QString USERLIST_ADD = "INSERT INTO `userlist` (`uname`,`user`) VALUES (:u
 const QString GROUP_MEMBER_REMOVE = "DELETE FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
 const QString USERLIST_REMOVE = "DELETE FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
 
-ODataBase::ODataBase()
+OServerDataBase::OServerDataBase()
 {
     //调试信息
     qDebug()<<Q_FUNC_INFO<<QSqlDatabase::drivers();
@@ -42,7 +42,98 @@ ODataBase::ODataBase()
     }
 }
 
-bool ODataBase::checkPWD(QString uname,QString pwd,QString publicKey)
+OServerDataBase::~OServerDataBase()
+{
+    delete dbConn;
+}
+
+template<class T> T OServerDataBase::selecFrist(T table,QVector<QPair<QString,QString> > query,QString order,bool isASC)
+{
+    QSqlQuery query(*dbConn);
+    QString sql=QString("SELECT TOP 1 * FROM `%1`").arg(table.table());
+
+    QVectorIterator i(query);
+    if(i.hasNext())
+        sql.append(" WHERE ");
+    while(i.hasNext())
+    {
+        QPair<QString,QString> pair=i.next();
+
+        sql.append(QString(" `%1` = '%2'").append(pair.second.replace("'","\\'")));
+
+        if(i.hasNext())
+            sql.append(" AND ");
+    }
+
+    if(!order.isEmpty())
+        sql.append(" ORDER BY %1 ").arg(order);
+    if(!isASC)
+        sql.append("DESC");
+
+    query.exec(sql);
+
+    bool hasNext=query.next();
+    T result(&query);
+    result.isEmpty=hasNext;
+
+    return result;
+}
+
+template<class T> T OServerDataBase::selectFrist(T table,QPair<QString,QString> query,QString order,bool isASC)
+{
+    QVector vQuery;
+    vQuery.append(query);
+
+    return selectFrist(table,vQuery,order,isASC);
+}
+
+template<class T> QVector<T> OServerDataBase::selectTable(T table,QVector<QPair<QString,QString> > query,QString order,int start,int num,bool isASC)
+{
+    QSqlQuery query(*dbConn);
+    QString sql=QString("SELECT * FROM `%1`").arg(table.table());
+
+    QVectorIterator i(query);
+    if(i.hasNext())
+        sql.append(" WHERE ");
+    while(i.hasNext())
+    {
+        QPair<QString,QString> pair=i.next();
+
+        sql.append(QString(" `%1` = '%2'").append(pair.second.replace("'","\\'")));
+
+        if(i.hasNext())
+            sql.append(" AND ");
+    }
+
+    if(!order.isEmpty())
+        sql.append(" ORDER BY %1 ").arg(order);
+    if(!isASC)
+        sql.append(" DESC ");
+
+    if(num>-1 && start>-1)
+    {
+        sql.append(" LIMIT %1,%2").arg(start).arg(num);
+    }
+    if(num>-1 && !(start>-1))
+    {
+        sql.append(" LIMIT %1").arg(num);
+    }
+
+    query.exec(sql);
+
+    QVector<T> result;
+    while(query.next())
+    {
+        result.append(T(&query));
+    }
+
+    return result;
+}
+
+
+
+/*
+bool OServerDataBase::checkPWD(QString uname,QString pwd,QString publicKey)
 {
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_USER);
@@ -56,7 +147,7 @@ bool ODataBase::checkPWD(QString uname,QString pwd,QString publicKey)
     return false;
 }
 
-bool ODataBase::checkUser(QString uname)
+bool OServerDataBase::checkUser(QString uname)
 {
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_USER);
@@ -66,7 +157,7 @@ bool ODataBase::checkUser(QString uname)
     return query.next();
 }
 
-bool ODataBase::checkGroup(QString group)
+bool OServerDataBase::checkGroup(QString group)
 {
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_GROUP);
@@ -76,7 +167,7 @@ bool ODataBase::checkGroup(QString group)
     return query.next();
 }
 
-bool ODataBase::checkGroupMember(QString group,QString uname)
+bool OServerDataBase::checkGroupMember(QString group,QString uname)
 {
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_GROUP_MEMBER);
@@ -87,7 +178,7 @@ bool ODataBase::checkGroupMember(QString group,QString uname)
     return query.next();
 }
 
-void ODataBase::removeGroupMember(QString group,QString uname)
+void OServerDataBase::removeGroupMember(QString group,QString uname)
 {
     QSqlQuery query(*dbConn);
     query.prepare(GROUP_MEMBER_REMOVE);
@@ -98,7 +189,7 @@ void ODataBase::removeGroupMember(QString group,QString uname)
     return;
 }
 
-QVector<QString> ODataBase::getAllGroup(QString uname)
+QVector<QString> OServerDataBase::getAllGroup(QString uname)
 {
     QSqlQuery query(*dbConn);
     if(uname.isEmpty())
@@ -118,7 +209,7 @@ QVector<QString> ODataBase::getAllGroup(QString uname)
     return result;
 }
 
-QVector<QString> ODataBase::getGroupMembers(QString group)
+QVector<QString> OServerDataBase::getGroupMembers(QString group)
 {
     QSqlQuery query(*dbConn);
     query.prepare(GET_GROUP_MEMBER);
@@ -133,7 +224,7 @@ QVector<QString> ODataBase::getGroupMembers(QString group)
     return result;
 }
 
-ODataBase::UserInfo ODataBase::getUserInfo(QString uname)
+OServerDataBase::UserInfo OServerDataBase::getUserInfo(QString uname)
 {
     QSqlQuery query(*dbConn);
     query.prepare(GET_USER_INFO);
@@ -142,7 +233,7 @@ ODataBase::UserInfo ODataBase::getUserInfo(QString uname)
 
     query.next();
 
-    UserInfo info;
+    OUser info;
     info.uid=query.value(0).toInt();
     info.uname=query.value(1).toString();
     info.pwd=query.value(2).toString();
@@ -158,7 +249,7 @@ ODataBase::UserInfo ODataBase::getUserInfo(QString uname)
     return info;
 }
 
-ODataBase::UserGroupStatus ODataBase::getGroupStatus(QString uname,QString group)
+OServerDataBase::UserGroupStatus OServerDataBase::getGroupStatus(QString uname,QString group)
 {
     QSqlQuery query(*dbConn);
     query.prepare(GET_GROUP_STATUS);
@@ -168,9 +259,9 @@ ODataBase::UserGroupStatus ODataBase::getGroupStatus(QString uname,QString group
 
     query.next();
 
-    UserGroupStatus info;
+    OGroupMember info;
     info.id=query.value(0).toInt();
-    info.group=query.value(1).toString();
+    info.groupname=query.value(1).toString();
     info.uname=query.value(2).toString();
     info.isAdmin=query.value(3).toBool();
     info.isDeny=query.value(4).toBool();
@@ -179,7 +270,7 @@ ODataBase::UserGroupStatus ODataBase::getGroupStatus(QString uname,QString group
     return info;
 }
 
-QVector<ODataBase::UserListItem> ODataBase::getUserList(QString uname,QString user)
+QVector<OServerDataBase::UserListItem> OServerDataBase::getUserList(QString uname,QString user)
 {
     QSqlQuery query(*dbConn);
     if(user.isEmpty())
@@ -196,10 +287,10 @@ QVector<ODataBase::UserListItem> ODataBase::getUserList(QString uname,QString us
 
     query.exec();
 
-    QVector<UserListItem> result;
+    QVector<OUserList> result;
     while(query.next())
     {
-        UserListItem item;
+        OUserList item;
         item.id=query.value(0).toInt();
         item.uname=query.value(1).toString();
         item.user=query.value(2).toString();
@@ -209,7 +300,7 @@ QVector<ODataBase::UserListItem> ODataBase::getUserList(QString uname,QString us
     return result;
 }
 
-QVector<ODataBase::UserListItem> ODataBase::getUserListByUser(QString user)
+QVector<OServerDataBase::UserListItem> OServerDataBase::getUserListByUser(QString user)
 {
     QSqlQuery query(*dbConn);
 
@@ -218,10 +309,10 @@ QVector<ODataBase::UserListItem> ODataBase::getUserListByUser(QString user)
 
     query.exec();
 
-    QVector<UserListItem> result;
+    QVector<OUserList> result;
     while(query.next())
     {
-        UserListItem item;
+        OUserList item;
         item.id=query.value(0).toInt();
         item.uname=query.value(1).toString();
         item.user=query.value(2).toString();
@@ -231,7 +322,7 @@ QVector<ODataBase::UserListItem> ODataBase::getUserListByUser(QString user)
     return result;
 }
 
-ODataBase::GroupInfo ODataBase::getGroupInfo(QString group)
+OServerDataBase::GroupInfo OServerDataBase::getGroupInfo(QString group)
 {
     QSqlQuery query(*dbConn);
     query.prepare(GET_GROUP_INFO);
@@ -240,7 +331,7 @@ ODataBase::GroupInfo ODataBase::getGroupInfo(QString group)
 
     query.next();
 
-    GroupInfo info;
+    OGroup info;
     info.gid=query.value(0).toInt();
     info.groupname=query.value(1).toString();
     info.caption=query.value(2).toString();
@@ -254,7 +345,7 @@ ODataBase::GroupInfo ODataBase::getGroupInfo(QString group)
     return info;
 }
 
-void ODataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
+void OServerDataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
 {
     QSqlQuery query(*dbConn);
     query.prepare(CHECK_USERLIST);
@@ -285,3 +376,4 @@ void ODataBase::ModifyUserList(QString uname,QString user,bool isAddOrRemove)
         }
     }
 }
+*/

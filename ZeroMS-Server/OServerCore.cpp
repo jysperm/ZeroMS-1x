@@ -40,7 +40,8 @@ void OServerCore::log(QString msg)
 
 QString OServerCore::getUserStatus(QString uname)
 {
-    if(db.checkUser(uname))
+    using namespace OServerDatabase;
+    if(db.selectFrist(User(),qMakePair(QString("uname"),uname)).isEmpty)
     {//如果存在这个用户
         if(cl.contains(uname))
         {//如果这个用户在线
@@ -59,11 +60,11 @@ QString OServerCore::getUserStatus(QString uname)
 
 void OServerCore::userListChange(QString uname)
 {
-    QVector<ODataBase::UserListItem> userlist=db.getUserListByUser(uname);
-    QVectorIterator<ODataBase::UserListItem> iUserList(userlist);
+    QVector<OServerDataBase::UserListItem> userlist=db.getUserListByUser(uname);
+    QVectorIterator<OServerDataBase::UserListItem> iUserList(userlist);
     while(iUserList.hasNext())
     {
-        ODataBase::UserListItem item=iUserList.next();
+        OServerDataBase::UserListItem item=iUserList.next();
 
         if(cl.contains(item.uname))
         {

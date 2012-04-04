@@ -20,9 +20,9 @@ SOURCES += main.cpp \
     ../public/OSettings.cpp \
     OClient.cpp \
     ../public/OGlobal/OGlobal.cpp \
-    ODataBase.cpp \
     ../public/OAbstractPeer.cpp \
-    OClientPeer.cpp
+    OClientPeer.cpp \
+    OServerDataBase.cpp
 
 HEADERS += \
     ../public/OGlobal.h \
@@ -32,15 +32,16 @@ HEADERS += \
     ../public/OSettings.h \
     global.h \
     OClient.h \
-    ODataBase.h \
     ../public/OAbstractPeer.h \
-    OClientPeer.h
+    OClientPeer.h \
+    OServerDataBase.h
 
 RESOURCES += \
     res.qrc
 
 OTHER_FILES += \
-    config.ini
+    config.ini \
+    DataBase.sql
 
 
 

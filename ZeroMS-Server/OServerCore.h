@@ -5,7 +5,7 @@
 #include <QTextStream>
 #include <QTcpServer>
 #include <QStringList>
-#include "ODataBase.h"
+#include "OServerDataBase.h"
 #include "../public/OSettings.h"
 #include "global.h"
 #include "OClient.h"
@@ -27,7 +27,7 @@ private:
     QTextStream cin;
     QTextStream cout;
     QTcpServer server;
-    ODataBase db;
+    OServerDataBase db;
     QMap<QString,QString> info;
 private slots:
     void onNewConn();
