@@ -120,20 +120,26 @@ void OClientPeer::AskInfo(QStringList keys)
 
 void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvatar)
 {
+    using namespace OSDB;
+
     QVector<OUserlistItem> allList;
     if(listname!=client->uname)
     {//如果是在请求一个群的成员列表
         listname=listname.remove(0,1);//移除星号
         if(core->db.checkGroup(listname) && core->db.checkGroupMember(listname,client->uname))
         {//如果存在这个群,且是这个群的成员
-            QVector<QString> memberList=core->db.getGroupMembers(listname);
+            QVector<GroupMember> memberList=core->db.selectTable(GroupMember(),OMakePair("groupname",listname));
 
-            QVectorIterator<QString> i(memberList);
+            QVectorIterator<GroupMember> i(memberList);
             while(i.hasNext())
             {
-                QString user=i.next();
-                OServerDataBase::UserInfo userInfo=core->db.getUserInfo(user);
-                OServerDataBase::UserGroupStatus groupStatus=core->db.getGroupStatus(user,listname);
+                QString user=i.next().uname;
+                User userInfo=core->db.selectFrist(User(),OMakePair("uname",user));
+
+                QVector<QPair<QString,QString> > vQuery;
+                vQuery.append(OMakePair("uname",user));
+                vQuery.append(OMakePair("groupname",listname));
+                GroupMember groupStatus=core->db.selectFrist(GroupMember(),vQuery);
 
                 OUserlistItem item;
                 if(!core->cl.contains(user))
@@ -174,11 +180,11 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
     }
     else
     {//如果是在请求自己的好友列表
-        QVector<QString> groups=core->db.getAllGroup(client->uname);
-        QVectorIterator<QString> iGroup(groups);
+        QVector<GroupMember> groups=core->db.selectTable(GroupMember(),OMakePair("uname",client->uname));
+        QVectorIterator<GroupMember> iGroup(groups);
         while(iGroup.hasNext())
         {
-            OServerDataBase::GroupInfo info=core->db.getGroupInfo(iGroup.next());
+            Group info=core->db.selectFrist(Group(),OMakePair("groupname",iGroup.next().groupname));
             OUserlistItem item;
             item.uname=QString("*%1,%2").arg(info.groupname).arg(info.caption);
             item.status=ONLINE;
@@ -187,13 +193,14 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
             allList.append(item);
         }
 
-        QVector<OServerDataBase::UserListItem> userlist=core->db.getUserList(client->uname);
-        QVectorIterator<OServerDataBase::UserListItem> iUserlist(userlist);
+        QVector<OSDB::UserList> userlist=core->db.selectTable(OSDB::UserList(),OMakePair("uname",client->uname));
+        QVectorIterator<OSDB::UserList> iUserlist(userlist);
         while(iUserlist.hasNext())
         {
-            OServerDataBase::UserListItem listItem=iUserlist.next();
+            OSDB::UserList listItem=iUserlist.next();
             OUserlistItem item;
-            OServerDataBase::UserInfo userInfo=core->db.getUserInfo(listItem.user);
+
+            User userInfo=core->db.selectFrist(User(),OMakePair("uname",listItem.user));
             if(!core->cl.contains(listItem.user))
             {//如果这个用户不在线
                 if(operation==ONLINE)

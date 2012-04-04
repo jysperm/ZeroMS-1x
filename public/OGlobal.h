@@ -3,6 +3,7 @@
 
 #include<QObject>
 #include <QCryptographicHash>
+#include <QPair>
 #include "OGlobal/protocol2.0.h"
 using namespace Protocol2;
 
@@ -12,9 +13,14 @@ using namespace Protocol2;
 //全局默认配置文件路径
 const QString PUBLIC_CONFIG_FILE = QObject::trUtf8("./config.ini");
 
-inline QString Osha1(QString s)
+inline QString OSha1(QString s)
 {
     return QString(QCryptographicHash::hash(s.toAscii(),QCryptographicHash::Sha1).toHex());
+}
+
+inline QPair<QString,QString> OMakePair(QString a,QString b)
+{
+    return QPair<QString,QString>(a,b);
 }
 
 #endif // PUBLIC_OGLOBAL_H

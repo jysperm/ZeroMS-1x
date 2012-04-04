@@ -40,8 +40,7 @@ void OServerCore::log(QString msg)
 
 QString OServerCore::getUserStatus(QString uname)
 {
-    using namespace OServerDatabase;
-    if(db.selectFrist(User(),qMakePair(QString("uname"),uname)).isEmpty)
+    if(db.checkUser(uname))
     {//如果存在这个用户
         if(cl.contains(uname))
         {//如果这个用户在线
@@ -60,11 +59,12 @@ QString OServerCore::getUserStatus(QString uname)
 
 void OServerCore::userListChange(QString uname)
 {
-    QVector<OServerDataBase::UserListItem> userlist=db.getUserListByUser(uname);
-    QVectorIterator<OServerDataBase::UserListItem> iUserList(userlist);
+    using namespace OSDB;
+    QVector<UserList> userlist=db.selectTable(UserList(),OMakePair("user",uname));
+    QVectorIterator<UserList> iUserList(userlist);
     while(iUserList.hasNext())
     {
-        OServerDataBase::UserListItem item=iUserList.next();
+        UserList item=iUserList.next();
 
         if(cl.contains(item.uname))
         {
@@ -72,17 +72,18 @@ void OServerCore::userListChange(QString uname)
         }
     }
 
-    QVector<QString> groups=db.getAllGroup(uname);
-    QVectorIterator<QString> iGroups(groups);
+    QVector<GroupMember> groups=db.selectTable(GroupMember(),OMakePair("uname",uname));
+    QVectorIterator<GroupMember> iGroups(groups);
     while(iGroups.hasNext())
     {
-        QString group=iGroups.next();
-        QVector<QString> members=db.getGroupMembers(group);
+        QString group=iGroups.next().groupname;
 
-        QVectorIterator<QString> iMember(members);
+        QVector<GroupMember> members=db.selectTable(GroupMember(),OMakePair("groupname",group));
+
+        QVectorIterator<GroupMember> iMember(members);
         while(iMember.hasNext())
         {
-            QString user=iMember.next();
+            QString user=iMember.next().uname;
 
             if(cl.contains(user))
             {
