@@ -37,6 +37,18 @@ public:
     QString email;
     QString avatar;
 
+    const static QString _uid;
+    const static QString _uname;
+    const static QString _pwd;
+    const static QString _lastLoginTime;
+    const static QString _lastLoginIp;
+    const static QString _regTime;
+    const static QString _onlineTime;
+    const static QString _website;
+    const static QString _info;
+    const static QString _email;
+    const static QString _avatar;
+
     QString table()
     {
         return "user";
@@ -44,6 +56,18 @@ public:
 
     bool isEmpty;
 };
+
+const QString User::_uid="uid";
+const QString User::_uname="uname";
+const QString User::_pwd="pwd";
+const QString User::_lastLoginTime="lastlogintime";
+const QString User::_lastLoginIp="lastloginip";
+const QString User::_regTime="regtime";
+const QString User::_onlineTime="onlinetime";
+const QString User::_website="website";
+const QString User::_info="info";
+const QString User::_email="email";
+const QString User::_avatar="avatar";
 
 class Group
 {
@@ -54,7 +78,7 @@ public:
         groupname(query->value(1).toString()),
         caption(query->value(2).toString()),
         master(query->value(3).toString()),
-        regtime(query->value(4).toUInt()),
+        regTime(query->value(4).toUInt()),
         info(query->value(5).toString()),
         website(query->value(6).toString()),
         avatar(query->value(7).toString()),
@@ -64,10 +88,19 @@ public:
     QString groupname;
     QString caption;
     QString master;
-    unsigned int regtime;
+    unsigned int regTime;
     QString info;
     QString website;
     QString avatar;
+
+    const static QString _gid;
+    const static QString _groupname;
+    const static QString _caption;
+    const static QString _master;
+    const static QString _regTime;
+    const static QString _info;
+    const static QString _website;
+    const static QString _avatar;
 
     QString table()
     {
@@ -76,6 +109,16 @@ public:
 
     bool isEmpty;
 };
+
+const QString Group::_gid="gid";
+const QString Group::_groupname="groupname";
+const QString Group::_caption="caption";
+const QString Group::_master="master";
+const QString Group::_regTime="regtime";
+const QString Group::_info="info";
+const QString Group::_website="website";
+const QString Group::_avatar="avatar";
+
 
 class UserList
 {
@@ -120,6 +163,13 @@ public:
     bool isDeny;
     unsigned int regtime;
 
+    const static QString id;
+    const static QString _groupname;
+    const static QString _uname;
+    const static QString _isAdmin;
+    const static QString _isDeny;
+    const static QString _regTime;
+
     QString table()
     {
         return "group_member";
@@ -127,6 +177,13 @@ public:
 
     bool isEmpty;
 };
+
+const QString GroupMember::_id="id";
+const QString GroupMember::_groupname="groupname";
+const QString GroupMember::_uname="uname";
+const QString GroupMember::_isAdmin="isAdmin";
+const QString GroupMember::_isDeny="isDeny";
+const QString GroupMember::_regTime="regtime";
 
 class UserRequest
 {

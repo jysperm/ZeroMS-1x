@@ -6,22 +6,33 @@
 #include "OServerDataBase.h"
 #include "OServerCore.h"
 
-const QString CHECK_USER = "SELECT `pwd` FROM `user` WHERE `uname` = :uname";
-const QString CHECK_GROUP = "SELECT `groupname` FROM `group` WHERE `groupname` = :groupname";
-const QString CHECK_GROUP_MEMBER = "SELECT `groupname` FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
-const QString CHECK_USERLIST = "SELECT `id` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
-const QString ALL_GROUP = "SELECT `groupname` FROM `group`";
-const QString GET_GROUP_MEMBER = "SELECT `uname` FROM `group_member` WHERE `groupname` = :groupname";
-const QString GET_USERLIST = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname";
-const QString GET_USERLIST_BY_UNAME_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
-const QString GET_USERLIST_BY_USER = "SELECT `id`,`uname`,`user` FROM `userlist` WHERE `user` = :user";
-const QString QUERY_GROUP_MEMBER_BY_UNAME = "SELECT `groupname` FROM `group_member` WHERE `uname` = :uname";
-const QString GET_GROUP_STATUS = "SELECT `id`,`groupname`,`uname`,`isadmin`,`isdeny`,`regtime` FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
-const QString GET_USER_INFO = "SELECT `uid`,`uname`,`pwd`,`lastlogintime`,`lastloginip`,`regtime`,`onlinetime`,`website`,`info`,`email`,`avatar` FROM `user` WHERE `uname` = :uname";
-const QString GET_GROUP_INFO = "SELECT `gid`,`groupname`,`caption`,`master`,`regtime`,`website`,`info`,`avatar`,`istemp` FROM `group` WHERE `groupname` = :groupname";
-const QString USERLIST_ADD = "INSERT INTO `userlist` (`uname`,`user`) VALUES (:uname,:user)";
-const QString GROUP_MEMBER_REMOVE = "DELETE FROM `group_member` WHERE `groupname` = :groupname AND `uname` = :uname";
-const QString USERLIST_REMOVE = "DELETE FROM `userlist` WHERE `uname` = :uname AND `user` = :user";
+OSDB::OT::OT()
+{
+
+}
+
+OSDB::OT::O(QString k,QString v):k(k),v(v)
+{
+
+}
+
+OSDB::Querys::Querys()
+{
+
+}
+
+OSDB::Querys::Querys(OT t)
+{
+    querys.append(t);
+}
+
+QString OSDB::Querys::getSQL()
+{
+    if(!sql.isEmpty())
+        sql.insert(0," WHERE ");
+
+    return sql;
+}
 
 OServerDataBase::OServerDataBase()
 {
@@ -47,23 +58,12 @@ OServerDataBase::~OServerDataBase()
     delete dbConn;
 }
 
-template<class T> T OServerDataBase::selecFrist(T table,QVector<QPair<QString,QString> > query,QString order,bool isASC)
+template<class T> T OServerDataBase::selecFrist(OSDB::Querys querys,QString order,bool isASC)
 {
     QSqlQuery query(*dbConn);
-    QString sql=QString("SELECT TOP 1 * FROM `%1`").arg(table.table());
+    QString sql=QString("SELECT TOP 1 * FROM `%1`").arg(T().table());
 
-    QVectorIterator i(query);
-    if(i.hasNext())
-        sql.append(" WHERE ");
-    while(i.hasNext())
-    {
-        QPair<QString,QString> pair=i.next();
-
-        sql.append(QString(" `%1` = '%2'").append(pair.second.replace("'","\\'")));
-
-        if(i.hasNext())
-            sql.append(" AND ");
-    }
+    sql.append(querys.getSQL());
 
     if(!order.isEmpty())
         sql.append(" ORDER BY %1 ").arg(order);
@@ -79,31 +79,12 @@ template<class T> T OServerDataBase::selecFrist(T table,QVector<QPair<QString,QS
     return result;
 }
 
-template<class T> T OServerDataBase::selectFrist(T table,QPair<QString,QString> query,QString order,bool isASC)
-{
-    QVector vQuery;
-    vQuery.append(query);
-
-    return selectFrist(table,vQuery,order,isASC);
-}
-
-template<class T> QVector<T> OServerDataBase::selectTable(T table,QVector<QPair<QString,QString> > query,QString order,int start,int num,bool isASC)
+template<class T> QVector<T> OServerDataBase::selectTable(OSDB::Querys querys,QString order,int start,int num,bool isASC)
 {
     QSqlQuery query(*dbConn);
-    QString sql=QString("SELECT * FROM `%1`").arg(table.table());
+    QString sql=QString("SELECT * FROM `%1`").arg(T().table());
 
-    QVectorIterator i(query);
-    if(i.hasNext())
-        sql.append(" WHERE ");
-    while(i.hasNext())
-    {
-        QPair<QString,QString> pair=i.next();
-
-        sql.append(QString(" `%1` = '%2'").append(pair.second.replace("'","\\'")));
-
-        if(i.hasNext())
-            sql.append(" AND ");
-    }
+    sql.append(querys.getSQL());
 
     if(!order.isEmpty())
         sql.append(" ORDER BY %1 ").arg(order);
@@ -129,12 +110,3 @@ template<class T> QVector<T> OServerDataBase::selectTable(T table,QVector<QPair<
 
     return result;
 }
-
-template<class T> QVector<T> OServerDataBase::selectTable(T table,QPair<QString,QString> query,QString order="",int start=-1,int num=-1,bool isASC=true)
-{
-    QVector vQuery;
-    vQuery.append(query);
-
-    return selectTable(table,vQuery,order,start,num,isASC);
-}
-

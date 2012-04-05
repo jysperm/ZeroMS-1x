@@ -4,7 +4,41 @@
 #include <QDebug>
 #include <QSqlQuery>
 #include "OClient.h"
-#include "OServerDataBaseItem.h"
+#include "OServerDataBaseHeader.h"
+
+namespace OSDB
+{
+
+class Querys;
+
+class OT
+{
+public:
+    OT();
+    OT(QString k,QString v);
+
+    inline OSDB::Querys operator && (OSDB::OT t);
+    inline OSDB::Querys operator || (OSDB::OT t);
+
+    QString k;
+    QString v;
+};
+
+class Querys
+{
+public:
+    Querys();
+    Querys(OT t);
+
+    inline OSDB::Querys operator && (OSDB::OT t);
+    inline OSDB::Querys operator || (OSDB::OT t);
+
+    QString getSQL();
+
+    QString sql;
+};
+
+}       //namespace OSDB
 
 class OServerDataBase
 {
@@ -12,10 +46,8 @@ public:
     OServerDataBase();
     ~OServerDataBase();
 
-    template<class T> T selectFrist(T table,QVector<QPair<QString,QString> > query,QString order="",bool isASC=true);
-    template<class T> T selectFrist(T table,QPair<QString,QString> query,QString order="",bool isASC=true);
-    template<class T> QVector<T> selectTable(T table,QVector<QPair<QString,QString> > query,QString order="",int start=-1,int num=-1,bool isASC=true);
-    template<class T> QVector<T> selectTable(T table,QPair<QString,QString> query,QString order="",int start=-1,int num=-1,bool isASC=true);
+    template<class T> T selectFrist(OSDB::Querys query=OSDB::Querys(),QString order="",bool isASC=true);
+    template<class T> QVector<T> selectTable(OSDB::Querys query=OSDB::Querys(),QString order="",int start=-1,int num=-1,bool isASC=true);
 
     inline bool checkUser(QString uname);//检查一个用户是否存在
     inline bool checkPWD(QString uname,QString pwd,QString publicKey);//检查密码是否正确
@@ -36,29 +68,66 @@ private:
     QSqlDatabase *dbConn;
 };
 
+inline OSDB::Querys OSDB::OT::operator && (OSDB::OT t)
+{
+    OSDB::Querys querys(*this);
+    return (querys && t);
+}
+
+inline OSDB::Querys OSDB::OT::operator || (OSDB::OT t)
+{
+    OSDB::Querys querys(*this);
+    return (querys || t);
+}
+
+inline OSDB::Querys OSDB::Querys::operator && (OSDB::OT t)
+{
+    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));;
+
+    if(sql.isEmpty())
+        sql=expr;
+    else
+        sql=QString("( %1 AND %2 )").arg(sql).arg(expr);
+
+    return *this;
+}
+
+inline OSDB::Querys OSDB::Querys::operator || (OSDB::OT t)
+{
+    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));;
+
+    if(sql.isEmpty())
+        sql=expr;
+    else
+        sql=QString("( %1 OR %2 )").arg(sql).arg(expr);
+
+    return *this;
+}
+
 inline bool OServerDataBase::checkUser(QString uname)
 {
-    return !selectFrist(OSDB::User(),OMakePair("uname",uname)).isEmpty;
+    using namespace OSDB;
+    return !selectFrist<User>(OT(User::_uname,uname)).isEmpty;
 }
 
 inline bool OServerDataBase::checkPWD(QString uname,QString pwd,QString publicKey)
 {
-    if(pwd==OSha1(publicKey+selectFrist(OSDB::User(),OMakePair("uname",uname)).pwd))
+    using namespace OSDB;
+    if(pwd==OSha1(publicKey+selectFrist<User>(OT(User::_uname,uname)).pwd))
         return true;
     return false;
 }
 
 inline bool OServerDataBase::checkGroup(QString group)
 {
-    return !selectFrist(OSDB::Group(),OMakePair("groupname",group)).isEmpty;
+    using namespace OSDB;
+    return !selectFrist<Group>(OT(Group::_groupname,group)).isEmpty;
 }
 
 inline bool OServerDataBase::checkGroupMember(QString group,QString uname)
 {
-    QVector<QPair<QString,QString> > vQuery;
-    vQuery.append(OMakePair("groupname",group));
-    vQuery.append(OMakePair("uname",uname));
-    return !selectFrist(OSDB::GroupMember(),vQuery).isEmpty;
+    using namespace OSDB;
+    return !selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) ).isEmpty;
 }
 
 #endif // ODATABASE_H

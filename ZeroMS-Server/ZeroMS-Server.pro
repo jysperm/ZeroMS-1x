@@ -35,7 +35,7 @@ HEADERS += \
     ../public/OAbstractPeer.h \
     OClientPeer.h \
     OServerDataBase.h \
-    OServerDataBaseItem.h
+    OServerDataBaseHeader.h
 
 RESOURCES += \
     res.qrc
