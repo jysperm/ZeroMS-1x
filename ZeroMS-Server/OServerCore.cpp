@@ -60,7 +60,7 @@ QString OServerCore::getUserStatus(QString uname)
 void OServerCore::userListChange(QString uname)
 {
     using namespace OSDB;
-    QVector<UserList> userlist=db.selectTable(UserList(),OMakePair("user",uname));
+    QVector<UserList> userlist=db.selectTable<UserList>(OT(UserList::_user,uname));
     QVectorIterator<UserList> iUserList(userlist);
     while(iUserList.hasNext())
     {
@@ -72,13 +72,13 @@ void OServerCore::userListChange(QString uname)
         }
     }
 
-    QVector<GroupMember> groups=db.selectTable(GroupMember(),OMakePair("uname",uname));
+    QVector<GroupMember> groups=db.selectTable<GroupMember>(OT(GroupMember::_uname,uname));
     QVectorIterator<GroupMember> iGroups(groups);
     while(iGroups.hasNext())
     {
         QString group=iGroups.next().groupname;
 
-        QVector<GroupMember> members=db.selectTable(GroupMember(),OMakePair("groupname",group));
+        QVector<GroupMember> members=db.selectTable<GroupMember>(OT(GroupMember::_groupname,group));
 
         QVectorIterator<GroupMember> iMember(members);
         while(iMember.hasNext())

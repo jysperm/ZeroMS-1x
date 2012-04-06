@@ -134,6 +134,10 @@ public:
     QString uname;
     QString user;
 
+    const static QString _id;
+    const static QString _uname;
+    const static QString _user;
+
     QString table()
     {
         return "userlist";
@@ -141,6 +145,10 @@ public:
 
     bool isEmpty;
 };
+
+const QString UserList::_id="id";
+const QString UserList::_uname="uname";
+const QString UserList::_user="user";
 
 
 class GroupMember
@@ -163,7 +171,7 @@ public:
     bool isDeny;
     unsigned int regtime;
 
-    const static QString id;
+    const static QString _id;
     const static QString _groupname;
     const static QString _uname;
     const static QString _isAdmin;
