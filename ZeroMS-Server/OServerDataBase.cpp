@@ -115,7 +115,6 @@ template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,
 {
     QSqlQuery query(*dbConn);
     QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(field).arg(value.replace("'","\\'"));
-
     sql.append(querys.getSQL());
 
     query.exec(sql);
@@ -123,7 +122,47 @@ template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,
     return query.numRowsAffected();
 }
 
-template<class T> int OServerDataBase::update(OSDB::Querys querys,T target)
+template<class T> void OServerDataBase::update(OSDB::Querys querys,T target)
 {
+    QSqlQuery query(*dbConn);
 
+    QVector<QPair<QString,QString> > values=target._values();
+
+    QVectorIterator<QPair<QString,QString> > i(values);
+    while(i.hasNext())
+    {
+        QPair<QString,QString> value=i.next();
+
+        QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(value.first).arg(value.second.replace("'","\\'"));
+        sql.append(querys.getSQL());
+
+        query.exec(sql);
+    }
+}
+
+template<class T> void update(T source,T target)
+{
+    QSqlQuery query(*dbConn);
+
+    OSDB::Querys querys;
+
+    QVector<QPair<QString,QString> > sourceValues=source._values();
+    QVectorIterator<QPair<QString,QString> > iS(sourceValues);
+    while(iS.hasNext())
+    {
+        QPair<QString,QString> value=iS.next();
+        querys=querys && OSDB::OT(value.first,value.second);
+    }
+
+    QVector<QPair<QString,QString> > values=target._values();
+    QVectorIterator<QPair<QString,QString> > i(values);
+    while(i.hasNext())
+    {
+        QPair<QString,QString> value=i.next();
+
+        QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(value.first).arg(value.second.replace("'","\\'"));
+        sql.append(querys.getSQL());
+
+        query.exec(sql);
+    }
 }

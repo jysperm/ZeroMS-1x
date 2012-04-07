@@ -54,7 +54,7 @@ public:
     
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
+        QVector<QPair<QString,QString> > _result_;
 <?php
     $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);
     while($row=mysql_fetch_array($rs))
@@ -62,18 +62,18 @@ public:
       if(T($row["Type"])=="QString")
       {
 ?>
-        result.append(qMakePair(_<?php echo S($row["Field"]);?>,<?php echo S($row["Field"],1);?>));
+        _result_.append(qMakePair(_<?php echo S($row["Field"],1);?>,<?php echo S($row["Field"],1);?>));
 <?php
       }
       else
       {
 ?>
-        result.append(qMakePair(_<?php echo S($row["Field"]);?>,QString::number(<?php echo S($row["Field"],1);?>)));
+        _result_.append(qMakePair(_<?php echo S($row["Field"],1);?>,QString::number(<?php echo S($row["Field"],1);?>)));
 <?php
       }
     }
 ?>
-        return result;
+        return _result_;
     }
     
     bool _isEmpty;
@@ -118,6 +118,10 @@ const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php 
   
   function T($string)
   {
+    if(stristr($string,"tinyint"))
+    {
+      return "bool";
+    }
     if(stristr($string,"int"))
     {
       if(stristr($string,"unsigned"))
@@ -137,6 +141,10 @@ const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php 
   
   function TT($string)
   {
+    if(stristr($string,"tinyint"))
+    {
+      return "Bool";
+    }
     if(stristr($string,"int"))
     {
       if(stristr($string,"unsigned"))

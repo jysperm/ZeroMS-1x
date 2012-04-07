@@ -58,19 +58,19 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_uid,QString::number(uid)));
-        result.append(qMakePair(_uname,uname));
-        result.append(qMakePair(_pwd,pwd));
-        result.append(qMakePair(_lastLoginTime,QString::number(lastLoginTime)));
-        result.append(qMakePair(_lastLoginIp,lastLoginIp));
-        result.append(qMakePair(_regTime,QString::number(regTime)));
-        result.append(qMakePair(_onlineTime,QString::number(onlineTime)));
-        result.append(qMakePair(_website,website));
-        result.append(qMakePair(_info,info));
-        result.append(qMakePair(_email,email));
-        result.append(qMakePair(_avatar,avatar));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_uid,QString::number(uid)));
+        _result_.append(qMakePair(_uname,uname));
+        _result_.append(qMakePair(_pwd,pwd));
+        _result_.append(qMakePair(_lastLoginTime,QString::number(lastLoginTime)));
+        _result_.append(qMakePair(_lastLoginIp,lastLoginIp));
+        _result_.append(qMakePair(_regTime,QString::number(regTime)));
+        _result_.append(qMakePair(_onlineTime,QString::number(onlineTime)));
+        _result_.append(qMakePair(_website,website));
+        _result_.append(qMakePair(_info,info));
+        _result_.append(qMakePair(_email,email));
+        _result_.append(qMakePair(_avatar,avatar));
+        return _result_;
     }
 
     bool _isEmpty;
@@ -127,29 +127,29 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_gid,QString::number(gid)));
-        result.append(qMakePair(_groupname,groupname));
-        result.append(qMakePair(_caption,caption));
-        result.append(qMakePair(_master,master));
-        result.append(qMakePair(_regTime,QString::number(regTime)));
-        result.append(qMakePair(_website,website));
-        result.append(qMakePair(_info,info));
-        result.append(qMakePair(_avatar,avatar));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_gid,QString::number(gid)));
+        _result_.append(qMakePair(_groupname,groupname));
+        _result_.append(qMakePair(_caption,caption));
+        _result_.append(qMakePair(_master,master));
+        _result_.append(qMakePair(_regTime,QString::number(regTime)));
+        _result_.append(qMakePair(_website,website));
+        _result_.append(qMakePair(_info,info));
+        _result_.append(qMakePair(_avatar,avatar));
+        return _result_;
     }
 
     bool _isEmpty;
 };
 
-const QString User::_gid="gid";
-const QString User::_groupname="groupname";
-const QString User::_caption="caption";
-const QString User::_master="master";
-const QString User::_regTime="regtime";
-const QString User::_website="website";
-const QString User::_info="info";
-const QString User::_avatar="avatar";
+const QString Group::_gid="gid";
+const QString Group::_groupname="groupname";
+const QString Group::_caption="caption";
+const QString Group::_master="master";
+const QString Group::_regTime="regtime";
+const QString Group::_website="website";
+const QString Group::_info="info";
+const QString Group::_avatar="avatar";
 class UserList
 {
 public:
@@ -175,19 +175,19 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_id,QString::number(id)));
-        result.append(qMakePair(_uname,uname));
-        result.append(qMakePair(_User,user));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_id,QString::number(id)));
+        _result_.append(qMakePair(_uname,uname));
+        _result_.append(qMakePair(_user,user));
+        return _result_;
     }
 
     bool _isEmpty;
 };
 
-const QString User::_id="id";
-const QString User::_uname="uname";
-const QString User::_user="user";
+const QString UserList::_id="id";
+const QString UserList::_uname="uname";
+const QString UserList::_user="user";
 class GroupMember
 {
 public:
@@ -196,16 +196,16 @@ public:
         id(query->value(0).toInt()),
         groupname(query->value(1).toString()),
         uname(query->value(2).toString()),
-        isAdmin(query->value(3).toInt()),
-        isDeny(query->value(4).toInt()),
+        isAdmin(query->value(3).toBool()),
+        isDeny(query->value(4).toBool()),
         regTime(query->value(5).toUInt()),
         _isEmpty(false){}
 
     int id;
     QString groupname;
     QString uname;
-    int isAdmin;
-    int isDeny;
+    bool isAdmin;
+    bool isDeny;
     unsigned int regTime;
 
     const static QString _id;
@@ -222,25 +222,25 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_id,QString::number(id)));
-        result.append(qMakePair(_groupname,groupname));
-        result.append(qMakePair(_uname,uname));
-        result.append(qMakePair(_isAdmin,QString::number(isAdmin)));
-        result.append(qMakePair(_isDeny,QString::number(isDeny)));
-        result.append(qMakePair(_regTime,QString::number(regTime)));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_id,QString::number(id)));
+        _result_.append(qMakePair(_groupname,groupname));
+        _result_.append(qMakePair(_uname,uname));
+        _result_.append(qMakePair(_isAdmin,QString::number(isAdmin)));
+        _result_.append(qMakePair(_isDeny,QString::number(isDeny)));
+        _result_.append(qMakePair(_regTime,QString::number(regTime)));
+        return _result_;
     }
 
     bool _isEmpty;
 };
 
-const QString User::_id="id";
-const QString User::_groupname="groupname";
-const QString User::_uname="uname";
-const QString User::_isAdmin="isadmin";
-const QString User::_isDeny="isdeny";
-const QString User::_regTime="regtime";
+const QString GroupMember::_id="id";
+const QString GroupMember::_groupname="groupname";
+const QString GroupMember::_uname="uname";
+const QString GroupMember::_isAdmin="isadmin";
+const QString GroupMember::_isDeny="isdeny";
+const QString GroupMember::_regTime="regtime";
 class Userrequest
 {
 public:
@@ -252,9 +252,9 @@ public:
         user(query->value(3).toString()),
         invitation(query->value(4).toString()),
         msg(query->value(5).toString()),
-        isHandle(query->value(6).toInt()),
+        isHandle(query->value(6).toBool()),
         handleTime(query->value(7).toUInt()),
-        result(query->value(8).toInt()),
+        result(query->value(8).toBool()),
         _isEmpty(false){}
 
     int id;
@@ -263,9 +263,9 @@ public:
     QString user;
     QString invitation;
     QString msg;
-    int isHandle;
+    bool isHandle;
     unsigned int handleTime;
-    int result;
+    bool result;
 
     const static QString _id;
     const static QString _time;
@@ -284,31 +284,31 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_id,QString::number(id)));
-        result.append(qMakePair(_time,QString::number(time)));
-        result.append(qMakePair(_uname,uname));
-        result.append(qMakePair(_User,user));
-        result.append(qMakePair(_invitation,invitation));
-        result.append(qMakePair(_msg,msg));
-        result.append(qMakePair(_isHandle,QString::number(isHandle)));
-        result.append(qMakePair(_handleTime,QString::number(handleTime)));
-        result.append(qMakePair(_result,QString::number(result)));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_id,QString::number(id)));
+        _result_.append(qMakePair(_time,QString::number(time)));
+        _result_.append(qMakePair(_uname,uname));
+        _result_.append(qMakePair(_user,user));
+        _result_.append(qMakePair(_invitation,invitation));
+        _result_.append(qMakePair(_msg,msg));
+        _result_.append(qMakePair(_isHandle,QString::number(isHandle)));
+        _result_.append(qMakePair(_handleTime,QString::number(handleTime)));
+        _result_.append(qMakePair(_result,QString::number(result)));
+        return _result_;
     }
 
     bool _isEmpty;
 };
 
-const QString User::_id="id";
-const QString User::_time="time";
-const QString User::_uname="uname";
-const QString User::_user="user";
-const QString User::_invitation="invitation";
-const QString User::_msg="msg";
-const QString User::_isHandle="ishandle";
-const QString User::_handleTime="handletime";
-const QString User::_result="result";
+const QString Userrequest::_id="id";
+const QString Userrequest::_time="time";
+const QString Userrequest::_uname="uname";
+const QString Userrequest::_user="user";
+const QString Userrequest::_invitation="invitation";
+const QString Userrequest::_msg="msg";
+const QString Userrequest::_isHandle="ishandle";
+const QString Userrequest::_handleTime="handletime";
+const QString Userrequest::_result="result";
 class msg_log
 {
 public:
@@ -320,7 +320,7 @@ public:
         uname(query->value(3).toString()),
         user(query->value(4).toString()),
         msg(query->value(5).toString()),
-        isSign(query->value(6).toInt()),
+        isSign(query->value(6).toBool()),
         _isEmpty(false){}
 
     int id;
@@ -329,7 +329,7 @@ public:
     QString uname;
     QString user;
     QString msg;
-    int isSign;
+    bool isSign;
 
     const static QString _id;
     const static QString _time;
@@ -346,27 +346,27 @@ public:
 
     QVector<QPair<QString,QString> > _values()
     {
-        QVector<QPair<QString,QString> > result;
-        result.append(qMakePair(_id,QString::number(id)));
-        result.append(qMakePair(_time,QString::number(time)));
-        result.append(qMakePair(_signTime,QString::number(signTime)));
-        result.append(qMakePair(_uname,uname));
-        result.append(qMakePair(_User,user));
-        result.append(qMakePair(_msg,msg));
-        result.append(qMakePair(_isSign,QString::number(isSign)));
-        return result;
+        QVector<QPair<QString,QString> > _result_;
+        _result_.append(qMakePair(_id,QString::number(id)));
+        _result_.append(qMakePair(_time,QString::number(time)));
+        _result_.append(qMakePair(_signTime,QString::number(signTime)));
+        _result_.append(qMakePair(_uname,uname));
+        _result_.append(qMakePair(_user,user));
+        _result_.append(qMakePair(_msg,msg));
+        _result_.append(qMakePair(_isSign,QString::number(isSign)));
+        return _result_;
     }
 
     bool _isEmpty;
 };
 
-const QString User::_id="id";
-const QString User::_time="time";
-const QString User::_signTime="signtime";
-const QString User::_uname="uname";
-const QString User::_user="user";
-const QString User::_msg="msg";
-const QString User::_isSign="issign";
+const QString msg_log::_id="id";
+const QString msg_log::_time="time";
+const QString msg_log::_signTime="signtime";
+const QString msg_log::_uname="uname";
+const QString msg_log::_user="user";
+const QString msg_log::_msg="msg";
+const QString msg_log::_isSign="issign";
 
 }       //namespace OSDB
 

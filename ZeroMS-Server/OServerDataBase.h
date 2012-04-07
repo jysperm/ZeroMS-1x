@@ -49,8 +49,8 @@ public:
     template<class T> T selectFrist(OSDB::Querys query=OSDB::Querys(),QString order="",bool isASC=true);
     template<class T> QVector<T> selectTable(OSDB::Querys query=OSDB::Querys(),QString order="",int start=-1,int num=-1,bool isASC=true);
 
-    template<class T> int update(T source,T target);
-    template<class T> int update(OSDB::Querys querys,T target);
+    template<class T> void update(T source,T target);
+    template<class T> void update(OSDB::Querys querys,T target);
     template<class T> int update(OSDB::Querys querys,QString field,QVariant value);
 
     inline bool checkUser(QString uname);//检查一个用户是否存在
@@ -111,7 +111,7 @@ inline OSDB::Querys OSDB::Querys::operator || (OSDB::OT t)
 inline bool OServerDataBase::checkUser(QString uname)
 {
     using namespace OSDB;
-    return !selectFrist<User>(OT(User::_uname,uname)).isEmpty;
+    return !selectFrist<User>(OT(User::_uname,uname))._isEmpty;
 }
 
 inline bool OServerDataBase::checkPWD(QString uname,QString pwd,QString publicKey)
@@ -125,13 +125,13 @@ inline bool OServerDataBase::checkPWD(QString uname,QString pwd,QString publicKe
 inline bool OServerDataBase::checkGroup(QString group)
 {
     using namespace OSDB;
-    return !selectFrist<Group>(OT(Group::_groupname,group)).isEmpty;
+    return !selectFrist<Group>(OT(Group::_groupname,group))._isEmpty;
 }
 
 inline bool OServerDataBase::checkGroupMember(QString group,QString uname)
 {
     using namespace OSDB;
-    return !selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) ).isEmpty;
+    return !selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty;
 }
 
 #endif // ODATABASE_H

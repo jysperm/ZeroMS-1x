@@ -250,7 +250,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
                 {//如果是一个群
                     item.status=REMOVED;
                 }
-                else if(!core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,item.uname)).isEmpty)
+                else if(!core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,item.uname))._isEmpty)
                 {//如果是一个用户，且这个用户还在用户列表中
                    item.status=OFFLINE;
                 }
