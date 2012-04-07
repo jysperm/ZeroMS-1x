@@ -1,6 +1,7 @@
-#include <QCoreApplication>
 #include <QDateTime>
 #include "OServerCore.h"
+#include "../public/OSettings.h"
+#include "OClient.h"
 
 //public:
 OServerCore::OServerCore():cin(stdin),cout(stdout)

@@ -1,4 +1,5 @@
 #include "OClient.h"
+#include "global.h"
 
 OClient::OClient():isLoged(false),isShowIp(false),status(ONLINE)
 {

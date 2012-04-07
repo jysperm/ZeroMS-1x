@@ -1,6 +1,9 @@
-#include "OClientPeer.h"
-#include "OServerCore.h"
+#include <QStringList>
 #include <QDateTime>
+#include "OClientPeer.h"
+#include "OClient.h"
+#include "global.h"
+#include "OServerCore.h"
 
 OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(connect)
 {
@@ -270,27 +273,30 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
     UserList(listname,operation,allList);
 }
 
-void OClientPeer::ModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message)
+void OClientPeer::ModifyUserList(QString listname,QString uname,QString operation,QString message)
 {
     if(client->isLoged)
     {//如果已经登录
         if(listname==client->uname)
-        {
+        {//如果是在操作自己的好友列表
             bool isGroup=(uname.left(1)=="*")?true:false;
-            if(isAddOrRemove && !isGroup)
-            {//如果是添加用户
+            if(!isGroup)
+            {//如果要操作的目标用户名是用户
                 if(core->db.checkUser(uname))
-                {//如果这个用户存在
-                    core->db.ModifyUserList(client->uname,uname,true);
+                {//如果存在这个用户
+                    if(operation==ADD)
+                    {//如果是添加好友
+
+                    }
+                }
+                else
+                {//如果不存在这个用户
+                    Unknown();
                 }
             }
-            else if(!isGroup)
-            {//如果是删除用户
-                core->db.ModifyUserList(client->uname,uname,false);
-            }
             else
-            {//如果是删除群
-                core->db.removeGroupMember(uname,client->uname);
+            {//如果要操作的目标用户名是小组
+
             }
         }
         else

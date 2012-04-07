@@ -12,7 +12,10 @@ class <?php echo S($table);?>
 
 {
 public:
-    <?php echo S($table);?>();
+    <?php echo S($table);?>()
+    {
+        
+    }
     <?php echo S($table);?>(QSqlQuery *query):
 <?php
     $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);

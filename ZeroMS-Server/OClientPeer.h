@@ -22,7 +22,7 @@ public slots:
     void State(QString status);
     void AskInfo(QStringList keys);
     void AskUserList(QString listname,QString operation,bool isHasAvatar);
-    void ModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
+    void ModifyUserList(QString listname,QString uname,QString operation,QString message);
 };
 
 #endif // OCLIENTPEER_H

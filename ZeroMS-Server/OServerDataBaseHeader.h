@@ -3,7 +3,6 @@
 
 #include <QSqlQuery>
 #include <QVariant>
-#include <QPair>
 #include <QVector>
 
 namespace OSDB
@@ -12,7 +11,10 @@ namespace OSDB
 class User
 {
 public:
-    User();
+    User()
+    {
+
+    }
     User(QSqlQuery *query):
         uid(query->value(0).toInt()),
         uname(query->value(1).toString()),
@@ -76,21 +78,13 @@ public:
     bool _isEmpty;
 };
 
-const QString User::_uid="uid";
-const QString User::_uname="uname";
-const QString User::_pwd="pwd";
-const QString User::_lastLoginTime="lastlogintime";
-const QString User::_lastLoginIp="lastloginip";
-const QString User::_regTime="regtime";
-const QString User::_onlineTime="onlinetime";
-const QString User::_website="website";
-const QString User::_info="info";
-const QString User::_email="email";
-const QString User::_avatar="avatar";
 class Group
 {
 public:
-    Group();
+    Group()
+    {
+
+    }
     Group(QSqlQuery *query):
         gid(query->value(0).toInt()),
         groupname(query->value(1).toString()),
@@ -142,18 +136,13 @@ public:
     bool _isEmpty;
 };
 
-const QString Group::_gid="gid";
-const QString Group::_groupname="groupname";
-const QString Group::_caption="caption";
-const QString Group::_master="master";
-const QString Group::_regTime="regtime";
-const QString Group::_website="website";
-const QString Group::_info="info";
-const QString Group::_avatar="avatar";
 class UserList
 {
 public:
-    UserList();
+    UserList()
+    {
+
+    }
     UserList(QSqlQuery *query):
         id(query->value(0).toInt()),
         uname(query->value(1).toString()),
@@ -185,13 +174,13 @@ public:
     bool _isEmpty;
 };
 
-const QString UserList::_id="id";
-const QString UserList::_uname="uname";
-const QString UserList::_user="user";
 class GroupMember
 {
 public:
-    GroupMember();
+    GroupMember()
+    {
+
+    }
     GroupMember(QSqlQuery *query):
         id(query->value(0).toInt()),
         groupname(query->value(1).toString()),
@@ -235,16 +224,13 @@ public:
     bool _isEmpty;
 };
 
-const QString GroupMember::_id="id";
-const QString GroupMember::_groupname="groupname";
-const QString GroupMember::_uname="uname";
-const QString GroupMember::_isAdmin="isadmin";
-const QString GroupMember::_isDeny="isdeny";
-const QString GroupMember::_regTime="regtime";
 class Userrequest
 {
 public:
-    Userrequest();
+    Userrequest()
+    {
+
+    }
     Userrequest(QSqlQuery *query):
         id(query->value(0).toInt()),
         time(query->value(1).toUInt()),
@@ -300,19 +286,13 @@ public:
     bool _isEmpty;
 };
 
-const QString Userrequest::_id="id";
-const QString Userrequest::_time="time";
-const QString Userrequest::_uname="uname";
-const QString Userrequest::_user="user";
-const QString Userrequest::_invitation="invitation";
-const QString Userrequest::_msg="msg";
-const QString Userrequest::_isHandle="ishandle";
-const QString Userrequest::_handleTime="handletime";
-const QString Userrequest::_result="result";
 class msg_log
 {
 public:
-    msg_log();
+    msg_log()
+    {
+
+    }
     msg_log(QSqlQuery *query):
         id(query->value(0).toInt()),
         time(query->value(1).toUInt()),
@@ -359,14 +339,6 @@ public:
 
     bool _isEmpty;
 };
-
-const QString msg_log::_id="id";
-const QString msg_log::_time="time";
-const QString msg_log::_signTime="signtime";
-const QString msg_log::_uname="uname";
-const QString msg_log::_user="user";
-const QString msg_log::_msg="msg";
-const QString msg_log::_isSign="issign";
 
 }       //namespace OSDB
 

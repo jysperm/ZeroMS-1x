@@ -1,8 +1,6 @@
-#include <QCoreApplication>
-#include <QSettings>
-#include <QString>
-#include <QFile>
 #include "OSettings.h"
+#include <QFile>
+#include <QCoreApplication>
 
 //public:
 OSettings::OSettings(QString file):config(0),defaultConfig(0)

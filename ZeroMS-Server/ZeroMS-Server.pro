@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     ../public/OGlobal/OGlobal.cpp \
     ../public/OAbstractPeer.cpp \
     OClientPeer.cpp \
-    OServerDataBase.cpp
+    OServerDataBase.cpp \
+    OServerDataBaseHeader.cpp
 
 HEADERS += \
     ../public/OGlobal.h \

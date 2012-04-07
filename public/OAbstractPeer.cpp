@@ -1,8 +1,7 @@
-#include <QTcpSocket>
-#include <QDateTime>
 #include <QStringList>
 #include "OAbstractPeer.h"
-#include "OMessage.h"
+#include "global.h"
+#include "../public/OSettings.h"
 
 OAbstractPeer::OAbstractPeer(QTcpSocket *connect):conn(connect)
 {
@@ -155,9 +154,9 @@ void OAbstractPeer::checkMsg()
                 {
                     QString listname=msg.split(0);
                     QString uname=msg.split(1);
-                    bool isAddOrRemove=(msg.split(2)==REMOVE)?false:true;
+                    QString operation=(msg.split(2)==REMOVE)?REMOVE:ADD;
                     QString messages=msg.split(3);
-                    emit ModifyUserList(listname,uname,isAddOrRemove,messages);
+                    emit ModifyUserList(listname,uname,operation,messages);
                     break;
                 }
                 case M_AskUserList:

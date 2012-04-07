@@ -1,13 +1,7 @@
 #ifndef OCLIENT_H
 #define OCLIENT_H
 
-#include <QString>
-#include <QTcpSocket>
 #include <QHostAddress>
-#include <QVector>
-#include "global.h"
-#include "../public/OAbstractPeer.h"
-#include "../public/OMessage.h"
 #include "OClientPeer.h"
 
 class OClient:public QObject

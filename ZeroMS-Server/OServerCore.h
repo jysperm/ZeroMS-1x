@@ -4,11 +4,9 @@
 #include <QObject>
 #include <QTextStream>
 #include <QTcpServer>
-#include <QStringList>
+#include <QMap>
 #include "OServerDataBase.h"
-#include "../public/OSettings.h"
-#include "global.h"
-#include "OClient.h"
+class OClient;
 
 class OServerCore:public QObject
 {

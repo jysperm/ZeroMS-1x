@@ -1,11 +1,9 @@
 #ifndef PUBLIC_OABSTRACTPEER_H
 #define PUBLIC_OABSTRACTPEER_H
 
-#include <QObject>
 #include <QTcpSocket>
 #include <QStringList>
 #include "OMessage.h"
-#include "OGlobal.h"
 
 enum OPeerType
 {
@@ -58,7 +56,7 @@ signals:
     void error(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);//当连接发生错误时发射
 
     void AskUserList(QString listname,QString operation,bool isHasAvatar);
-    void ModifyUserList(QString listname,QString uname,bool isAddOrRemove,QString message);
+    void ModifyUserList(QString listname,QString uname,QString operation,QString message);
     void AskInfo(QStringList keys);
     void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
     void AskPublicKey();

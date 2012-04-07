@@ -1,9 +1,9 @@
 #ifndef PUBLIC_OMESSAGE_H
 #define PUBLIC_OMESSAGE_H
 
-#include <QObject>
+#include <QByteArray>
+#include <QString>
 #include <QDataStream>
-#include "global.h"
 
 class OMessage
 {

@@ -1,17 +1,16 @@
-#include <QSqlDatabase>
-#include <QCoreApplication>
+#include <QDebug>
 #include <QStringList>
 #include <QSqlError>
-#include <QSqlQuery>
+#include <QCoreApplication>
 #include "OServerDataBase.h"
-#include "OServerCore.h"
+#include "../public/OSettings.h"
 
 OSDB::OT::OT()
 {
 
 }
 
-OSDB::OT::O(QString k,QString v):k(k),v(v)
+OSDB::OT::OT(QString k,QString v):k(k),v(v)
 {
 
 }
@@ -23,7 +22,7 @@ OSDB::Querys::Querys()
 
 OSDB::Querys::Querys(OT t)
 {
-    querys.append(t);
+    sql=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));
 }
 
 QString OSDB::Querys::getSQL()
@@ -56,113 +55,4 @@ OServerDataBase::OServerDataBase()
 OServerDataBase::~OServerDataBase()
 {
     delete dbConn;
-}
-
-template<class T> T OServerDataBase::selecFrist(OSDB::Querys querys,QString order,bool isASC)
-{
-    QSqlQuery query(*dbConn);
-    QString sql=QString("SELECT TOP 1 * FROM `%1`").arg(T().table());
-
-    sql.append(querys.getSQL());
-
-    if(!order.isEmpty())
-        sql.append(" ORDER BY %1 ").arg(order);
-    if(!isASC)
-        sql.append("DESC");
-
-    query.exec(sql);
-
-    bool hasNext=query.next();
-    T result(&query);
-    result.isEmpty=hasNext;
-
-    return result;
-}
-
-template<class T> QVector<T> OServerDataBase::selectTable(OSDB::Querys querys,QString order,int start,int num,bool isASC)
-{
-    QSqlQuery query(*dbConn);
-    QString sql=QString("SELECT * FROM `%1`").arg(T().table());
-
-    sql.append(querys.getSQL());
-
-    if(!order.isEmpty())
-        sql.append(" ORDER BY %1 ").arg(order);
-    if(!isASC)
-        sql.append(" DESC ");
-
-    if(num>-1 && start>-1)
-    {
-        sql.append(" LIMIT %1,%2").arg(start).arg(num);
-    }
-    if(num>-1 && !(start>-1))
-    {
-        sql.append(" LIMIT %1").arg(num);
-    }
-
-    query.exec(sql);
-
-    QVector<T> result;
-    while(query.next())
-    {
-        result.append(T(&query));
-    }
-
-    return result;
-}
-
-template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,QVariant value)
-{
-    QSqlQuery query(*dbConn);
-    QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(field).arg(value.replace("'","\\'"));
-    sql.append(querys.getSQL());
-
-    query.exec(sql);
-
-    return query.numRowsAffected();
-}
-
-template<class T> void OServerDataBase::update(OSDB::Querys querys,T target)
-{
-    QSqlQuery query(*dbConn);
-
-    QVector<QPair<QString,QString> > values=target._values();
-
-    QVectorIterator<QPair<QString,QString> > i(values);
-    while(i.hasNext())
-    {
-        QPair<QString,QString> value=i.next();
-
-        QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(value.first).arg(value.second.replace("'","\\'"));
-        sql.append(querys.getSQL());
-
-        query.exec(sql);
-    }
-}
-
-template<class T> void update(T source,T target)
-{
-    QSqlQuery query(*dbConn);
-
-    OSDB::Querys querys;
-
-    QVector<QPair<QString,QString> > sourceValues=source._values();
-    QVectorIterator<QPair<QString,QString> > iS(sourceValues);
-    while(iS.hasNext())
-    {
-        QPair<QString,QString> value=iS.next();
-        querys=querys && OSDB::OT(value.first,value.second);
-    }
-
-    QVector<QPair<QString,QString> > values=target._values();
-    QVectorIterator<QPair<QString,QString> > i(values);
-    while(i.hasNext())
-    {
-        QPair<QString,QString> value=i.next();
-
-        QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(value.first).arg(value.second.replace("'","\\'"));
-        sql.append(querys.getSQL());
-
-        query.exec(sql);
-    }
 }

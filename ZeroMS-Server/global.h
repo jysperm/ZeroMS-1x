@@ -1,10 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <QObject>
-#include "../public/OSettings.h"
 #include "../public/OGlobal.h"
-
+class OSettings;
 class OServerCore;
 
 const int VERNUM = 1;
