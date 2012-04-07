@@ -49,6 +49,10 @@ public:
     template<class T> T selectFrist(OSDB::Querys query=OSDB::Querys(),QString order="",bool isASC=true);
     template<class T> QVector<T> selectTable(OSDB::Querys query=OSDB::Querys(),QString order="",int start=-1,int num=-1,bool isASC=true);
 
+    template<class T> int update(T source,T target);
+    template<class T> int update(OSDB::Querys querys,T target);
+    template<class T> int update(OSDB::Querys querys,QString field,QVariant value);
+
     inline bool checkUser(QString uname);//检查一个用户是否存在
     inline bool checkPWD(QString uname,QString pwd,QString publicKey);//检查密码是否正确
     inline bool checkGroup(QString group);//检查一个小组是否存在

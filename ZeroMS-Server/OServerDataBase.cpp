@@ -110,3 +110,20 @@ template<class T> QVector<T> OServerDataBase::selectTable(OSDB::Querys querys,QS
 
     return result;
 }
+
+template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,QVariant value)
+{
+    QSqlQuery query(*dbConn);
+    QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T().table()).arg(field).arg(value.replace("'","\\'"));
+
+    sql.append(querys.getSQL());
+
+    query.exec(sql);
+
+    return query.numRowsAffected();
+}
+
+template<class T> int OServerDataBase::update(OSDB::Querys querys,T target)
+{
+
+}
