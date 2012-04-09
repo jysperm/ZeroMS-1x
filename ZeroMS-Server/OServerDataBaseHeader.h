@@ -286,14 +286,14 @@ public:
     bool _isEmpty;
 };
 
-class msg_log
+class MsgLog
 {
 public:
-    msg_log()
+    MsgLog()
     {
 
     }
-    msg_log(QSqlQuery *query):
+    MsgLog(QSqlQuery *query):
         id(query->value(0).toInt()),
         time(query->value(1).toUInt()),
         signTime(query->value(2).toUInt()),

@@ -46,13 +46,15 @@ public:
     ~OServerDataBase();
 
     template<class T> T selectFrist(OSDB::Querys querys=OSDB::Querys(),QString order=QString(),bool isASC=true);
-    template<class T> QVector<T> selectTable(OSDB::Querys querys=OSDB::Querys(),QString order=QString(),int start=-1,int num=-1,bool isASC=true);
+    template<class T> QVector<T> select(OSDB::Querys querys=OSDB::Querys(),QString order=QString(),int start=-1,int num=-1,bool isASC=true);
 
     template<class T> void update(T source,T target);
     template<class T> void update(OSDB::Querys querys,T target);
     template<class T> int update(OSDB::Querys querys,QString field,QVariant value);
 
     template<class T> void insert(T value);
+
+    template<class T> int deleteItem(OSDB::Querys querys);
 
     inline bool checkUser(QString uname);//检查一个用户是否存在
     inline bool checkPWD(QString uname,QString pwd,QString publicKey);//检查密码是否正确
@@ -145,7 +147,7 @@ template<class T> T OServerDataBase::selectFrist(OSDB::Querys querys,QString ord
     return result;
 }
 
-template<class T> QVector<T> OServerDataBase::selectTable(OSDB::Querys querys,QString order,int start,int num,bool isASC)
+template<class T> QVector<T> OServerDataBase::select(OSDB::Querys querys,QString order,int start,int num,bool isASC)
 {
     QSqlQuery query(*dbConn);
     QString sql=QString("SELECT * FROM `%1`").arg(T::_table());
@@ -242,6 +244,11 @@ template<class T> void OServerDataBase::insert(T value)
     QString sql=QString("INSERT INTO `%1` VALUES (").arg(T::_table());
 
     QVectorIterator<QPair<QString,QString> > i(values);
+
+    //如果第一个字段是id，跳过这个字段
+    if(i.peekNext().first.indexOf("id")>-1)
+        i.next();
+
     while(i.hasNext())
     {
         QPair<QString,QString> value=i.next();
@@ -255,6 +262,18 @@ template<class T> void OServerDataBase::insert(T value)
     sql.append(")");
 
     query.exec(sql);
+}
+
+template<class T> int OServerDataBase::deleteItem(OSDB::Querys querys)
+{
+    QSqlQuery query(*dbConn);
+    QString sql=QString("DELETE FROM `%1`").arg(T::_table());
+
+    sql.append(querys.getSQL());
+
+    query.exec(sql);
+
+    return query.numRowsAffected();
 }
 
 #endif // ODATABASE_H

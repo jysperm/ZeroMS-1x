@@ -102,6 +102,14 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
     send(&msg);
 }
 
+void OAbstractPeer::ProcessError(QString errorName,QString other)
+{
+    QByteArray data;
+    data.append(QString::number(CurrentMsg->type)).append(errorName).append(other);
+    OMessage msgMsg(M_ProcessError,data);
+    send(&msgMsg);
+}
+
 void OAbstractPeer::Unknown()
 {
     QByteArray data;
@@ -119,6 +127,7 @@ void OAbstractPeer::checkMsg()
     while(true)
     {
         OMessage msg=OMessage::fromDataBuff(&databuf);
+        CurrentMsg=&msg;
         if(msg.isEmpty())
             break;
         if(getPeerType()==ClientPeer)
@@ -192,5 +201,7 @@ void OAbstractPeer::checkMsg()
             }
         }
     }
+
+    CurrentMsg=0;
 }
 

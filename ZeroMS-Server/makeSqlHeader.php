@@ -1,3 +1,4 @@
+<pre>
 <?php
   $conn=mysql_connect("127.0.0.1","root","newpasswd");
   mysql_query("SET NAMES utf8",$conn);
@@ -55,9 +56,9 @@ public:
         return "<?php echo $table;?>";
     }
     
-    QVector<QPair<QString,QString> > _values()
+    QVector&lt;QPair&lt;QString,QString&gt; &gt; _values()
     {
-        QVector<QPair<QString,QString> > _result_;
+        QVector&lt;QPair&lt;QString,QString&gt; &gt; _result_;
 <?php
     $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);
     while($row=mysql_fetch_array($rs))
@@ -83,6 +84,18 @@ public:
 };
 
 <?php
+  }
+?>
+
+
+
+
+
+
+
+<?php
+  foreach($tables as $table)
+  {  
     $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);
     while($row=mysql_fetch_array($rs))
     {
@@ -90,7 +103,9 @@ public:
 const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php echo $row["Field"];?>";
 <?php
     }
-?><?php
+?>
+
+<?php
   }
   
   function S($string,$n=0)
@@ -112,6 +127,7 @@ const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php 
     $string=str_replace("isadmin","isAdmin",$string);
     $string=str_replace("issign","isSign",$string);
     $string=str_replace("signtime","signTime",$string);
+    $string=str_replace("msg_log","MsgLog",$string);
     
     $string=str_replace("Groupname","groupname",$string);
     $string=str_replace("Group_member","GroupMember",$string);
@@ -166,3 +182,4 @@ const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php 
   }
 
 ?>
+</pre>

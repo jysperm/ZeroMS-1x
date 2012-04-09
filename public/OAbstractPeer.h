@@ -47,6 +47,9 @@ public:
     void Unknown();
     void Info(QMap<QString,QString> keys);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
+    void ProcessError(QString errorName,QString other=QString());
+
+    OMessage *CurrentMsg;//当前被处理的消息,用于ProcessError()
 
     QTcpSocket *conn;//连接对象
     QByteArray databuf;//数据缓冲

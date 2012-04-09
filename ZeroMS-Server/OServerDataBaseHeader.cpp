@@ -44,10 +44,11 @@ const QString Userrequest::_isHandle="ishandle";
 const QString Userrequest::_handleTime="handletime";
 const QString Userrequest::_result="result";
 
-const QString msg_log::_id="id";
-const QString msg_log::_time="time";
-const QString msg_log::_signTime="signtime";
-const QString msg_log::_uname="uname";
-const QString msg_log::_user="user";
-const QString msg_log::_msg="msg";
-const QString msg_log::_isSign="issign";
+const QString MsgLog::_id="id";
+const QString MsgLog::_time="time";
+const QString MsgLog::_signTime="signtime";
+const QString MsgLog::_uname="uname";
+const QString MsgLog::_user="user";
+const QString MsgLog::_msg="msg";
+const QString MsgLog::_isSign="issign";
+

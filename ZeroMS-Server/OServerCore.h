@@ -19,7 +19,10 @@ public:
     void start();
 private:
     QString getUserStatus(QString uname);
+    //用于当uname的在线状态发生变化时
+    //通知所有好友列表中含有uname的用户更新用户列表(发送UserListChange消息)
     void userListChange(QString uname);
+    //向标准输出打印消息，和时间，单独成行
     void log(QString msg);
     QMap<QString,OClient*> cl;
     QTextStream cin;

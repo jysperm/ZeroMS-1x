@@ -36,7 +36,8 @@ void OServerCore::start()
 //private:
 void OServerCore::log(QString msg)
 {
-    cout<<msg<<endl;
+    QString stime=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
+    cout<<QString("%1 > %2").arg(stime).arg(msg)<<endl;
 }
 
 QString OServerCore::getUserStatus(QString uname)
@@ -61,7 +62,7 @@ QString OServerCore::getUserStatus(QString uname)
 void OServerCore::userListChange(QString uname)
 {
     using namespace OSDB;
-    QVector<UserList> userlist=db.selectTable<UserList>(OT(UserList::_user,uname));
+    QVector<UserList> userlist=db.select<UserList>(OT(UserList::_user,uname));
     QVectorIterator<UserList> iUserList(userlist);
     while(iUserList.hasNext())
     {
@@ -73,13 +74,13 @@ void OServerCore::userListChange(QString uname)
         }
     }
 
-    QVector<GroupMember> groups=db.selectTable<GroupMember>(OT(GroupMember::_uname,uname));
+    QVector<GroupMember> groups=db.select<GroupMember>(OT(GroupMember::_uname,uname));
     QVectorIterator<GroupMember> iGroups(groups);
     while(iGroups.hasNext())
     {
         QString group=iGroups.next().groupname;
 
-        QVector<GroupMember> members=db.selectTable<GroupMember>(OT(GroupMember::_groupname,group));
+        QVector<GroupMember> members=db.select<GroupMember>(OT(GroupMember::_groupname,group));
 
         QVectorIterator<GroupMember> iMember(members);
         while(iMember.hasNext())

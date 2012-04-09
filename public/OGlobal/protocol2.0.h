@@ -85,6 +85,11 @@ const QString NOTADMIN = "notadmin";
 const QString ALLOW = "allow";
 const QString DENY = "deny";
 
+const QString NEEDLOGIN = "needlogin";
+const QString ALREADYINLIST = "alreadyinlist";
+const QString NOTINLIST = "notinlist";
+const QString NOTEXIST = "notexist";
+
 inline bool checkVer(int n)
 {
     if(n==2)

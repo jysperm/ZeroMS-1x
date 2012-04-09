@@ -131,7 +131,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
         listname=listname.remove(0,1);//移除星号
         if(core->db.checkGroup(listname) && core->db.checkGroupMember(listname,client->uname))
         {//如果存在这个群,且是这个群的成员
-            QVector<GroupMember> memberList=core->db.selectTable<GroupMember>(OT(GroupMember::_groupname,listname));
+            QVector<GroupMember> memberList=core->db.select<GroupMember>(OT(GroupMember::_groupname,listname));
 
             QVectorIterator<GroupMember> i(memberList);
             while(i.hasNext())
@@ -180,7 +180,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
     }
     else
     {//如果是在请求自己的好友列表
-        QVector<GroupMember> groups=core->db.selectTable<GroupMember>(OT(GroupMember::_uname,client->uname));
+        QVector<GroupMember> groups=core->db.select<GroupMember>(OT(GroupMember::_uname,client->uname));
         QVectorIterator<GroupMember> iGroup(groups);
         while(iGroup.hasNext())
         {
@@ -193,7 +193,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
             allList.append(item);
         }
 
-        QVector<OSDB::UserList> userlist=core->db.selectTable<OSDB::UserList>(OT(OSDB::UserList::_uname,client->uname));
+        QVector<OSDB::UserList> userlist=core->db.select<OSDB::UserList>(OT(OSDB::UserList::_uname,client->uname));
         QVectorIterator<OSDB::UserList> iUserlist(userlist);
         while(iUserlist.hasNext())
         {
@@ -275,6 +275,8 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
 
 void OClientPeer::ModifyUserList(QString listname,QString uname,QString operation,QString message)
 {
+    using namespace OSDB;
+
     if(client->isLoged)
     {//如果已经登录
         if(listname==client->uname)
@@ -286,12 +288,33 @@ void OClientPeer::ModifyUserList(QString listname,QString uname,QString operatio
                 {//如果存在这个用户
                     if(operation==ADD)
                     {//如果是添加好友
-
+                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) )._isEmpty)
+                        {//如果他们不存在好友关系
+                            OSDB::UserList userlist;
+                            userlist.uname=client->uname;
+                            userlist.user=uname;
+                            core->db.insert<OSDB::UserList>(userlist);
+                        }
+                        else
+                        {//如果他们已经存在好友关系
+                            ProcessError(ALREADYINLIST);
+                        }
+                    }
+                    else
+                    {//如果是删除好友
+                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) )._isEmpty)
+                        {//如果他们不存在好友关系
+                            ProcessError(NOTINLIST);
+                        }
+                        else
+                        {//如果他们存在好友关系
+                            core->db.deleteItem<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) );
+                        }
                     }
                 }
                 else
                 {//如果不存在这个用户
-                    Unknown();
+                    ProcessError(NOTEXIST);
                 }
             }
             else
@@ -300,7 +323,7 @@ void OClientPeer::ModifyUserList(QString listname,QString uname,QString operatio
             }
         }
         else
-        {
+        {//如果是在操作某个小组的列表
             if(core->db.checkGroup(listname))
             {
 
@@ -313,7 +336,7 @@ void OClientPeer::ModifyUserList(QString listname,QString uname,QString operatio
     }
     else
     {//如果没有登录
-        Unknown();
+        ProcessError(NEEDLOGIN);
     }
 }
 
