@@ -294,6 +294,7 @@ void OClientPeer::ModifyUserList(QString listname,QString uname,QString operatio
                             userlist.uname=client->uname;
                             userlist.user=uname;
                             core->db.insert<OSDB::UserList>(userlist);
+                            UserListChanged(client->uname);
                         }
                         else
                         {//如果他们已经存在好友关系
@@ -319,18 +320,104 @@ void OClientPeer::ModifyUserList(QString listname,QString uname,QString operatio
             }
             else
             {//如果要操作的目标用户名是小组
-
+                QString group=uname.left(uname.length()-1);//去掉星号后的小组名称
+                if(core->db.checkGroup(group))
+                {//如果存在这个小组
+                    if(operation==REMOVE)
+                    {//如果是退出操作
+                        if(!core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+                        {//如果用户确实在这个小组中
+                            core->db.deleteItem<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
+                            UserListChanged(client->uname);
+                            //TODO:core->userListChange()还未支持小组的列表变更
+                            core->userListChange(uname);
+                        }
+                        else
+                        {//如果用户不在这个小组中
+                            ProcessError(NOTINLIST);
+                        }
+                    }
+                    else
+                    {//如果是加入操作
+                        ProcessError(NOTALLOWJOINGROUP);
+                    }
+                }
+                else
+                {//如果不存在这个小组
+                    ProcessError(NOTEXIST);
+                }
             }
         }
         else
         {//如果是在操作某个小组的列表
-            if(core->db.checkGroup(listname))
-            {
-
+            QString group=listname.left(listname.length()-1);//去掉星号后的小组名称
+            if(core->db.checkGroup(group))
+            {//如果存在这个小组
+                GroupMember groupmember=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
+                if(!groupmember._isEmpty && groupmember.isAdmin)
+                {//如果用户在这个小组中且有管理员权限
+                    if(operation==ADD)
+                    {//如果是邀请其他用户加入小组
+                        if(core->db.checkUser(uname))
+                        {//如果存在这个用户
+                            if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty)
+                            {//如果这个用户不在这个小组中
+                                UserRequest request;
+                                request.time=QDateTime::currentDateTime().toTime_t();
+                                request.uname=listname;
+                                request.user=uname;
+                                request.invitation=client->uname;
+                                request.msg=message;
+                                request.isHandle=false;
+                                request.handleTime=0;
+                                request.result=false;
+                                int id=core->db.insert<UserRequest>(request);
+                                core->processRequest(id);
+                            }
+                            else
+                            {//如果这个用户已经在这个小组中
+                                ProcessError(ALREADYINLIST);
+                            }
+                        }
+                        else
+                        {//如果不存在这个用户
+                            ProcessError(NOTEXIST);
+                        }
+                    }
+                    else
+                    {//如果是从小组中踢除用户
+                        if(core->db.checkUser(uname))
+                        {//如果存在这个用户
+                            if(!core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty)
+                            {//如果这个用户在这个小组中
+                                core->db.deleteItem<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) );
+                                core->userListChange(listname);
+                                core->userListChange(uname);
+                                //TODO：还要给uname用户发送SystemMsg，通知它已经被踢出group小组
+                            }
+                            else
+                            {//如果这个用户不在这个小组中
+                                ProcessError(NOTINLIST);
+                            }
+                        }
+                        else
+                        {//如果不存在这个用户
+                            ProcessError(NOTEXIST);
+                        }
+                    }
+                }
+                else if(groupmember._isEmpty)
+                {//如果用户不在这个小组
+                    ProcessError(NOTINLIST);
+                }
+                else
+                {//如果用户在这个小组但没有管理员权限
+                    ProcessError(NOTADMIN);
+                }
             }
             else
-            {
-                Unknown();
+            {//如果不存在这个小组
+                ProcessError(NOTEXIST);
             }
         }
     }

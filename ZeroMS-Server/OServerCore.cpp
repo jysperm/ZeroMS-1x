@@ -96,6 +96,11 @@ void OServerCore::userListChange(QString uname)
 
 }
 
+void OServerCore::processRequest(int id)
+{
+
+}
+
 //private slots:
 void OServerCore::onNewConn()
 {

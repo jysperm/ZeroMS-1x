@@ -89,6 +89,7 @@ const QString NEEDLOGIN = "needlogin";
 const QString ALREADYINLIST = "alreadyinlist";
 const QString NOTINLIST = "notinlist";
 const QString NOTEXIST = "notexist";
+const QString NOTALLOWJOINGROUP = "notallowjoingroup";
 
 inline bool checkVer(int n)
 {

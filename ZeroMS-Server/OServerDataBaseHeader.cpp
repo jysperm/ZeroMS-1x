@@ -34,15 +34,15 @@ const QString GroupMember::_isAdmin="isadmin";
 const QString GroupMember::_isDeny="isdeny";
 const QString GroupMember::_regTime="regtime";
 
-const QString Userrequest::_id="id";
-const QString Userrequest::_time="time";
-const QString Userrequest::_uname="uname";
-const QString Userrequest::_user="user";
-const QString Userrequest::_invitation="invitation";
-const QString Userrequest::_msg="msg";
-const QString Userrequest::_isHandle="ishandle";
-const QString Userrequest::_handleTime="handletime";
-const QString Userrequest::_result="result";
+const QString UserRequest::_id="id";
+const QString UserRequest::_time="time";
+const QString UserRequest::_uname="uname";
+const QString UserRequest::_user="user";
+const QString UserRequest::_invitation="invitation";
+const QString UserRequest::_msg="msg";
+const QString UserRequest::_isHandle="ishandle";
+const QString UserRequest::_handleTime="handletime";
+const QString UserRequest::_result="result";
 
 const QString MsgLog::_id="id";
 const QString MsgLog::_time="time";

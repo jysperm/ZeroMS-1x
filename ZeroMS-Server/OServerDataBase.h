@@ -52,7 +52,7 @@ public:
     template<class T> void update(OSDB::Querys querys,T target);
     template<class T> int update(OSDB::Querys querys,QString field,QVariant value);
 
-    template<class T> void insert(T value);
+    template<class T> int insert(T value);
 
     template<class T> int deleteItem(OSDB::Querys querys);
 
@@ -134,7 +134,7 @@ template<class T> T OServerDataBase::selectFrist(OSDB::Querys querys,QString ord
     sql.append(querys.getSQL());
 
     if(!order.isEmpty())
-        sql.append(" ORDER BY %1 ").arg(order);
+        sql.append(" ORDER BY `%1` ").arg(order);
     if(!isASC)
         sql.append("DESC");
 
@@ -235,7 +235,7 @@ template<class T> void OServerDataBase::update(T source,T target)
     }
 }
 
-template<class T> void OServerDataBase::insert(T value)
+template<class T> int OServerDataBase::insert(T value)
 {
     QSqlQuery query(*dbConn);
 
@@ -262,6 +262,8 @@ template<class T> void OServerDataBase::insert(T value)
     sql.append(")");
 
     query.exec(sql);
+
+    return query.lastInsertId().toInt();
 }
 
 template<class T> int OServerDataBase::deleteItem(OSDB::Querys querys)

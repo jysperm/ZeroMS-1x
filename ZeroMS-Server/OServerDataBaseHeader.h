@@ -224,14 +224,14 @@ public:
     bool _isEmpty;
 };
 
-class Userrequest
+class UserRequest
 {
 public:
-    Userrequest()
+    UserRequest()
     {
 
     }
-    Userrequest(QSqlQuery *query):
+    UserRequest(QSqlQuery *query):
         id(query->value(0).toInt()),
         time(query->value(1).toUInt()),
         uname(query->value(2).toString()),
