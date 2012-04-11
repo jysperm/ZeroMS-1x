@@ -60,6 +60,7 @@ private slots:
     void on_TcpSendHeadTime_textChanged(const QString &arg1);
     void on_action_triggered();
     void on_action_SHA_1_triggered();
+    void on_action_10W_triggered();
 };
 
 //连接对象的命名方法：

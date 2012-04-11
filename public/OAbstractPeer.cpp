@@ -33,8 +33,15 @@ void OAbstractPeer::init()
 
 void OAbstractPeer::collect()
 {
-    delete conn;
-    conn=0;
+    if(conn)
+    {
+        conn->abort();
+        conn->disconnect();
+        conn->deleteLater();
+
+        //这里有可能存在内存泄漏...
+        conn=0;
+    }
 }
 
 void OAbstractPeer::PublicKey(QString publicKey)

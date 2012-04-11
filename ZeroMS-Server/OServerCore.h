@@ -17,6 +17,9 @@ public:
     explicit OServerCore();
     void init();
     void start();
+public slots:
+    //向标准输出打印消息，和时间，单独成行
+    void log(QString msg=QString());
 private:
     QString getUserStatus(QString uname);
     //用于当uname的在线状态发生变化时
@@ -25,8 +28,7 @@ private:
     void userListChange(QString uname);
     //处理对应的请求,参数被省略时则尝试处理所有请求
     void processRequest(int id=-1);
-    //向标准输出打印消息，和时间，单独成行
-    void log(QString msg);
+
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;

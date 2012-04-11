@@ -737,6 +737,7 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>测试(服务器)</string>
     </property>
+    <addaction name="action_10W"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -750,6 +751,11 @@ p, li { white-space: pre-wrap; }
   <action name="action_SHA_1">
    <property name="text">
     <string>将密码加密为SHA-1串(用户名/密码)</string>
+   </property>
+  </action>
+  <action name="action_10W">
+   <property name="text">
+    <string>连接/断开10W次</string>
    </property>
   </action>
  </widget>

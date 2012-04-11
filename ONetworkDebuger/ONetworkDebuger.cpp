@@ -493,7 +493,7 @@ void ONetworkDebuger::on_action_triggered()
     QString k=tL[2];
 
     //SHA1(公钥+SHA1(用户名+SHA1(密码)))
-    QString m=Osha1(k+Osha1(u+Osha1(p)));
+    QString m=OSha1(k+OSha1(u+OSha1(p)));
 
     ui->TcpSendContent->setText(QString("%1 %2 / main force showip").arg(u).arg(m));
 }
@@ -505,7 +505,24 @@ void ONetworkDebuger::on_action_SHA_1_triggered()
     QString p=tL[1];
 
     //SHA1(用户名+SHA1(密码))
-    QString m=Osha1(u+Osha1(p));
+    QString m=OSha1(u+OSha1(p));
 
     log(m);
+}
+
+void ONetworkDebuger::on_action_10W_triggered()
+{
+    QTime time;
+    time.start();
+    for(long i=0;i<100;i++)
+    {
+        for(long j=0;j<1000;j++)
+        {
+            ui->DoTcpConnect->click();
+            ui->DoInitialize->click();
+        }
+        log(QString("%1 %.").arg(i));
+    }
+
+    log(QString::number(time.elapsed()));
 }

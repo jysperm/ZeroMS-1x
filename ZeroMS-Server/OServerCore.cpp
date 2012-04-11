@@ -129,6 +129,7 @@ void OServerCore::onNewConn()
         else
         {
             conn->abort();
+            delete conn;
             log(tr("超过了服务器最大客户端上限:%1").arg(maxClient));
         }
     }

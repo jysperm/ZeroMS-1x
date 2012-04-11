@@ -10,6 +10,18 @@ OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(connect)
 
 }
 
+void OClientPeer::init()
+{
+    connect(this,SIGNAL(Login(QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(onLogin(QString,QString,QVector<int>,bool,bool,bool)));
+    connect(this,SIGNAL(AskPublicKey()),this,SLOT(onAskPublicKey()));
+    connect(this,SIGNAL(State(QString)),this,SLOT(onState(QString)));
+    connect(this,SIGNAL(AskInfo(QStringList)),this,SLOT(onAskInfo(QStringList)));
+    connect(this,SIGNAL(AskUserList(QString,QString,bool)),this,SLOT(onAskUserList(QString,QString,bool)));
+    connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
+
+    OAbstractPeer::init();
+}
+
 OPeerType OClientPeer::getPeerType()
 {
     return ClientPeer;
@@ -74,10 +86,10 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
         LoginResult(PWDERR);
     }
 
-    publicKey="";
+    publicKey.clear();
 }
 
-void OClientPeer::AskPublicKey()
+void OClientPeer::onAskPublicKey()
 {
     QByteArray key;
 
@@ -92,7 +104,7 @@ void OClientPeer::AskPublicKey()
     PublicKey(key);
 }
 
-void OClientPeer::State(QString status)
+void OClientPeer::onState(QString status)
 {
     if(client->status!=status)
     {
@@ -101,7 +113,7 @@ void OClientPeer::State(QString status)
     }
 }
 
-void OClientPeer::AskInfo(QStringList keys)
+void OClientPeer::onAskInfo(QStringList keys)
 {
     QMap<QString,QString> result;
     QStringListIterator i(keys);
@@ -121,7 +133,7 @@ void OClientPeer::AskInfo(QStringList keys)
     Info(result);
 }
 
-void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvatar)
+void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAvatar)
 {
     using namespace OSDB;
 
@@ -273,7 +285,7 @@ void OClientPeer::AskUserList(QString listname,QString operation,bool isHasAvata
     UserList(listname,operation,allList);
 }
 
-void OClientPeer::ModifyUserList(QString listname,QString uname,QString operation,QString message)
+void OClientPeer::onModifyUserList(QString listname,QString uname,QString operation,QString message)
 {
     using namespace OSDB;
 

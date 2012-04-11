@@ -29,7 +29,7 @@ public:
     QVector<int> p2pPorts;
     QMap<QString,QVector<OUserlistItem> > userlistCache;
 public slots:
-    void onError(OClientPeer *peer,QString msg,QAbstractSocket::SocketError s);
+    void onError(OAbstractPeer *peer,QString msg,QAbstractSocket::SocketError s);
 signals:
     void lostMainConnect(OClient *client);
 };
