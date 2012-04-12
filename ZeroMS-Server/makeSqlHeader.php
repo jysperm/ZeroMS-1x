@@ -29,7 +29,7 @@ public:
 <?php
     }
 ?>
-        _isEmpty(false){}
+        _isEmpty(true){}
 
 <?php
     $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);

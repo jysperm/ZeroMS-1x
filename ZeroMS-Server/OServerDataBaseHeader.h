@@ -27,7 +27,7 @@ public:
         info(query->value(8).toString()),
         email(query->value(9).toString()),
         avatar(query->value(10).toString()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int uid;
     QString uname;
@@ -94,7 +94,7 @@ public:
         website(query->value(5).toString()),
         info(query->value(6).toString()),
         avatar(query->value(7).toString()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int gid;
     QString groupname;
@@ -147,7 +147,7 @@ public:
         id(query->value(0).toInt()),
         uname(query->value(1).toString()),
         user(query->value(2).toString()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int id;
     QString uname;
@@ -188,7 +188,7 @@ public:
         isAdmin(query->value(3).toBool()),
         isDeny(query->value(4).toBool()),
         regTime(query->value(5).toUInt()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int id;
     QString groupname;
@@ -241,7 +241,7 @@ public:
         isHandle(query->value(6).toBool()),
         handleTime(query->value(7).toUInt()),
         result(query->value(8).toBool()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int id;
     unsigned int time;
@@ -301,7 +301,7 @@ public:
         user(query->value(4).toString()),
         msg(query->value(5).toString()),
         isSign(query->value(6).toBool()),
-        _isEmpty(false){}
+        _isEmpty(true){}
 
     int id;
     unsigned int time;

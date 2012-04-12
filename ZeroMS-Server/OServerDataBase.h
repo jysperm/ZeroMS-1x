@@ -14,13 +14,13 @@ class OT
 {
 public:
     OT();
-    OT(QString k,QString v);
+    OT(QString k,QVariant v);
 
     inline OSDB::Querys operator && (OSDB::OT t);
     inline OSDB::Querys operator || (OSDB::OT t);
 
     QString k;
-    QString v;
+    QVariant v;
 };
 
 class Querys
@@ -57,7 +57,7 @@ public:
     template<class T> int deleteItem(OSDB::Querys querys);
 
     inline bool checkUser(QString uname);//检查一个用户是否存在
-    inline bool checkPWD(QString uname,QString pwd,QString publicKey);//检查密码是否正确
+    inline bool checkPWD(QString uname,QString pwdHash,QString publicKey);//检查密码是否正确
     inline bool checkGroup(QString group);//检查一个小组是否存在
     inline bool checkGroupMember(QString group,QString uname);//检查uname是否在group小组中
 private:
@@ -78,7 +78,7 @@ inline OSDB::Querys OSDB::OT::operator || (OSDB::OT t)
 
 inline OSDB::Querys OSDB::Querys::operator && (OSDB::OT t)
 {
-    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));
+    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.toString().replace("'","\\'"));
 
     if(sql.isEmpty())
         sql=expr;
@@ -90,7 +90,7 @@ inline OSDB::Querys OSDB::Querys::operator && (OSDB::OT t)
 
 inline OSDB::Querys OSDB::Querys::operator || (OSDB::OT t)
 {
-    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));
+    QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.toString().replace("'","\\'"));
 
     if(sql.isEmpty())
         sql=expr;
@@ -106,10 +106,10 @@ inline bool OServerDataBase::checkUser(QString uname)
     return !selectFrist<User>(OT(User::_uname,uname))._isEmpty;
 }
 
-inline bool OServerDataBase::checkPWD(QString uname,QString pwd,QString publicKey)
+inline bool OServerDataBase::checkPWD(QString uname,QString pwdHash,QString publicKey)
 {
     using namespace OSDB;
-    if(pwd==OSha1(publicKey+selectFrist<User>(OT(User::_uname,uname)).pwd))
+    if(pwdHash==OSha1(publicKey+selectFrist<User>(OT(User::_uname,uname)).pwd))
         return true;
     return false;
 }
@@ -129,7 +129,7 @@ inline bool OServerDataBase::checkGroupMember(QString group,QString uname)
 template<class T> T OServerDataBase::selectFrist(OSDB::Querys querys,QString order,bool isASC)
 {
     QSqlQuery query(*dbConn);
-    QString sql=QString("SELECT TOP 1 * FROM `%1`").arg(T::_table());
+    QString sql=QString("SELECT * FROM `%1`").arg(T::_table());
 
     sql.append(querys.getSQL());
 
@@ -138,11 +138,17 @@ template<class T> T OServerDataBase::selectFrist(OSDB::Querys querys,QString ord
     if(!isASC)
         sql.append("DESC");
 
+    sql.append(" LIMIT 0,1 ");
+
     query.exec(sql);
 
-    bool hasNext=query.next();
-    T result(&query);
-    result._isEmpty=hasNext;
+    T result;
+
+    if(query.next())
+    {
+        result=&query;
+        result._isEmpty=false;
+    }
 
     return result;
 }

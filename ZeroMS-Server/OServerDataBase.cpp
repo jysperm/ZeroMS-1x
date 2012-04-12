@@ -10,7 +10,7 @@ OSDB::OT::OT()
 
 }
 
-OSDB::OT::OT(QString k,QString v):k(k),v(v)
+OSDB::OT::OT(QString k,QVariant v):k(k),v(v)
 {
 
 }
@@ -22,7 +22,7 @@ OSDB::Querys::Querys()
 
 OSDB::Querys::Querys(OT t)
 {
-    sql=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.replace("'","\\'"));
+    sql=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.toString().replace("'","\\'"));
 }
 
 QString OSDB::Querys::getSQL()

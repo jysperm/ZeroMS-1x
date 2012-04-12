@@ -144,13 +144,13 @@ void OServerCore::onNewConn()
                 cl.remove(signature);
             }
             cl.insert(signature,client);
-            log(tr("%1 连接到服务器").arg(signature));
+            log(tr("%1 连接到服务器.").arg(signature));
         }
         else
         {
             conn->abort();
             delete conn;
-            log(tr("超过了服务器最大客户端上限:%1").arg(maxClient));
+            log(tr("超过了服务器最大客户端上限:%1.").arg(maxClient));
         }
     }
 }
