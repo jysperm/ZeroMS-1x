@@ -62,38 +62,58 @@ QString OServerCore::getUserStatus(QString uname)
 void OServerCore::userListChange(QString uname)
 {
     using namespace OSDB;
-    QVector<UserList> userlist=db.select<UserList>(OT(UserList::_user,uname));
-    QVectorIterator<UserList> iUserList(userlist);
-    while(iUserList.hasNext())
-    {
-        UserList item=iUserList.next();
 
-        if(cl.contains(item.uname))
+    if(uname.left(1)=="*")
+    {//如果uname是一个用户
+
+        QVector<UserList> userlist=db.select<UserList>(OT(UserList::_user,uname));
+        QVectorIterator<UserList> iUserList(userlist);
+        while(iUserList.hasNext())
         {
-            cl[item.uname]->main->UserListChanged(item.uname);
-        }
-    }
+            UserList item=iUserList.next();
 
-    QVector<GroupMember> groups=db.select<GroupMember>(OT(GroupMember::_uname,uname));
-    QVectorIterator<GroupMember> iGroups(groups);
-    while(iGroups.hasNext())
-    {
-        QString group=iGroups.next().groupname;
-
-        QVector<GroupMember> members=db.select<GroupMember>(OT(GroupMember::_groupname,group));
-
-        QVectorIterator<GroupMember> iMember(members);
-        while(iMember.hasNext())
-        {
-            QString user=iMember.next().uname;
-
-            if(cl.contains(user))
+            if(cl.contains(item.uname))
             {
-                cl[user]->main->UserListChanged(QString("*%1").arg(group));
+                cl[item.uname]->main->UserListChanged(item.uname);
+            }
+        }
+
+        QVector<GroupMember> groups=db.select<GroupMember>(OT(GroupMember::_uname,uname));
+        QVectorIterator<GroupMember> iGroups(groups);
+        while(iGroups.hasNext())
+        {
+            QString group=iGroups.next().groupname;
+
+            QVector<GroupMember> members=db.select<GroupMember>(OT(GroupMember::_groupname,group));
+
+            QVectorIterator<GroupMember> iMember(members);
+            while(iMember.hasNext())
+            {
+                QString user=iMember.next().uname;
+
+                if(cl.contains(user))
+                {
+                    cl[user]->main->UserListChanged(QString("*%1").arg(group));
+                }
             }
         }
     }
+    else
+    {//如果uname是一个小组
+        QString group=uname.left(uname.length()-1);
 
+        QVector<GroupMember> groupsmembers=db.select<GroupMember>(OT(GroupMember::_groupname,group));
+        QVectorIterator<GroupMember> i(groupsmembers);
+        while(i.hasNext())
+        {
+            QString user=i.next().uname;
+
+            if(cl.contains(user))
+            {
+                cl[user]->main->UserListChanged(group);
+            }
+        }
+    }
 }
 
 void OServerCore::processRequest(int id)

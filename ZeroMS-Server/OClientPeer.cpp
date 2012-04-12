@@ -106,6 +106,12 @@ void OClientPeer::onAskPublicKey()
 
 void OClientPeer::onState(QString status)
 {
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
     if(client->status!=status)
     {
         client->status=status;
@@ -135,6 +141,12 @@ void OClientPeer::onAskInfo(QStringList keys)
 
 void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAvatar)
 {
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
     using namespace OSDB;
 
     QVector<OUserlistItem> allList;
@@ -186,7 +198,14 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
         }
         else
         {//如果不存在这个群，或不是这个群的成员
-            Unknown();
+            if(core->db.checkGroup(listname))
+            {//如果不是这个群的成员
+               ProcessError(NOTINLIST);
+            }
+            else
+            {//如果这个群不存在
+                ProcessError(NOTEXIST);
+            }
             return;
         }
     }
@@ -351,7 +370,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                     }
                     else
                     {//如果是加入操作
-                        ProcessError(NOTALLOWJOINGROUP);
+                        ProcessError(NOTALLOWTOJOINGROUP);
                     }
                 }
                 else

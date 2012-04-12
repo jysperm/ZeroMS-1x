@@ -39,7 +39,6 @@ void OAbstractPeer::collect()
         conn->disconnect();
         conn->deleteLater();
 
-        //这里有可能存在内存泄漏...
         conn=0;
     }
 }
