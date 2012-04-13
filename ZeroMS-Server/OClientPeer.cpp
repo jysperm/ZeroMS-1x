@@ -136,6 +136,8 @@ void OClientPeer::onAskInfo(QStringList keys)
         {
             if(key==TIME)
                 result.insert(key,QString::number(QDateTime::currentDateTime().toTime_t()));
+            else if(key==UPTIME)
+                result.insert(key,QString::number( QDateTime::currentDateTime().toTime_t()-core->upTime ));
         }
     }
     Info(result);

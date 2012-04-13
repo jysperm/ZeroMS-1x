@@ -18,10 +18,11 @@ void OServerCore::init()
     //用于AskInfo
     info.insert(OFFLINECACHETIME,(*config)["OFFLINE_CACHE_TIME"].toString());
     info.insert(NOACTIVITYTIME,(*config)["NOACTIVITY_TIME"].toString());
-    info.insert(Protocol2::VERSION,QString("%1 %2").arg(SERVER).arg(::VERSION));
-    info.insert(Protocol2::PROTOCOL,::PROTOCOL);
+    info.insert(Protocol2::VERSION,QString("%1 %2").arg(SERVER).arg(::VERSION).replace(";","\\;"));
+    info.insert(Protocol2::PROTOCOL,QString(::PROTOCOL).replace(";","\\;"));
     info.insert(Protocol2::VERNUM,QString::number(::VERNUM));
-    info.insert(WEBSITE,(*config)["WEBSITE"].toString());
+    info.insert(WEBSITE,(*config)["WEBSITE"].toString().replace(";","\\;"));
+    info.insert(BUILDTIME,QString("%1 %2").arg(__DATE__).arg(__TIME__).replace(";","\\;"));
 }
 
 void OServerCore::start()
@@ -31,6 +32,8 @@ void OServerCore::start()
     server.listen(QHostAddress::Any,port);
     server.setMaxPendingConnections(maxClient);
     log(tr("开始监听%1端口,最大连接数为%2").arg(port).arg(maxClient));
+
+    upTime=QDateTime::currentDateTime().toTime_t();
 }
 
 //private:

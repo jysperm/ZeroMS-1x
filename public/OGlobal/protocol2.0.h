@@ -84,6 +84,8 @@ const QString ADMIN = "admin";
 const QString NOTADMIN = "notadmin";
 const QString ALLOW = "allow";
 const QString DENY = "deny";
+const QString UPTIME = "uptime";
+const QString BUILDTIME = "buildtime";
 
 const QString NEEDLOGIN = "needlogin";
 const QString ALREADYINLIST = "alreadyinlist";

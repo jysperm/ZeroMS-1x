@@ -35,6 +35,7 @@ private:
     QTcpServer server;
     OServerDataBase db;
     QMap<QString,QString> info;
+    unsigned int upTime;
 private slots:
     void onNewConn();
     void onError(OClient *client);
