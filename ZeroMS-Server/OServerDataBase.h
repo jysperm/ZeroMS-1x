@@ -203,6 +203,11 @@ template<class T> void OServerDataBase::update(OSDB::Querys querys,T target)
     QVector<QPair<QString,QString> > values=target._values();
 
     QVectorIterator<QPair<QString,QString> > i(values);
+
+    //如果第一个字段是id，跳过这个字段
+    if(i.peekNext().first.indexOf("id")>-1)
+        i.next();
+
     while(i.hasNext())
     {
         QPair<QString,QString> value=i.next();
@@ -230,6 +235,11 @@ template<class T> void OServerDataBase::update(T source,T target)
 
     QVector<QPair<QString,QString> > values=target._values();
     QVectorIterator<QPair<QString,QString> > i(values);
+
+    //如果第一个字段是id，跳过这个字段
+    if(i.peekNext().first.indexOf("id")>-1)
+        i.next();
+
     while(i.hasNext())
     {
         QPair<QString,QString> value=i.next();

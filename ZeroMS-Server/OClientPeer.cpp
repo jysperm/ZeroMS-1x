@@ -36,8 +36,8 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
     }
 
     //测试用代码
-    //if(true)
-    if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
+    if(true)
+    //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
     {//如果已经申请过公钥，且密码正确
         if(isMain)
         {//如果是主连接
@@ -68,6 +68,8 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
             if(core->cl.contains(uname))
             {//如果有同名的主连接
                 QString signature=client->getSignature();
+                //this->client会在后面被addSubConn()更改，所以在这里备份一下
+                OClient *client=this->client;
                 core->cl[uname]->addSubConn(this);
                 client->main=0;
                 delete client;

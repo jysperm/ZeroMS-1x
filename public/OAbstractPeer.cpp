@@ -147,9 +147,13 @@ void OAbstractPeer::checkMsg()
                     QStringList ports=msg.split(2).split(",");
                     QVector<int> p2pPort;
 
-                    QListIterator<QString> i(ports);
-                    while(i.hasNext())
-                        p2pPort.append(i.next().toInt());
+                    if(!ports.isEmpty() && !ports.first().isEmpty())
+                    {
+                        QListIterator<QString> i(ports);
+                        while(i.hasNext())
+                            p2pPort.append(i.next().toInt());
+                    }
+
                     bool isMain=(msg.split(3)==SUB)?false:true;
                     bool isForce=(msg.split(4)==FORCE)?true:false;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;

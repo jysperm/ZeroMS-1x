@@ -28,7 +28,7 @@ void OClient::init()
 void OClient::addSubConn(OClientPeer *peer)
 {
     peer->client=this;
-    connect(peer,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
+    connect(peer,SIGNAL(error(OAbstractPeer*,QString,QAbstractSocket::SocketError)),this,SLOT(onError(OAbstractPeer*,QString,QAbstractSocket::SocketError)));
     subConnList.push_back(peer);
     peer->init();
 }
