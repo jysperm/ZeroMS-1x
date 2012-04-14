@@ -3,6 +3,7 @@
 #include "global.h"
 #include "../public/OSettings.h"
 
+//public:
 OAbstractPeer::OAbstractPeer(QTcpSocket *connect):conn(connect)
 {
 
@@ -13,20 +14,11 @@ OAbstractPeer::~OAbstractPeer()
     collect();
 }
 
-void OAbstractPeer::onError(QAbstractSocket::SocketError s)
-{
-    if(conn)
-    {
-        //如果存在连接，那么发射error信号，然后断开conn的所有信号槽，回收conn，清空缓冲区
-        //这个类的情况就是这样：如果出错了，就表示这个类将要被销毁了
-        //发射信号也是为了通知它的所有者销毁该类
-        emit error(this,conn->errorString(),s);
-        collect();
-    }
-}
-
 void OAbstractPeer::init()
 {
+    if(!conn)
+        Q_ASSERT(!"需要在设置conn后调用该函数");
+
     connect(conn,SIGNAL(readyRead()),this,SLOT(checkMsg()));
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
 }
@@ -41,21 +33,6 @@ void OAbstractPeer::collect()
 
         conn=0;
     }
-}
-
-void OAbstractPeer::PublicKey(QString publicKey)
-{
-    QByteArray key;
-    key.append(publicKey);
-    OMessage msg(M_PublicKey,key);
-    send(&msg);
-}
-
-void OAbstractPeer::UserListChanged(QString listname)
-{
-    OMessage msg(M_UserListChanged);
-    msg.append(listname);
-    send(&msg);
 }
 
 void OAbstractPeer::LoginResult(QString status,QString ip)
@@ -77,6 +54,30 @@ void OAbstractPeer::Info(QMap<QString,QString> keys)
             data.append(";");
     }
     OMessage msg(M_Info,data);
+    send(&msg);
+}
+
+void OAbstractPeer::PublicKey(QString publicKey)
+{
+    QByteArray key;
+    key.append(publicKey);
+    OMessage msg(M_PublicKey,key);
+    send(&msg);
+}
+
+void OAbstractPeer::Unknown()
+{
+    QByteArray data;
+    data.append((*config)["UNKNOWN"].toString());
+    OMessage msgMsg(M_Unknown,data);
+    send(&msgMsg);
+    databuf.clear();
+}
+
+void OAbstractPeer::UserListChanged(QString listname)
+{
+    OMessage msg(M_UserListChanged);
+    msg.append(listname);
     send(&msg);
 }
 
@@ -115,15 +116,7 @@ void OAbstractPeer::ProcessError(QString errorName,QString other)
     send(&msgMsg);
 }
 
-void OAbstractPeer::Unknown()
-{
-    QByteArray data;
-    data.append((*config)["UNKNOWN"].toString());
-    OMessage msgMsg(M_Unknown,data);
-    send(&msgMsg);
-    databuf.clear();
-}
-
+//public slots:
 void OAbstractPeer::checkMsg()
 {
     if(!conn->atEnd())
@@ -135,6 +128,9 @@ void OAbstractPeer::checkMsg()
         CurrentMsg=&msg;
         if(msg.isEmpty())
             break;
+
+        //TODO 下面分拣消息的顺序还有待整理
+
         if(getPeerType()==ClientPeer)
         {
             switch(msg.type)
@@ -214,3 +210,15 @@ void OAbstractPeer::checkMsg()
     CurrentMsg=0;
 }
 
+//private slots:
+void OAbstractPeer::onError(QAbstractSocket::SocketError s)
+{
+    if(conn)
+    {
+        //如果存在连接，那么发射error信号，然后断开conn的所有信号槽，回收conn，清空缓冲区
+        //这个类的情况就是这样：如果出错了，就表示这个类将要被销毁了
+        //发射信号也是为了通知它的所有者销毁该类
+        emit error(this,conn->errorString(),s);
+        collect();
+    }
+}

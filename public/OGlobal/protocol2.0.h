@@ -51,7 +51,11 @@ const int M_CreateConfigurationData = 37;
 const int M_RemoveConfigurationKey = 38;
 const int M_ProcessError = 39;
 const int M_OK = 40;
+const int M_Robot = 41;
+const int M_NewGroupRequest = 42;
+const int M_SetInfo = 43;
 
+//选项名
 const QString OK = "ok";
 const QString PWDERR = "pwderr";
 const QString ISONLINE = "isonline";
@@ -87,6 +91,7 @@ const QString DENY = "deny";
 const QString UPTIME = "uptime";
 const QString BUILDTIME = "buildtime";
 
+//错误名
 const QString NEEDLOGIN = "needlogin";
 const QString ALREADYINLIST = "alreadyinlist";
 const QString NOTINLIST = "notinlist";
@@ -95,6 +100,7 @@ const QString NOTALLOWTOJOINGROUP = "notallowtojoingroup";
 
 inline bool checkVer(int n)
 {
+    //检查该版本协议是否兼容版本号为n的协议
     if(n==2)
         return true;
     else
@@ -186,6 +192,12 @@ inline QString num2String(int type)
             return "M_ProcessError";
         case 40:
             return "M_OK";
+        case 41:
+            return "M_Robot";
+        case 42:
+            return "M_NewGroupRequest";
+        case 43:
+            return "M_SetInfo";
         default:
             return "";
     }

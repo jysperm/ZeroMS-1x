@@ -3,17 +3,17 @@
 #include "global.h"
 
 //public:
-OMessage::OMessage():protocol(0),type(0),time(0)
+OMessage::OMessage():type(0),protocol(0),time(0)
 {
 
 }
 
-OMessage::OMessage(int type,QByteArray data):protocol(0),type(type),time(0),data(data)
+OMessage::OMessage(int type,QByteArray data):type(type),protocol(0),time(0),data(data)
 {
 
 }
 
-OMessage::OMessage(int type):protocol(0),type(type),time(0)
+OMessage::OMessage(int type):type(type),protocol(0),time(0)
 {
 
 }
@@ -48,20 +48,9 @@ OMessage OMessage::fromDataBuff(QByteArray *databuf,bool autoRemove)
     return msg;
 }
 
-QByteArray OMessage::exec()
-{
-    if(!type)
-        return QByteArray();
-    QByteArray tData;
-    QDataStream DSdata(&tData,QIODevice::WriteOnly);
-    unsigned int time=QDateTime::currentDateTime().toTime_t();
-    DSdata<<protocol<<data.size()<<type<<time;
-    tData.append(data);
-    return tData;
-}
-
 QString OMessage::split(int n)
 {
+    //TODO 很乱，有待改进
     QString str(data);
     //TODO int a=str.indexOf(" ");
     while(str.indexOf("  ")>-1)
@@ -81,6 +70,7 @@ QString OMessage::split(int n)
 
 QString OMessage::splitTail(int n)
 {
+    //TODO 很乱，有待改进
     int N=n;
     int len=0;
     n--;
@@ -93,4 +83,16 @@ QString OMessage::splitTail(int n)
 
     QString str(data);
     return str.right(str.length()-len);
+}
+
+QByteArray OMessage::exec()
+{
+    if(!type)
+        return QByteArray();
+    QByteArray tData;
+    QDataStream DSdata(&tData,QIODevice::WriteOnly);
+    unsigned int time=QDateTime::currentDateTime().toTime_t();
+    DSdata<<protocol<<data.size()<<type<<time;
+    tData.append(data);
+    return tData;
 }

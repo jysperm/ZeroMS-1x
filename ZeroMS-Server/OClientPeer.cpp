@@ -365,7 +365,6 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                         {//如果用户确实在这个小组中
                             core->db.deleteItem<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
                             UserListChanged(client->uname);
-                            //TODO:core->userListChange()还未支持小组的列表变更
                             core->userListChange(uname);
                         }
                         else

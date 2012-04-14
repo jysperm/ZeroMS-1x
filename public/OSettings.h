@@ -6,10 +6,12 @@
 
 class OSettings
 {
+    //资源类
+    //该类是对QSettings的封装，用于从配置文件读取配置信息
 public:
     explicit OSettings(QString file=PUBLIC_CONFIG_FILE);
     virtual ~OSettings();
-    void load();
+    void load();//重新读取配置文件
     inline QVariant operator[](QString key);
 protected:
     QSettings *config;

@@ -47,8 +47,8 @@ OServerDataBase::OServerDataBase()
 
     if(!dbConn->open())
     {
-        qDebug()<<Q_FUNC_INFO<<QObject::tr("数据库连接失败 %1").arg(dbConn->lastError().text());
-        qApp->quit();
+        qDebug()<<QObject::tr("数据库连接失败 %1").arg(dbConn->lastError().text());
+        Q_ASSERT(false);
     }
 }
 
