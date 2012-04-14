@@ -11,7 +11,7 @@ namespace OSDB
 class User
 {
 public:
-    User()
+    User():_isEmpty(true)
     {
 
     }
@@ -81,7 +81,7 @@ public:
 class Group
 {
 public:
-    Group()
+    Group():_isEmpty(true)
     {
 
     }
@@ -139,7 +139,7 @@ public:
 class UserList
 {
 public:
-    UserList()
+    UserList():_isEmpty(true)
     {
 
     }
@@ -177,7 +177,7 @@ public:
 class GroupMember
 {
 public:
-    GroupMember()
+    GroupMember():_isEmpty(true)
     {
 
     }
@@ -227,7 +227,7 @@ public:
 class UserRequest
 {
 public:
-    UserRequest()
+    UserRequest():_isEmpty(true)
     {
 
     }
@@ -289,7 +289,7 @@ public:
 class MsgLog
 {
 public:
-    MsgLog()
+    MsgLog():_isEmpty(true)
     {
 
     }

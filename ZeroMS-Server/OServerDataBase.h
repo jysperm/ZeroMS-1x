@@ -123,7 +123,7 @@ inline bool OServerDataBase::checkGroup(QString group)
 inline bool OServerDataBase::checkGroupMember(QString group,QString uname)
 {
     using namespace OSDB;
-    return !selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty;
+    return !(selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty);
 }
 
 template<class T> T OServerDataBase::selectFrist(OSDB::Querys querys,QString order,bool isASC)
@@ -261,15 +261,18 @@ template<class T> int OServerDataBase::insert(T value)
 
     QVectorIterator<QPair<QString,QString> > i(values);
 
-    //如果第一个字段是id，跳过这个字段
+    //如果第一个字段是id，设置为NULL并跳过这个字段
     if(i.peekNext().first.indexOf("id")>-1)
+    {
+        sql.append("NULL,");
         i.next();
+    }
 
     while(i.hasNext())
     {
         QPair<QString,QString> value=i.next();
 
-        sql.append(value.second.replace("'","\\'"));
+        sql.append(QString("'%1'").arg(value.second.replace("'","\\'")));
 
         if(i.hasNext())
             sql.append(",");

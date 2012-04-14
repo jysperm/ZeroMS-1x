@@ -345,6 +345,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                         else
                         {//如果他们存在好友关系
                             core->db.deleteItem<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) );
+                            UserListChanged(client->uname);
                         }
                     }
                 }
@@ -355,7 +356,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
             }
             else
             {//如果要操作的目标用户名是小组
-                QString group=uname.left(uname.length()-1);//去掉星号后的小组名称
+                QString group=uname.right(uname.length()-1);//去掉星号后的小组名称
                 if(core->db.checkGroup(group))
                 {//如果存在这个小组
                     if(operation==REMOVE)

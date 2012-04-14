@@ -99,7 +99,7 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
 
         //去除末尾多余的冒号
         while(QString(data.right(1))==":")
-            data.remove(data.length()-1-1,1);
+            data=data.left(data.length()-1);
 
         if(i.hasNext())
             data.append(";");
@@ -110,9 +110,8 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
 
 void OAbstractPeer::ProcessError(QString errorName,QString other)
 {
-    QByteArray data;
-    data.append(QString::number(CurrentMsg->type)).append(errorName).append(other);
-    OMessage msgMsg(M_ProcessError,data);
+    OMessage msgMsg(M_ProcessError);
+    msgMsg.append(QString::number(CurrentMsg->type)).aSpc().append(errorName).aSpc().append(other);
     send(&msgMsg);
 }
 
