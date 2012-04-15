@@ -36,6 +36,7 @@ signals:
 
 inline bool OClientPeer::isMain()
 {
+    //该函数属于OClientPeer,因为循环依赖文件，被移到了这里
     return this==client->main;
 }
 

@@ -1,5 +1,8 @@
 #include "OServerDataBaseHeader.h"
 
+//该文件内容由 makeSqlHeader.php 脚本自动生成
+//用于为OServerDataBase,提供数据库结构的相关信息
+
 using namespace OSDB;
 
 const QString User::_uid="uid";
@@ -51,4 +54,3 @@ const QString MsgLog::_uname="uname";
 const QString MsgLog::_user="user";
 const QString MsgLog::_msg="msg";
 const QString MsgLog::_isSign="issign";
-

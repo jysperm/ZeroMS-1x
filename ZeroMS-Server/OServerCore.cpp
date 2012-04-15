@@ -36,13 +36,6 @@ void OServerCore::start()
     upTime=QDateTime::currentDateTime().toTime_t();
 }
 
-//private:
-void OServerCore::log(QString msg)
-{
-    QString stime=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
-    cout<<QString("%1 > %2").arg(stime).arg(msg)<<endl;
-}
-
 QString OServerCore::getUserStatus(QString uname)
 {
     if(db.checkUser(uname))
@@ -124,6 +117,13 @@ void OServerCore::processRequest(int id)
 
 }
 
+//public slots:
+void OServerCore::log(QString msg)
+{
+    QString stime=QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz");
+    cout<<QString("%1 > %2").arg(stime).arg(msg)<<endl;
+}
+
 //private slots:
 void OServerCore::onNewConn()
 {
@@ -166,4 +166,3 @@ void OServerCore::onError(OClient *client)
     delete client;
     cl.remove(uname);
 }
-
