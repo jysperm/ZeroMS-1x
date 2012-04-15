@@ -10,17 +10,14 @@ class OClient;
 
 class OServerCore:public QObject
 {
+    //值类
+    //是整个服务器的核心，运行时仅存在一个实例
     Q_OBJECT
-    friend class OProtocolForSC;
-    friend class OClientPeer;
 public:
     explicit OServerCore();
     void init();
     void start();
-public slots:
-    //向标准输出打印消息，和时间，单独成行
-    void log(QString msg=QString());
-private:
+
     QString getUserStatus(QString uname);
     //用于当uname的在线状态发生变化时
     //通知所有好友列表中含有uname的用户更新用户列表(发送UserListChange消息)
@@ -32,10 +29,14 @@ private:
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;
-    QTcpServer server;
     OServerDataBase db;
     QMap<QString,QString> info;
     unsigned int upTime;
+public slots:
+    //向标准输出打印消息，和时间，单独成行
+    void log(QString msg=QString());
+private:
+    QTcpServer server;
 private slots:
     void onNewConn();
     void onError(OClient *client);

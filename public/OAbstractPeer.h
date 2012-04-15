@@ -67,11 +67,11 @@ signals:
 
     //下面这些信号会在收到对应的消息时发射
 
+    void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
+    void AskInfo(QStringList keys);
+    void AskPublicKey();
     void AskUserList(QString listname,QString operation,bool isHasAvatar);
     void ModifyUserList(QString listname,QString uname,QString operation,QString message);
-    void AskInfo(QStringList keys);
-    void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
-    void AskPublicKey();
     void State(QString status);
 private slots:
     void onError(QAbstractSocket::SocketError s);//用于与conn的error()信号绑定

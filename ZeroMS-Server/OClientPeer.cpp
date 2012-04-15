@@ -5,6 +5,7 @@
 #include "global.h"
 #include "OServerCore.h"
 
+//public:
 OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(connect)
 {
 
@@ -27,6 +28,7 @@ OPeerType OClientPeer::getPeerType()
     return ClientPeer;
 }
 
+//public slots:
 void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp)
 {
     if(client->isLoged)//如果已经登录了

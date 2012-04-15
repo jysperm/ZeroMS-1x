@@ -19,6 +19,7 @@ HEADERS += \
     OClient.h \
     OClientPeer.h \
     OServerDataBase.h \
+    OServerDataBase.inline.h \
     OServerDataBaseHeader.h
 
 SOURCES += main.cpp \

@@ -5,6 +5,9 @@
 #include <QVariant>
 #include <QVector>
 
+//该文件内容由 makeSqlHeader.php 脚本自动生成
+//用于为OServerDataBase,提供数据库结构的相关信息
+
 namespace OSDB
 {
 
