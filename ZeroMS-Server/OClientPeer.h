@@ -12,10 +12,8 @@ class OClientPeer:public OAbstractPeer
     Q_OBJECT
 public:
     explicit OClientPeer(QTcpSocket *connect=0);
-
     void init();
 
-    OPeerType getPeerType();
     //是否是client的主连接
     //注意，因为循环依赖的问题，该函数的定义被移动到了OClient.h中.
     inline bool isMain();

@@ -4,7 +4,7 @@
 #include "../public/OSettings.h"
 
 //public:
-OAbstractPeer::OAbstractPeer(QTcpSocket *connect):conn(connect)
+OAbstractPeer::OAbstractPeer(OPeerType peerType,QTcpSocket *connect):conn(connect),peerType(peerType)
 {
 
 }
@@ -112,7 +112,7 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
 void OAbstractPeer::ProcessError(QString errorName,QString other)
 {
     OMessage msgMsg(M_ProcessError);
-    msgMsg.append(QString::number(CurrentMsg->type)).aSpc().append(errorName).aSpc().append(other);
+    msgMsg.append(QString::number(currentMsg->type)).aSpc().append(errorName).aSpc().append(other);
     send(&msgMsg);
 }
 
@@ -125,17 +125,14 @@ void OAbstractPeer::checkMsg()
     while(true)
     {
         OMessage msg=OMessage::fromDataBuff(&databuf);
-        CurrentMsg=&msg;
+        currentMsg=&msg;
         if(msg.isEmpty())
             break;
 
-        //TODO 下面分拣消息的顺序还有待整理
-
-        if(getPeerType()==ClientPeer)
+        switch(msg.type)
         {
-            switch(msg.type)
-            {
-                case M_Login:
+            case M_Login:
+                if(peerType==ClientPeer)
                 {
                     QString uname=msg.split(0);
                     QString pwdHash=msg.split(1);
@@ -153,61 +150,76 @@ void OAbstractPeer::checkMsg()
                     bool isForce=(msg.split(4)==FORCE)?true:false;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
                     emit Login(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
-                    break;
+                    continue;
                 }
-                case M_AskInfo:
+            case M_AskInfo:
                 {
                     QStringList keys=msg.split(0).split(",");
                     emit AskInfo(keys);
-                    break;
+                    continue;
                 }
-                case M_AskPublicKey:
+            case M_AskPublicKey:
+                if(peerType==ClientPeer)
+                {
                     emit AskPublicKey();
-                    break;
-                case M_ModifyUserList:
+                    continue;
+                }
+            case M_ModifyUserList:
+                if(peerType==ClientPeer)
                 {
                     QString listname=msg.split(0);
                     QString uname=msg.split(1);
                     QString operation=(msg.split(2)==REMOVE)?REMOVE:ADD;
                     QString messages=msg.split(3);
                     emit ModifyUserList(listname,uname,operation,messages);
-                    break;
+                    continue;
                 }
-                case M_AskUserList:
+            case M_AskUserList:
+                if(peerType==ClientPeer)
                 {
                     QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
                     bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
                     QString listname=msg.split(2);
                     emit AskUserList(listname,operation,isHasAvatar);
-                    break;
+                    continue;
                 }
-                case M_State:
+            case M_State:
+                if(peerType==ClientPeer)
                 {
                     QString status=msg.split(0);
                     if(!(status==BORED || status==BUZY || status==AWAY))
                         status==ONLINE;
                     emit State(status);
-                    break;
+                    continue;
                 }
-                default:
+            case M_UserRequest:
+                if(peerType==ClientPeer)
                 {
-                    Unknown();
+                    QString uname=msg.split(0);
+                    QString message=msg.splitTail(1);
+                    emit UserRequest(uname,message);
+                    continue;
                 }
-            }
-        }
-        else
-        {
-            switch(msg.type)
+            case M_RequestResult:
+                if(peerType==ClientPeer)
+                {
+                    int id=msg.split(0).toInt();
+                    QString result=msg.split(1);
+                    if(result==ALLOW || result==DENY)
+                        emit RequestResult(id,result);
+                    else
+                        Unknown();
+                    continue;
+                }
+            default:
             {
-                default:
-                {
-                    Unknown();
-                }
+                Unknown();
+                continue;
             }
         }
-    }
 
-    CurrentMsg=0;
+    }
+    currentMsg=0;
 }
 
 //private slots:

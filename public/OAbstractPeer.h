@@ -34,15 +34,13 @@ class OAbstractPeer:public QObject
     //这是一个抽象基类，抽象一个连接，可以是SC/CS/CC
     Q_OBJECT
 public:
-    explicit OAbstractPeer(QTcpSocket *connect=0);
+    explicit OAbstractPeer(OPeerType peerType,QTcpSocket *connect=0);
     virtual ~OAbstractPeer();
     //初始化,需要在设置conn后调用
     void init();
     void collect();//回收内存
 
-    //虚函数，返回连接的类型(OPeerType型枚举)，派生类需要重写这个函数
-    //该函数用于在checkMsg()中判定消息分拣时的角色
-    virtual OPeerType getPeerType()=0;
+    inline OPeerType getPeerType();//返回连接类型，即peerType
     inline void send(OMessage *msg);//发送消息
 
     //下面是用来发送消息的函数
@@ -56,10 +54,11 @@ public:
     void ProcessError(QString errorName,QString other=QString());
 
     //当前被处理的消息,在checkMsg()中被设置,用于ProcessError()
-    OMessage *CurrentMsg;
+    OMessage *currentMsg;
 
     QTcpSocket *conn;//连接对象
     QByteArray databuf;//数据缓冲
+    const OPeerType peerType;
 public slots:
     void checkMsg();//分拣消息
 signals:
@@ -73,6 +72,8 @@ signals:
     void AskUserList(QString listname,QString operation,bool isHasAvatar);
     void ModifyUserList(QString listname,QString uname,QString operation,QString message);
     void State(QString status);
+    void UserRequest(QString uname,QString message);
+    void RequestResult(int id,QString result);
 private slots:
     void onError(QAbstractSocket::SocketError s);//用于与conn的error()信号绑定
 };
@@ -92,6 +93,11 @@ inline QDebug &operator<<(QDebug &debug, const OUserlistItem &item)
     //用于调试
     debug<<item.uname<<item.status<<item.groupStatus<<item.ip<<item.avatar;
     return debug;
+}
+
+inline OPeerType OAbstractPeer::getPeerType()
+{
+    return peerType;
 }
 
 inline void OAbstractPeer::send(OMessage *msg)

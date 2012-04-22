@@ -6,7 +6,7 @@
 #include "OServerCore.h"
 
 //public:
-OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(connect)
+OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(ClientPeer,connect)
 {
 
 }
@@ -21,11 +21,6 @@ void OClientPeer::init()
     connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
 
     OAbstractPeer::init();
-}
-
-OPeerType OClientPeer::getPeerType()
-{
-    return ClientPeer;
 }
 
 //public slots:
@@ -399,7 +394,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                         {//如果存在这个用户
                             if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty)
                             {//如果这个用户不在这个小组中
-                                UserRequest request;
+                                OSDB::UserRequest request;
                                 request.time=QDateTime::currentDateTime().toTime_t();
                                 request.uname=listname;
                                 request.user=uname;
@@ -408,7 +403,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                                 request.isHandle=false;
                                 request.handleTime=0;
                                 request.result=false;
-                                int id=core->db.insert<UserRequest>(request);
+                                int id=core->db.insert<OSDB::UserRequest>(request);
                                 core->processRequest(id);
                             }
                             else
