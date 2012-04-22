@@ -98,6 +98,7 @@ const QString NOTINLIST = "notinlist";
 const QString NOTEXIST = "notexist";
 const QString NOTALLOWTOJOINGROUP = "notallowtojoingroup";
 const QString ALREADYSEND = "alreadysend";
+const QString NOPERMISSION = "nopermission";
 
 inline bool checkVer(int n)
 {

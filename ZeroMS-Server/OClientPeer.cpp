@@ -36,7 +36,7 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
 
     //测试用代码
     if(true)
-    //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
+        //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
     {//如果已经申请过公钥，且密码正确
         if(isMain)
         {//如果是主连接
@@ -188,7 +188,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
         {//如果不存在这个群，或不是这个群的成员
             if(core->db.checkGroup(listname))
             {//如果不是这个群的成员
-               ProcessError(NOTINLIST);
+                ProcessError(NOTINLIST);
             }
             else
             {//如果这个群不存在
@@ -274,7 +274,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
                 }
                 else if(!core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,item.uname))._isEmpty)
                 {//如果是一个用户，且这个用户还在用户列表中
-                   item.status=OFFLINE;
+                    item.status=OFFLINE;
                 }
                 else
                 {//如果这个用户已经不在用户列表中了
@@ -557,7 +557,81 @@ void OClientPeer::onUserRequest(QString uname,QString message)
 
 void OClientPeer::onRequestResult(int id,QString result)
 {
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
 
+    using namespace OSDB;
+
+    OSDB::UserRequest request=core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_id,id) );
+    if(request._isEmpty)
+    {//如果不存在这个请求
+        ProcessError(NOTEXIST);
+    }
+    else
+    {//如果存在这个请求
+
+        if(request.user==client->uname)
+        {//如果被请求的对象是自己
+            if(!request.isHandle)
+            {//如果这个请求还没有被处理
+                bool r=result==ALLOW?true:false;
+                if(request.uname.left(1)=="*")
+                {//如果是邀请加入小组
+                    QString group=request.uname.right(request.uname.length()-1);//去掉星号后的小组名称
+                    if(r)
+                    {//如果同意了请求
+                        if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+                        {//如果自己不在这个小组中
+                            GroupMember groupMember;
+                            groupMember.groupname=group;
+                            groupMember.uname=client->uname;
+                            groupMember.isAdmin=false;
+                            groupMember.isDeny=false;
+                            groupMember.regTime=QDateTime::currentDateTime().toTime_t();
+                            core->db.insert<GroupMember>(groupMember);
+                        }
+                        else
+                        {//如果自己已经在这个小组中
+                            ProcessError(ALREADYINLIST);
+                        }
+                    }
+                }
+                else
+                {//如果是请求对方添加我
+                    if(r)
+                    {//如果同意了请求
+                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,request.uname) )._isEmpty)
+                        {//如果不存在好友关系
+                            OSDB::UserList userList;
+                            userList.uname=client->uname;
+                            userList.user=request.uname;
+                            core->db.insert<OSDB::UserList>(userList);
+                        }
+                        else
+                        {//如果已经存在好友关系
+                            ProcessError(ALREADYINLIST);
+                        }
+                    }
+                }
+
+                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_isHandle,true);
+                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_handleTime,QDateTime::currentDateTime().toTime_t());
+                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_result,r);
+            }
+            else
+            {//如果这个请求已经被处理过了
+                ProcessError(ALREADYSEND);
+            }
+        }
+        else
+        {//如果被请求的对象不是自己
+            ProcessError(NOPERMISSION);
+        }
+
+    }
 }
 
 
