@@ -19,6 +19,8 @@ void OClientPeer::init()
     connect(this,SIGNAL(AskInfo(QStringList)),this,SLOT(onAskInfo(QStringList)));
     connect(this,SIGNAL(AskUserList(QString,QString,bool)),this,SLOT(onAskUserList(QString,QString,bool)));
     connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
+    connect(this,SIGNAL(UserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
+    connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
 
     OAbstractPeer::init();
 }
@@ -88,36 +90,6 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
     publicKey.clear();
 }
 
-void OClientPeer::onAskPublicKey()
-{
-    QByteArray key;
-
-    //这里的公钥采用15个ascii从32到126的随机字符
-    for(int i=0;i<15;i++)
-    {
-        char c = ( qrand()%(126-32) )+32;
-        key.append(QString(c));
-    }
-    publicKey=QString(key);
-
-    PublicKey(key);
-}
-
-void OClientPeer::onState(QString status)
-{
-    if(!this->client->isLoged)
-    {//未登录
-        ProcessError(NEEDLOGIN);
-        return;
-    }
-
-    if(client->status!=status)
-    {
-        client->status=status;
-        core->userListChange(client->uname);
-    }
-}
-
 void OClientPeer::onAskInfo(QStringList keys)
 {
     QMap<QString,QString> result;
@@ -138,6 +110,21 @@ void OClientPeer::onAskInfo(QStringList keys)
         }
     }
     Info(result);
+}
+
+void OClientPeer::onAskPublicKey()
+{
+    QByteArray key;
+
+    //这里的公钥采用15个ascii从32到126的随机字符
+    for(int i=0;i<15;i++)
+    {
+        char c = ( qrand()%(126-32) )+32;
+        key.append(QString(c));
+    }
+    publicKey=QString(key);
+
+    PublicKey(key);
 }
 
 void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAvatar)
@@ -382,7 +369,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
         }
         else
         {//如果是在操作某个小组的列表
-            QString group=listname.left(listname.length()-1);//去掉星号后的小组名称
+            QString group=listname.right(listname.length()-1);//去掉星号后的小组名称
             if(core->db.checkGroup(group))
             {//如果存在这个小组
                 GroupMember groupmember=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
@@ -458,4 +445,121 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
         ProcessError(NEEDLOGIN);
     }
 }
+
+void OClientPeer::onState(QString status)
+{
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
+    if(client->status!=status)
+    {
+        client->status=status;
+        core->userListChange(client->uname);
+    }
+}
+
+void OClientPeer::onUserRequest(QString uname,QString message)
+{
+    using namespace OSDB;
+
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
+    bool isGroup=(uname.left(1)=="*")?true:false;
+    if(!isGroup)
+    {//如果是在请求一个用户添加自己
+        if(core->db.checkUser(uname))
+        {//如果存在这个用户
+            if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,uname) && OT(OSDB::UserList::_user,client->uname) )._isEmpty)
+            {//如果他们之间没有好友关系
+                if(core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_uname,client->uname) &&
+                                                            OT(OSDB::UserRequest::_user,uname) &&
+                                                            OT(OSDB::UserRequest::_isHandle,false) )._isEmpty)
+                {//没有同样的未处理的请求
+                    OSDB::UserRequest request;
+                    request.time=QDateTime::currentDateTime().toTime_t();
+                    request.uname=client->uname;
+                    request.user=uname;
+                    request.msg=message;
+                    request.isHandle=false;
+                    request.handleTime=0;
+                    request.result=false;
+                    int id=core->db.insert<OSDB::UserRequest>(request);
+                    core->processRequest(id);
+                }
+                else
+                {//有同样的未处理的请求
+                    core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_uname,client->uname) &&
+                                                       OT(OSDB::UserRequest::_user,uname) &&
+                                                       OT(OSDB::UserRequest::_isHandle,false) ,
+                                                       OSDB::UserRequest::_msg,message);
+                    ProcessError(ALREADYSEND);
+                }
+            }
+            else
+            {//如果他们之间已经有好友关系了
+                ProcessError(ALREADYINLIST);
+            }
+        }
+        else
+        {//如果不存在这个用户
+            ProcessError(NOTEXIST);
+        }
+    }
+    else
+    {//如果是申请加入小组
+        QString group=uname.right(uname.length()-1);//去掉星号后的小组名称
+        if(core->db.checkGroup(group))
+        {//如果存在这个小组
+            if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+            {//如果自己不在这个小组中
+                if(core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_uname,client->uname) &&
+                                                            OT(OSDB::UserRequest::_user,uname) &&
+                                                            OT(OSDB::UserRequest::_isHandle,false) )._isEmpty)
+                {//没有同样的未处理的请求
+                    OSDB::UserRequest request;
+                    request.time=QDateTime::currentDateTime().toTime_t();
+                    request.uname=client->uname;
+                    request.user=uname;
+                    request.msg=message;
+                    request.isHandle=false;
+                    request.handleTime=0;
+                    request.result=false;
+                    int id=core->db.insert<OSDB::UserRequest>(request);
+                    core->processRequest(id);
+                }
+                else
+                {//有同样的未处理的请求
+                    core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_uname,client->uname) &&
+                                                       OT(OSDB::UserRequest::_user,uname) &&
+                                                       OT(OSDB::UserRequest::_isHandle,false) ,
+                                                       OSDB::UserRequest::_msg,message);
+                    ProcessError(ALREADYSEND);
+                }
+            }
+            else
+            {//如果自己已经在这个小组中
+                ProcessError(ALREADYINLIST);
+            }
+        }
+        else
+        {//如果不存在这个小组
+            ProcessError(NOTEXIST);
+        }
+    }
+}
+
+void OClientPeer::onRequestResult(int id,QString result)
+{
+
+}
+
+
+
 

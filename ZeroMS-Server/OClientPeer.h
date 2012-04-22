@@ -29,6 +29,8 @@ public slots:
     void onAskUserList(QString listname,QString operation,bool isHasAvatar);
     void onModifyUserList(QString listname,QString uname,QString operation,QString message);
     void onState(QString status);
+    void onUserRequest(QString uname,QString message);
+    void onRequestResult(int id,QString result);
 private:
     QString publicKey;//公钥
 };

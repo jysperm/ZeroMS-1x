@@ -97,6 +97,7 @@ const QString ALREADYINLIST = "alreadyinlist";
 const QString NOTINLIST = "notinlist";
 const QString NOTEXIST = "notexist";
 const QString NOTALLOWTOJOINGROUP = "notallowtojoingroup";
+const QString ALREADYSEND = "alreadysend";
 
 inline bool checkVer(int n)
 {
