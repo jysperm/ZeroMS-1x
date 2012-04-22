@@ -109,6 +109,15 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
     send(&msg);
 }
 
+void OAbstractPeer::NewRequest(int id,QString uname,QString invitation,QString message)
+{
+    QByteArray data;
+    data.append(QString("%1 %2 %3 %4").arg(id).arg(uname).arg(invitation).arg(message));
+
+    OMessage msg(M_NewRequest,data);
+    send(&msg);
+}
+
 void OAbstractPeer::ProcessError(QString errorName,QString other)
 {
     OMessage msgMsg(M_ProcessError);
