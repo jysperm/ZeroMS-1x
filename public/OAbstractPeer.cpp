@@ -125,11 +125,11 @@ void OAbstractPeer::ProcessError(QString errorName,QString other)
     send(&msgMsg);
 }
 
-void OAbstractPeer::NewGroupRequest(int id,QString uname,QString invitation,QString message)
+void OAbstractPeer::NewGroupRequest(int id,QString uname,QString requester,QString message)
 {
     //uname为小组名，含前缀星号
     QByteArray data;
-    data.append(QString("%1 %2 %3 %4").arg(id).arg(uname).arg(invitation).arg(message));
+    data.append(QString("%1 %2 %3 %4").arg(id).arg(uname).arg(requester).arg(message));
 
     OMessage msg(M_NewGroupRequest,data);
     send(&msg);

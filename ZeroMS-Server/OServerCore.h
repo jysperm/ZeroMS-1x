@@ -42,4 +42,9 @@ private slots:
     void onError(OClient *client);
 };
 
+inline bool OIsOnline(QString uname)
+{
+    return core->cl.contains(uname);
+}
+
 #endif // OSERVERCORE_H

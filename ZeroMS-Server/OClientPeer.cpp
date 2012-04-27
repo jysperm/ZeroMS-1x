@@ -36,7 +36,7 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
 
     //测试用代码
     if(true)
-        //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
+    //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
     {//如果已经申请过公钥，且密码正确
         if(isMain)
         {//如果是主连接

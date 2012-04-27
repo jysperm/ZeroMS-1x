@@ -13,4 +13,8 @@ const QString PROTOCOL = QObject::trUtf8("2.0");
 extern OSettings *config;
 extern OServerCore *core;
 
+//检查一个用户名是否在线
+//实现在OServerCore.h
+inline bool OIsOnline(QString uname);
+
 #endif // GLOBAL_H

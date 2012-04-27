@@ -53,7 +53,7 @@ public:
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void NewRequest(int id,QString uname,QString invitation,QString message);
     void ProcessError(QString errorName,QString other=QString());
-    void NewGroupRequest(int id,QString uname,QString invitation,QString message);
+    void NewGroupRequest(int id,QString uname,QString requester,QString message);
 
     //当前被处理的消息,在checkMsg()中被设置,用于ProcessError()
     OMessage *currentMsg;
