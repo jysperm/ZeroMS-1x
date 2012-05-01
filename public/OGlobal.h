@@ -23,10 +23,16 @@ inline bool OIsGroup(QString uname)
     return uname.left(1)=="*";
 }
 
-inline QString OGroupName(QString group)
+inline QString OGroupName(QString uname)
 {
     //去除小组名前面的星号
-    return group.right(group.length());
+    return uname.right(uname.length());
+}
+
+inline QString OToGroup(QString group)
+{
+    //在小组名字前面加上星号
+    return group.append("*");
 }
 
 #endif // PUBLIC_OGLOBAL_H

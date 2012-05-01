@@ -59,9 +59,8 @@ void OServerCore::userListChange(QString uname)
 {
     using namespace OSDB;
 
-    if(uname.left(1)=="*")
+    if(!OIsGroup(uname))
     {//如果uname是一个用户
-
         QVector<UserList> userlist=db.select<UserList>(OT(UserList::_user,uname));
         QVectorIterator<UserList> iUserList(userlist);
         while(iUserList.hasNext())
@@ -80,18 +79,7 @@ void OServerCore::userListChange(QString uname)
         {
             QString group=iGroups.next().groupname;
 
-            QVector<GroupMember> members=db.select<GroupMember>(OT(GroupMember::_groupname,group));
-
-            QVectorIterator<GroupMember> iMember(members);
-            while(iMember.hasNext())
-            {
-                QString user=iMember.next().uname;
-
-                if(cl.contains(user))
-                {
-                    cl[user]->main->UserListChanged(QString("*%1").arg(group));
-                }
-            }
+            userListChange(OToGroup(group));
         }
     }
     else
@@ -156,7 +144,6 @@ void OServerCore::processRequest(int id)
                         cl[member.uname]->main->NewGroupRequest(id,request.user,request.uname,request.msg);
                     }
                 }
-
             }
         }
     }
@@ -166,12 +153,26 @@ void OServerCore::processRequest(QString user)
 {
     using namespace OSDB;
 
+    //处理目标是user的请求
     QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) && OT(UserRequest::_user,user) );
-
     QVectorIterator<UserRequest> i(requests);
     while(i.hasNext())
     {
         processRequest(i.next().id);
+    }
+
+    //处理user所管理的小组的请求
+    QVector<GroupMember> groups=db.select<GroupMember>( OT(GroupMember::_uname,user) && OT(GroupMember::_isAdmin,true) );
+    QVectorIterator<GroupMember> iGroups(groups);
+    while(iGroups.hasNext())
+    {
+        QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) && OT(UserRequest::_user,OToGroup(iGroups.next().groupname)) );
+
+        QVectorIterator<UserRequest> i(requests);
+        while(i.hasNext())
+        {
+            processRequest(i.next().id);
+        }
     }
 }
 

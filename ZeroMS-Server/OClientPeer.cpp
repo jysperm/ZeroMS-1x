@@ -61,6 +61,7 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
             (client->p2pPorts)<<p2pPort;
             LoginResult(OK);
             core->userListChange(uname);
+            core->processRequest(uname);
         }
         else
         {//如果是次要连接
