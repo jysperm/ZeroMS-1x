@@ -112,54 +112,66 @@ void OServerCore::userListChange(QString uname)
     }
 }
 
+void OServerCore::processRequest()
+{
+    using namespace OSDB;
+
+    QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) );
+
+    QVectorIterator<UserRequest> i(requests);
+    while(i.hasNext())
+    {
+        processRequest(i.next().id);
+    }
+}
+
 void OServerCore::processRequest(int id)
 {
     using namespace OSDB;
 
-    if(id>-1)
-    {//如果指定了请求id
-        UserRequest request=db.selectFrist<UserRequest>( OT(UserRequest::_id,id) );
-        if(!request._isEmpty)
-        {//如果查询结果不是空的
-            if(!request.isHandle)
-            {//如果请求还没有被处理
-                if(!OIsGroup(request.user))
-                {//如果请求的目标是一个用户
-                    if(OIsOnline(request.user))
-                    {//如果请求的目标用户在线
-                        cl[request.user]->main->NewRequest(id,request.uname,request.invitation,request.msg);
+    UserRequest request=db.selectFrist<UserRequest>( OT(UserRequest::_id,id) );
+    if(!request._isEmpty)
+    {//如果查询结果不是空的
+        if(!request.isHandle)
+        {//如果请求还没有被处理
+            if(!OIsGroup(request.user))
+            {//如果请求的目标是一个用户
+                if(OIsOnline(request.user))
+                {//如果请求的目标用户在线
+                    cl[request.user]->main->NewRequest(id,request.uname,request.invitation,request.msg);
+                }
+            }
+            else
+            {//如果请求的目标是一个小组
+                //获取所有的管理员
+                QVector<GroupMember> members=db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(request.user)) && OT(GroupMember::_isAdmin,true) );
+
+                QVectorIterator<GroupMember> i(members);
+                while(i.hasNext())
+                {
+                    GroupMember member=i.next();
+
+                    if(OIsOnline(member.uname))
+                    {//如果这个管理员在线
+                        cl[member.uname]->main->NewGroupRequest(id,request.user,request.uname,request.msg);
                     }
                 }
-                else
-                {//如果请求的目标是一个小组
-                    //获取所有的管理员
-                    QVector<GroupMember> members=db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(request.user)) && OT(GroupMember::_isAdmin,true) );
 
-                    QVectorIterator<GroupMember> i(members);
-                    while(i.hasNext())
-                    {
-                        GroupMember member=i.next();
-
-                        if(OIsOnline(member.uname))
-                        {//如果这个管理员在线
-                            cl[member.uname]->main->NewGroupRequest(id,request.user,request.uname,request.msg);
-                        }
-                    }
-
-                }
             }
         }
     }
-    else
-    {//如果没有指定请求id
-        //处理所有未处理的请求
-        QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) );
+}
 
-        QVectorIterator<UserRequest> i(requests);
-        while(i.hasNext())
-        {
-            processRequest(i.next().id);
-        }
+void OServerCore::processRequest(QString user)
+{
+    using namespace OSDB;
+
+    QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) && OT(UserRequest::_user,user) );
+
+    QVectorIterator<UserRequest> i(requests);
+    while(i.hasNext())
+    {
+        processRequest(i.next().id);
     }
 }
 

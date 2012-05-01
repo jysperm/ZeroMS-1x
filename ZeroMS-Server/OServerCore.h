@@ -23,8 +23,10 @@ public:
     //通知所有好友列表中含有uname的用户更新用户列表(发送UserListChange消息)
     //uname可能为小组，这时表示小组的成员列表发生变化，通知所有成员
     void userListChange(QString uname);
-    //处理对应的请求,参数被省略时则尝试处理所有请求
-    void processRequest(int id=-1);
+
+    void processRequest();//尝试处理所有请求
+    void processRequest(int id);//处理对应的请求
+    void processRequest(QString user);//尝试处理所有目标是user的请求(通常发生在user上线时)
 
     QMap<QString,OClient*> cl;
     QTextStream cin;
