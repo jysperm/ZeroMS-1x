@@ -132,10 +132,11 @@ template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,
 {
     QSqlQuery query(*dbConn);
     QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T::_table()).arg(field).arg(value.toString().replace("'","\\'"));
+
     sql.append(querys.getSQL());
 
     query.exec(sql);
-
+    qDebug()<<sql;
     return query.numRowsAffected();
 }
 

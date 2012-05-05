@@ -12,12 +12,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     ../public/OGlobal/OGlobal.cpp \
-    ONetworkDebuger.cpp
+    ONetworkDebuger.cpp \
+    ../public/OMessage.cpp
 
 HEADERS  += \
     ../public/OGlobal.h \
     ../public/OGlobal/protocol2.0.h \
-    ONetworkDebuger.h
+    ONetworkDebuger.h \
+    ../public/OMessage.h
 
 FORMS    += ONetworkDebuger.ui
 

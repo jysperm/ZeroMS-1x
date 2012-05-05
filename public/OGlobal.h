@@ -35,4 +35,10 @@ inline QString OToGroup(QString group)
     return group.append("*");
 }
 
+inline QString OSBEscSMap(QString str)
+{
+    //按照SB协议的键值对应表，转义分号
+    return str.replace(";","\\;");
+}
+
 #endif // PUBLIC_OGLOBAL_H

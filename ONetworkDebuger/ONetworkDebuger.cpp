@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include "ONetworkDebuger.h"
 #include "ui_ONetworkDebuger.h"
+#include "../public/OMessage.h"
 
 ONetworkDebuger::ONetworkDebuger(QWidget *parent):QMainWindow(parent),ui(new Ui::ONetworkDebuger)
 {
@@ -344,20 +345,30 @@ void ONetworkDebuger::onSocketNewData()
         {
             QByteArray data=conn->readAll();
 
-            log(sqlitter);
-            log(QString("TCP:%4收到来自TCP:%1:%2的数据包:").arg(conn->peerAddress().toString()).arg(conn->peerPort()).arg(conn->localPort()));
+            while(true)
+            {
+                OMessage msg=OMessage::fromDataBuff(&data);
+                if(msg.isEmpty())
+                    break;
 
-            int ver=QBtoint(data.mid(0,4));
-            unsigned int len=QBtoint(data.mid(4,4));
-            int type=QBtoint(data.mid(8,4));
-            unsigned int time=QBtoint(data.mid(12,4));
 
-            QString stime=QDateTime::fromTime_t(time).toString("yyyy-MM-dd hh:mm:ss");
+                log(sqlitter);
+                log(QString("TCP:%4收到来自TCP:%1:%2的数据包:").arg(conn->peerAddress().toString()).arg(conn->peerPort()).arg(conn->localPort()));
 
-            log(QString("Ver-%1 Len-%2 %3(%4) %5(%6)").arg(ver).arg(len).arg(num2String(type)).arg(type)
-                .arg(stime).arg(time));
+                int ver=msg.protocol;
+                unsigned int len=msg.data.length();
+                int type=msg.type;
+                unsigned int time=msg.time;
 
-            log(data.mid(16));
+                QString stime=QDateTime::fromTime_t(time).toString("yyyy-MM-dd hh:mm:ss");
+
+                log(QString("Ver-%1 Len-%2 %3(%4) %5(%6)").arg(ver).arg(len).arg(num2String(type)).arg(type)
+                    .arg(stime).arg(time));
+
+                log(msg.data);
+            }
+
+
         }
     }
 }

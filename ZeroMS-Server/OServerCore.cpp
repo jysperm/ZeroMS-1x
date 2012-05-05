@@ -18,11 +18,12 @@ void OServerCore::init()
     //用于AskInfo
     info.insert(OFFLINECACHETIME,(*config)["OFFLINE_CACHE_TIME"].toString());
     info.insert(NOACTIVITYTIME,(*config)["NOACTIVITY_TIME"].toString());
-    info.insert(Protocol2::VERSION,QString("%1 %2").arg(SERVER).arg(::VERSION).replace(";","\\;"));
-    info.insert(Protocol2::PROTOCOL,QString(::PROTOCOL).replace(";","\\;"));
+    info.insert(Protocol2::VERSION,OSBEscSMap(QString("%1 %2").arg(SERVER).arg(::VERSION)));
+    info.insert(Protocol2::PROTOCOL,OSBEscSMap(::PROTOCOL));
     info.insert(Protocol2::VERNUM,QString::number(::VERNUM));
-    info.insert(WEBSITE,(*config)["WEBSITE"].toString().replace(";","\\;"));
+    info.insert(WEBSITE,OSBEscSMap((*config)["WEBSITE"].toString()));
     info.insert(BUILDTIME,QString("%1 %2").arg(__DATE__).arg(__TIME__).replace(";","\\;"));
+    info.insert(BUILDTIME,OSBEscSMap(QString("%1 %2").arg(__DATE__).arg(__TIME__)));
 }
 
 void OServerCore::start()

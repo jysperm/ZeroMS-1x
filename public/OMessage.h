@@ -30,14 +30,13 @@ public:
 
     QByteArray exec();//返回当该消息被发送时应该发送的数据
 
-    int type;
-private:
-    inline static int QBtoint(QByteArray b);//将参数的前4个字节转换成int
-
     //见 http://0-ms.org/wiki/show/SB2.0#.E6.B6.88.E6.81.AF.E5.A4.B4.E9.83.A8
+    int type;
     int protocol;
     unsigned int time;
     QByteArray data;
+private:
+    inline static int QBtoint(QByteArray b);//将参数的前4个字节转换成int
 };
 
 inline bool OMessage::isEmpty() const

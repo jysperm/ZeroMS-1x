@@ -1,19 +1,19 @@
 #include <QDateTime>
 #include "OMessage.h"
-#include "global.h"
+#include "../public/OGlobal.h"
 
 //public:
-OMessage::OMessage():type(0),protocol(0),time(0)
+OMessage::OMessage():type(0),protocol(P_VER),time(0)
 {
 
 }
 
-OMessage::OMessage(int type,QByteArray data):type(type),protocol(0),time(0),data(data)
+OMessage::OMessage(int type,QByteArray data):type(type),protocol(P_VER),time(0),data(data)
 {
 
 }
 
-OMessage::OMessage(int type):type(type),protocol(0),time(0)
+OMessage::OMessage(int type):type(type),protocol(P_VER),time(0)
 {
 
 }
