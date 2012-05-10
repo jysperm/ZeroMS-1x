@@ -76,6 +76,7 @@ signals:
     void State(QString status);
     void UserRequest(QString uname,QString message);
     void RequestResult(int id,QString result);
+    void ModifyGroup(QString group,QString uname,QStringList operators);
 private slots:
     void onError(QAbstractSocket::SocketError s);//用于与conn的error()信号绑定
 };

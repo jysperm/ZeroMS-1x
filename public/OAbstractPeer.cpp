@@ -230,6 +230,15 @@ void OAbstractPeer::checkMsg()
                         Unknown();
                     continue;
                 }
+            case M_ModifyGroup:
+                if(peerType==ClientPeer)
+                {
+                    QString group=OGroupName(msg.split(0));
+                    QString uname=msg.split(1);
+                    QStringList operators=msg.split(2).split(",");
+                    emit ModifyGroup(group,uname,operators);
+                    continue;
+                }
             default:
             {
                 Unknown();

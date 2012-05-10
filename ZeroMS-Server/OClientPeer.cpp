@@ -21,6 +21,7 @@ void OClientPeer::init()
     connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
     connect(this,SIGNAL(UserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
     connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
+    connect(this,SIGNAL(ModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
 
     OAbstractPeer::init();
 }
@@ -573,7 +574,6 @@ void OClientPeer::onRequestResult(int id,QString result)
     }
     else
     {//如果存在这个请求
-
         if(request.user==client->uname)
         {//如果被请求的对象是自己
             if(!request.isHandle)
@@ -635,6 +635,59 @@ void OClientPeer::onRequestResult(int id,QString result)
     }
 }
 
+void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operators)
+{
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
 
+    using namespace OSDB;
+
+    if(core->db.checkGroup(group))
+    {//如果存在这个小组
+        Querys querys=OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname);
+        if(!core->db.selectFrist<GroupMember>(querys)._isEmpty)
+        {//如果被修改的用户在这个群里面
+            QListIterator<QString> i(operators);
+            int rowsAffected=0;
+
+            while(i.hasNext())
+            {
+                QString operation=i.next();
+                if(operation==ADMIN)
+                {
+                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,true);
+                }
+                else if(operation==NOTADMIN)
+                {
+                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,false);
+                }
+                else if(operation==ALLOW)
+                {
+                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,false);
+                }
+                else if(operation==DENY)
+                {
+                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,true);
+                }
+            }
+
+            if(rowsAffected)
+            {
+                core->userListChange(OToGroup(group));
+            }
+        }
+        else
+        {//如果被修改的用户不在这个群里面
+            ProcessError(NOTINLIST);
+        }
+    }
+    else
+    {//如果不存在这个小组
+        ProcessError(NOTEXIST);
+    }
+}
 
 

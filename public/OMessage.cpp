@@ -1,6 +1,6 @@
 #include <QDateTime>
 #include "OMessage.h"
-#include "../public/OGlobal.h"
+#include "OGlobal.h"
 
 //public:
 OMessage::OMessage():type(0),protocol(P_VER),time(0)

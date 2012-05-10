@@ -31,6 +31,7 @@ public slots:
     void onState(QString status);
     void onUserRequest(QString uname,QString message);
     void onRequestResult(int id,QString result);
+    void onModifyGroup(QString group,QString uname,QStringList operators);
 private:
     QString publicKey;//公钥
 };
