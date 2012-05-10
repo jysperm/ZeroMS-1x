@@ -650,27 +650,42 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
         Querys querys=OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname);
         if(!core->db.selectFrist<GroupMember>(querys)._isEmpty)
         {//如果被修改的用户在这个群里面
-            QListIterator<QString> i(operators);
             int rowsAffected=0;
+            bool isMaster=(core->db.selectFrist<Group>(OT(Group::_groupname,group)).master==client->uname)?true:false;
+            bool isAdmin=core->db.selectFrist<GroupMember>(OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname)).isAdmin;
 
+
+            QListIterator<QString> i(operators);
             while(i.hasNext())
             {
                 QString operation=i.next();
                 if(operation==ADMIN)
                 {
-                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,true);
+                    if(isMaster)
+                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,true);
+                    else
+                        ProcessError(NOTADMIN);
                 }
                 else if(operation==NOTADMIN)
                 {
-                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,false);
+                    if(isMaster)
+                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,false);
+                    else
+                        ProcessError(NOTADMIN);
                 }
                 else if(operation==ALLOW)
                 {
-                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,false);
+                    if(isAdmin)
+                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,false);
+                    else
+                        ProcessError(NOTADMIN);
                 }
                 else if(operation==DENY)
                 {
-                    rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,true);
+                    if(isAdmin)
+                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,true);
+                    else
+                        ProcessError(NOTADMIN);
                 }
             }
 
