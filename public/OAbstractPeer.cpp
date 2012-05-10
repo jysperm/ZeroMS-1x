@@ -211,6 +211,12 @@ void OAbstractPeer::checkMsg()
                     emit State(status);
                     continue;
                 }
+            case M_Logout:
+                if(peerType==ClientPeer)
+                {
+                    onError();
+                    continue;
+                }
             case M_UserRequest:
                 if(peerType==ClientPeer)
                 {

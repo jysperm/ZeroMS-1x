@@ -74,11 +74,12 @@ signals:
     void AskUserList(QString listname,QString operation,bool isHasAvatar);
     void ModifyUserList(QString listname,QString uname,QString operation,QString message);
     void State(QString status);
+    void Logout();
     void UserRequest(QString uname,QString message);
     void RequestResult(int id,QString result);
     void ModifyGroup(QString group,QString uname,QStringList operators);
-private slots:
-    void onError(QAbstractSocket::SocketError s);//用于与conn的error()信号绑定
+protected slots:
+    void onError(QAbstractSocket::SocketError s=QAbstractSocket::UnknownSocketError);//用于与conn的error()信号绑定
 };
 
 inline bool OUserlistItem::operator==(const OUserlistItem other) const
