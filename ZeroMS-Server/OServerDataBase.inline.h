@@ -160,7 +160,7 @@ template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,
     sql.append(querys.getSQL());
 
     query.exec(sql);
-    qDebug()<<sql;
+
     return query.numRowsAffected();
 }
 

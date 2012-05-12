@@ -51,6 +51,7 @@ public:
     void Unknown();
     void UserListChanged(QString listname);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
+    void SystemMsg(QString message);
     void NewRequest(int id,QString uname,QString invitation,QString message);
     void UserInfo(QString uname, QMap<QString, QString> values);
     void ProcessError(QString errorName,QString other=QString());

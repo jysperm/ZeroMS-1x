@@ -69,8 +69,8 @@ void OAbstractPeer::Unknown()
 {
     QByteArray data;
     data.append((*config)["UNKNOWN"].toString());
-    OMessage msgMsg(M_Unknown,data);
-    send(&msgMsg);
+    OMessage msg(M_Unknown,data);
+    send(&msg);
     databuf.clear();
 }
 
@@ -106,6 +106,13 @@ void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlis
             data.append(";");
     }
     OMessage msg(M_UserList,data);
+    send(&msg);
+}
+
+void OAbstractPeer::SystemMsg(QString message)
+{
+    OMessage msg(M_SystemMsg);
+    msg.append(message);
     send(&msg);
 }
 
