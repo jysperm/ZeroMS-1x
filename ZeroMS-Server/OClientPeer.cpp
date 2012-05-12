@@ -717,12 +717,12 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
 
     if(isGroup)
     {//如果是在请求一个小组的信息
-        if(!core->db.checkGroup(OToGroup(uname)))
+        if(!core->db.checkGroup(OGroupName(uname)))
         {//如果不存在这个小组
             ProcessError(NOTEXIST);
             return;
         }
-        groupInfo=core->db.selectFrist<Group>( OT(Group::_groupname,OToGroup(uname)) );
+        groupInfo=core->db.selectFrist<Group>( OT(Group::_groupname,OGroupName(uname)) );
     }
     else
     {//如果是在请求一个用户的信息
@@ -798,7 +798,7 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
             if(!isGroup)
                 continue;
             QString strAdmins;
-            QVector<GroupMember> admins=core->db.select<GroupMember>( OT(GroupMember::_groupname,OToGroup(uname)) && OT(GroupMember::_isAdmin,true) );
+            QVector<GroupMember> admins=core->db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_isAdmin,true) );
             QVectorIterator<GroupMember> i(admins);
             while(i.hasNext())
             {
@@ -860,8 +860,8 @@ void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
     }
     else
     {//如果修改的目标是一个小组
-        if(core->db.checkGroup(OToGroup(uname)) &&
-           core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OToGroup(uname)) && OT(GroupMember::_uname,client->uname) ).isAdmin)
+        GroupMember memberInfo=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_uname,client->uname) );
+        if(core->db.checkGroup(OGroupName(uname)) && !memberInfo._isEmpty && memberInfo.isAdmin)
         {//如果存在这个小组，且自己是小组的管理员
 
         }
@@ -886,28 +886,28 @@ void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
         {
             if(!isGroup)
                 continue;
-            core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_caption,i.value());
+            core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_caption,i.value());
         }
         else if(i.key()==WEBSITE)
         {
             if(isGroup)
-                core->db.update<User>(OT(User::_uname,uname),User::_website,i.value());
+                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_website,i.value());
             else
-                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_website,i.value());
+                core->db.update<User>(OT(User::_uname,uname),User::_website,i.value());
         }
         else if(i.key()==INFO)
         {
             if(isGroup)
-                core->db.update<User>(OT(User::_uname,uname),User::_info,i.value());
+                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_info,i.value());
             else
-                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_info,i.value());
+                core->db.update<User>(OT(User::_uname,uname),User::_info,i.value());
         }
         else if(i.key()==AVATAR)
         {
             if(isGroup)
-                core->db.update<User>(OT(User::_uname,uname),User::_avatar,i.value());
+                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_avatar,i.value());
             else
-                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_avatar,i.value());
+                core->db.update<User>(OT(User::_uname,uname),User::_avatar,i.value());
         }
     }
 }

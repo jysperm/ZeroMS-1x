@@ -26,7 +26,7 @@ inline bool OIsGroup(QString uname)
 inline QString OGroupName(QString uname)
 {
     //去除小组名前面的星号
-    return uname.right(uname.length());
+    return uname.right(uname.length()-1);
 }
 
 inline QString OToGroup(QString group)

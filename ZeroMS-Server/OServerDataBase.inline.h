@@ -18,6 +18,14 @@ inline OSDB::Querys OSDB::OT::operator || (OSDB::OT t)
 //public:
 inline OSDB::Querys OSDB::Querys::operator && (OSDB::OT t)
 {
+    if(QString(t.v.typeName())==QString("bool"))
+    {
+        if(t.v.toBool()==true)
+            t.v=1;
+        else
+            t.v=0;
+    }
+
     QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.toString().replace("'","\\'"));
 
     if(sql.isEmpty())
@@ -30,6 +38,14 @@ inline OSDB::Querys OSDB::Querys::operator && (OSDB::OT t)
 
 inline OSDB::Querys OSDB::Querys::operator || (OSDB::OT t)
 {
+    if(QString(t.v.typeName())==QString("bool"))
+    {
+        if(t.v.toBool()==true)
+            t.v=1;
+        else
+            t.v=0;
+    }
+
     QString expr=QString("( `%1` = '%2' )").arg(t.k).arg(t.v.toString().replace("'","\\'"));
 
     if(sql.isEmpty())
@@ -130,6 +146,14 @@ template<class T> QVector<T> OServerDataBase::select(OSDB::Querys querys,QString
 
 template<class T> int OServerDataBase::update(OSDB::Querys querys,QString field,QVariant value)
 {
+    if(QString(value.typeName())==QString("bool"))
+    {
+        if(value.toBool()==true)
+            value=1;
+        else
+            value=0;
+    }
+
     QSqlQuery query(*dbConn);
     QString sql=QString("UPDATE `%1` SET `%2` = '%3'").arg(T::_table()).arg(field).arg(value.toString().replace("'","\\'"));
 
