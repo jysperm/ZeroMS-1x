@@ -42,10 +42,10 @@ void OAbstractPeer::LoginResult(QString status,QString ip)
     send(&msg);
 }
 
-void OAbstractPeer::Info(QMap<QString,QString> keys)
+void OAbstractPeer::Info(QMap<QString,QString> values)
 {
     QByteArray data;
-    QMapIterator<QString,QString> i(keys);
+    QMapIterator<QString,QString> i(values);
     while(i.hasNext())
     {
         i.next();
@@ -115,6 +115,21 @@ void OAbstractPeer::NewRequest(int id,QString uname,QString invitation,QString m
     data.append(QString("%1 %2 %3 %4").arg(id).arg(uname).arg(invitation).arg(message));
 
     OMessage msg(M_NewRequest,data);
+    send(&msg);
+}
+
+void OAbstractPeer::UserInfo(QMap<QString,QString> values)
+{
+    QByteArray data;
+    QMapIterator<QString,QString> i(values);
+    while(i.hasNext())
+    {
+        i.next();
+        data.append(QString("%1:%2").arg(i.key()).arg(QString(i.value()).replace(";","\\;")));
+        if(i.hasNext())
+            data.append(";");
+    }
+    OMessage msg(M_UserInfo,data);
     send(&msg);
 }
 
@@ -243,6 +258,32 @@ void OAbstractPeer::checkMsg()
                     QString uname=msg.split(1);
                     QStringList operators=msg.split(2).split(",");
                     emit ModifyGroup(group,uname,operators);
+                    continue;
+                }
+            case M_AskUserInfo:
+                if(peerType==ClientPeer)
+                {
+                    QString uname=msg.split(0);
+                    QStringList keys=msg.split(1).split(",");
+                    emit AskUserInfo(uname,keys);
+                    continue;
+                }
+            case M_ModifyInfo:
+                if(peerType==ClientPeer)
+                {
+                    QString uname=msg.split(0);
+                    QMap<QString,QString> values;
+                    QStringList strValues=msg.splitTail(1).split(";");
+                    QListIterator<QString> i(strValues);
+                    while(i.hasNext())
+                    {
+                        QStringList strPair=i.next().split(":");
+                        if((strPair.size() > 2) && !strPair.front().isEmpty())
+                        {
+                            values.insert(strPair.front(),i.peekPrevious().right(i.peekPrevious().length() - strPair.front().length() -1));
+                        }
+                    }
+                    emit ModifyInfo(uname,values);
                     continue;
                 }
             default:

@@ -22,6 +22,8 @@ void OClientPeer::init()
     connect(this,SIGNAL(UserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
     connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
     connect(this,SIGNAL(ModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
+    connect(this,SIGNAL(AskUserInfo(QString,QStringList)),this,SLOT(onAskUserInfo(QString,QStringList)));
+    connect(this,SIGNAL(ModifyInfo(QString,QVector<QPair<QString,QString> >)),this,SLOT(onModifyInfo(QString,QVector<QPair<QString,QString> >)));
 
     OAbstractPeer::init();
 }
@@ -705,4 +707,12 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
     }
 }
 
+void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
+{
 
+}
+
+void OClientPeer::onModifyInfo(QString uname,QVector<QPair<QString,QString> > values)
+{
+
+}

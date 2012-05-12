@@ -46,12 +46,13 @@ public:
     //下面是用来发送消息的函数
 
     void LoginResult(QString status,QString ip=QString());
-    void Info(QMap<QString,QString> keys);
+    void Info(QMap<QString,QString> values);
     void PublicKey(QString publicKey);
     void Unknown();
     void UserListChanged(QString listname);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void NewRequest(int id,QString uname,QString invitation,QString message);
+    void UserInfo(QMap<QString,QString> values);
     void ProcessError(QString errorName,QString other=QString());
     void NewGroupRequest(int id,QString uname,QString requester,QString message);
 
@@ -78,6 +79,8 @@ signals:
     void UserRequest(QString uname,QString message);
     void RequestResult(int id,QString result);
     void ModifyGroup(QString group,QString uname,QStringList operators);
+    void AskUserInfo(QString uname,QStringList keys);
+    void ModifyInfo(QString uname,QMap<QString,QString> values);
 protected slots:
     void onError(QAbstractSocket::SocketError s=QAbstractSocket::UnknownSocketError);//用于与conn的error()信号绑定
 };

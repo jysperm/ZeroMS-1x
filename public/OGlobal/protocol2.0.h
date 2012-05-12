@@ -53,7 +53,7 @@ const int M_ProcessError = 39;
 const int M_OK = 40;
 const int M_Robot = 41;
 const int M_NewGroupRequest = 42;
-const int M_SetInfo = 43;
+const int M_ModifyInfo = 43;
 
 //选项名
 const QString OK = "ok";
