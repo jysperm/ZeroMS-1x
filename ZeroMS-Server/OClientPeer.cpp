@@ -707,11 +707,10 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
 
 void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
 {
-    QMap<QString,QString> result;
-
-    bool isGroup=OIsGroup(uname);
-
     using namespace OSDB;
+
+    QMap<QString,QString> result;
+    bool isGroup=OIsGroup(uname);
 
     Group groupInfo;
     User userInfo;
@@ -741,20 +740,20 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
         if(i.next()==STATE)
         {
             if(isGroup)
-                break;
+                continue;
             result.insert(STATE,core->getUserStatus(uname));
         }
         else if(i.peekPrevious()==IP)
         {
             if(isGroup)
-                break;
+                continue;
             if(core->cl.contains(uname) && core->cl[uname]->isShowIp)
                 result.insert(IP,core->cl[uname]->main->conn->peerAddress().toString());
         }
         else if(i.peekPrevious()==P2P)
         {
             if(isGroup)
-                break;
+                continue;
             if(core->cl.contains(uname) && core->cl[uname]->isShowIp)
             {
                 QString strPorts;
@@ -771,7 +770,7 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
         else if(i.peekPrevious()==EMAIL)
         {
             if(isGroup)
-                break;
+                continue;
             result.insert(EMAIL,userInfo.email);
         }
         else if(i.peekPrevious()==REGTIME)
@@ -784,7 +783,7 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
         else if(i.peekPrevious()==CAPTION)
         {
             if(!isGroup)
-                break;
+                continue;
             result.insert(CAPTION,groupInfo.caption);
         }
         else if(i.peekPrevious()==WEBSITE)
@@ -797,7 +796,7 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
         else if(i.peekPrevious()==ADMINS)
         {
             if(!isGroup)
-                break;
+                continue;
             QString strAdmins;
             QVector<GroupMember> admins=core->db.select<GroupMember>( OT(GroupMember::_groupname,OToGroup(uname)) && OT(GroupMember::_isAdmin,true) );
             QVectorIterator<GroupMember> i(admins);
@@ -812,19 +811,13 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
         else if(i.peekPrevious()==MASTER)
         {
             if(!isGroup)
-                break;
-            result.insert(MASTER,groupInfo.master);
-        }
-        else if(i.peekPrevious()==MASTER)
-        {
-            if(!isGroup)
-                break;
+                continue;;
             result.insert(MASTER,groupInfo.master);
         }
         else if(i.peekPrevious()==ONLINETIME)
         {
             if(isGroup)
-                break;
+                continue;
             result.insert(ONLINETIME,QString::number(userInfo.onlineTime));
         }
         else if(i.peekPrevious()==INFO)
@@ -848,5 +841,73 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
 
 void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
 {
-    qDebug()<<values;
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
+    using namespace OSDB;
+    bool isGroup=OIsGroup(uname);
+
+    if(!isGroup)
+    {//如果修改的目标是一个用户
+        if(uname!=client->uname)
+        {//如果修改的目标不是自己
+            ProcessError(NOTADMIN);
+            return;
+        }
+    }
+    else
+    {//如果修改的目标是一个小组
+        if(core->db.checkGroup(OToGroup(uname)) &&
+           core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OToGroup(uname)) && OT(GroupMember::_uname,client->uname) ).isAdmin)
+        {//如果存在这个小组，且自己是小组的管理员
+
+        }
+        else
+        {//如果不存在这个小组，或自己不是这个小组的管理员
+            ProcessError(NOTADMIN);
+            return;
+        }
+    }
+
+    QMapIterator<QString,QString> i(values);
+    while(i.hasNext())
+    {
+        i.next();
+        if(i.key()==EMAIL)
+        {
+            if(isGroup)
+                continue;
+            core->db.update<User>(OT(User::_uname,uname),User::_email,i.value());
+        }
+        else if(i.key()==CAPTION)
+        {
+            if(!isGroup)
+                continue;
+            core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_caption,i.value());
+        }
+        else if(i.key()==WEBSITE)
+        {
+            if(isGroup)
+                core->db.update<User>(OT(User::_uname,uname),User::_website,i.value());
+            else
+                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_website,i.value());
+        }
+        else if(i.key()==INFO)
+        {
+            if(isGroup)
+                core->db.update<User>(OT(User::_uname,uname),User::_info,i.value());
+            else
+                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_info,i.value());
+        }
+        else if(i.key()==AVATAR)
+        {
+            if(isGroup)
+                core->db.update<User>(OT(User::_uname,uname),User::_avatar,i.value());
+            else
+                core->db.update<Group>(OT(Group::_groupname,OToGroup(uname)),Group::_avatar,i.value());
+        }
+    }
 }
