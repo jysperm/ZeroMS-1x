@@ -33,7 +33,7 @@ public slots:
     void onRequestResult(int id,QString result);
     void onModifyGroup(QString group,QString uname,QStringList operators);
     void onAskUserInfo(QString uname,QStringList keys);
-    void onModifyInfo(QString uname,QVector<QPair<QString,QString> > values);
+    void onModifyInfo(QString uname,QMap<QString,QString> values);
 private:
     QString publicKey;//公钥
 };

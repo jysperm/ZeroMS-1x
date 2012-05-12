@@ -118,9 +118,10 @@ void OAbstractPeer::NewRequest(int id,QString uname,QString invitation,QString m
     send(&msg);
 }
 
-void OAbstractPeer::UserInfo(QMap<QString,QString> values)
+void OAbstractPeer::UserInfo(QString uname,QMap<QString,QString> values)
 {
     QByteArray data;
+    data.append(uname).append(" ");
     QMapIterator<QString,QString> i(values);
     while(i.hasNext())
     {
@@ -278,7 +279,7 @@ void OAbstractPeer::checkMsg()
                     while(i.hasNext())
                     {
                         QStringList strPair=i.next().split(":");
-                        if((strPair.size() > 2) && !strPair.front().isEmpty())
+                        if(!strPair.isEmpty() && !strPair.front().isEmpty())
                         {
                             values.insert(strPair.front(),i.peekPrevious().right(i.peekPrevious().length() - strPair.front().length() -1));
                         }

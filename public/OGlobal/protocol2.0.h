@@ -90,6 +90,16 @@ const QString ALLOW = "allow";
 const QString DENY = "deny";
 const QString UPTIME = "uptime";
 const QString BUILDTIME = "buildtime";
+const QString STATE = "state";
+const QString IP = "ip";
+const QString P2P = "p2p";
+const QString EMAIL = "email";
+const QString REGTIME = "regtime";
+const QString CAPTION = "captime";
+const QString ADMINS = "admins";
+const QString MASTER = "master";
+const QString ONLINETIME = "onlinetime";
+const QString INFO = "info";
 
 //错误名
 const QString NEEDLOGIN = "needlogin";

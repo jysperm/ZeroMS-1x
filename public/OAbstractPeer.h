@@ -52,7 +52,7 @@ public:
     void UserListChanged(QString listname);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void NewRequest(int id,QString uname,QString invitation,QString message);
-    void UserInfo(QMap<QString,QString> values);
+    void UserInfo(QString uname, QMap<QString, QString> values);
     void ProcessError(QString errorName,QString other=QString());
     void NewGroupRequest(int id,QString uname,QString requester,QString message);
 

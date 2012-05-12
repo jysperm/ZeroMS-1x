@@ -23,7 +23,7 @@ void OClientPeer::init()
     connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
     connect(this,SIGNAL(ModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
     connect(this,SIGNAL(AskUserInfo(QString,QStringList)),this,SLOT(onAskUserInfo(QString,QStringList)));
-    connect(this,SIGNAL(ModifyInfo(QString,QVector<QPair<QString,QString> >)),this,SLOT(onModifyInfo(QString,QVector<QPair<QString,QString> >)));
+    connect(this,SIGNAL(ModifyInfo(QString,QMap<QString,QString>)),this,SLOT(onModifyInfo(QString,QMap<QString,QString>)));
 
     OAbstractPeer::init();
 }
@@ -169,9 +169,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
                     {
                         item.ip=core->cl[user]->main->conn->peerAddress().toString();
 
-                        QVectorIterator<int> i(core->cl[user]->p2pPorts);
-                        while(i.hasNext())
-                            item.p2pPorts.append(i.next());
+                        item.p2pPorts=core->cl[user]->p2pPorts;
                     }
                 }
                 item.uname=user;
@@ -709,10 +707,146 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
 
 void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
 {
+    QMap<QString,QString> result;
 
+    bool isGroup=OIsGroup(uname);
+
+    using namespace OSDB;
+
+    Group groupInfo;
+    User userInfo;
+
+    if(isGroup)
+    {//如果是在请求一个小组的信息
+        if(!core->db.checkGroup(OToGroup(uname)))
+        {//如果不存在这个小组
+            ProcessError(NOTEXIST);
+            return;
+        }
+        groupInfo=core->db.selectFrist<Group>( OT(Group::_groupname,OToGroup(uname)) );
+    }
+    else
+    {//如果是在请求一个用户的信息
+        if(!core->db.checkUser(uname))
+        {//如果不存在这个用户
+            ProcessError(NOTEXIST);
+            return;
+        }
+        userInfo=core->db.selectFrist<User>( OT(User::_uname,uname) );
+    }
+
+    QListIterator<QString> i(keys);
+    while(i.hasNext())
+    {
+        if(i.next()==STATE)
+        {
+            if(isGroup)
+                break;
+            result.insert(STATE,core->getUserStatus(uname));
+        }
+        else if(i.peekPrevious()==IP)
+        {
+            if(isGroup)
+                break;
+            if(core->cl.contains(uname) && core->cl[uname]->isShowIp)
+                result.insert(IP,core->cl[uname]->main->conn->peerAddress().toString());
+        }
+        else if(i.peekPrevious()==P2P)
+        {
+            if(isGroup)
+                break;
+            if(core->cl.contains(uname) && core->cl[uname]->isShowIp)
+            {
+                QString strPorts;
+                QVectorIterator<int> i(core->cl[uname]->p2pPorts);
+                while(i.hasNext())
+                {
+                    if(!strPorts.isEmpty())
+                        strPorts.append(",");
+                    strPorts.append(i.next());
+                }
+                result.insert(P2P,strPorts);
+            }
+        }
+        else if(i.peekPrevious()==EMAIL)
+        {
+            if(isGroup)
+                break;
+            result.insert(EMAIL,userInfo.email);
+        }
+        else if(i.peekPrevious()==REGTIME)
+        {
+            if(isGroup)
+                result.insert(REGTIME,QString::number(groupInfo.regTime));
+            else
+                result.insert(REGTIME,QString::number(userInfo.regTime));
+        }
+        else if(i.peekPrevious()==CAPTION)
+        {
+            if(!isGroup)
+                break;
+            result.insert(CAPTION,groupInfo.caption);
+        }
+        else if(i.peekPrevious()==WEBSITE)
+        {
+            if(isGroup)
+                result.insert(WEBSITE,groupInfo.website);
+            else
+                result.insert(WEBSITE,userInfo.website);
+        }
+        else if(i.peekPrevious()==ADMINS)
+        {
+            if(!isGroup)
+                break;
+            QString strAdmins;
+            QVector<GroupMember> admins=core->db.select<GroupMember>( OT(GroupMember::_groupname,OToGroup(uname)) && OT(GroupMember::_isAdmin,true) );
+            QVectorIterator<GroupMember> i(admins);
+            while(i.hasNext())
+            {
+                if(!strAdmins.isEmpty())
+                    strAdmins.append(",");
+                strAdmins.append(i.next().uname);
+            }
+            result.insert(ADMINS,strAdmins);
+        }
+        else if(i.peekPrevious()==MASTER)
+        {
+            if(!isGroup)
+                break;
+            result.insert(MASTER,groupInfo.master);
+        }
+        else if(i.peekPrevious()==MASTER)
+        {
+            if(!isGroup)
+                break;
+            result.insert(MASTER,groupInfo.master);
+        }
+        else if(i.peekPrevious()==ONLINETIME)
+        {
+            if(isGroup)
+                break;
+            result.insert(ONLINETIME,QString::number(userInfo.onlineTime));
+        }
+        else if(i.peekPrevious()==INFO)
+        {
+            if(isGroup)
+                result.insert(INFO,groupInfo.info);
+            else
+                result.insert(INFO,userInfo.info);
+        }
+        else if(i.peekPrevious()==AVATAR)
+        {
+            if(isGroup)
+                result.insert(AVATAR,groupInfo.avatar);
+            else
+                result.insert(AVATAR,userInfo.avatar);
+        }
+    }
+
+    UserInfo(uname,result);
 }
 
-void OClientPeer::onModifyInfo(QString uname,QVector<QPair<QString,QString> > values)
+void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
 {
-
+    qDebug()<<values;
 }
