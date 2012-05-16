@@ -29,6 +29,8 @@ public slots:
     void onAskUserList(QString listname,QString operation,bool isHasAvatar);
     void onModifyUserList(QString listname,QString uname,QString operation,QString message);
     void onState(QString status);
+    void onLogout();
+    void onSendMsg(QString uname,QString message);
     void onUserRequest(QString uname,QString message);
     void onRequestResult(int id,QString result);
     void onModifyGroup(QString group,QString uname,QStringList operators);

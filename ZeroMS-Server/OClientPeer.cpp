@@ -463,6 +463,16 @@ void OClientPeer::onState(QString status)
     }
 }
 
+void OClientPeer::onLogout()
+{
+    onError();
+}
+
+void OClientPeer::onSendMsg(QString uname,QString message)
+{
+
+}
+
 void OClientPeer::onUserRequest(QString uname,QString message)
 {
     using namespace OSDB;

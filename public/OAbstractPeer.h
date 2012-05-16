@@ -52,6 +52,7 @@ public:
     void UserListChanged(QString listname);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void SystemMsg(QString message);
+    void NewMsg(QString view,QString uname,QString message);
     void NewRequest(int id,QString uname,QString invitation,QString message);
     void UserInfo(QString uname, QMap<QString, QString> values);
     void ProcessError(QString errorName,QString other=QString());
@@ -77,6 +78,7 @@ signals:
     void ModifyUserList(QString listname,QString uname,QString operation,QString message);
     void State(QString status);
     void Logout();
+    void SendMsg(QString uname,QString message);
     void UserRequest(QString uname,QString message);
     void RequestResult(int id,QString result);
     void ModifyGroup(QString group,QString uname,QStringList operators);
