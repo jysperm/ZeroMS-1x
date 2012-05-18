@@ -28,6 +28,10 @@ public:
     void processRequest(int id);//处理对应的请求
     void processRequest(QString user);//尝试处理所有目标是user的请求(通常发生在user上线时)
 
+    void processMsg();//尝试处理所有聊天消息
+    void processMsg(int id);//处理对应的聊天消息
+    void processMsg(QString user);//尝试处理所有目标是user的聊天消息(通常发生在user上线时)
+
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;

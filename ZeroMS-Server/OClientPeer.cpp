@@ -14,16 +14,19 @@ OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(ClientPeer,connect)
 void OClientPeer::init()
 {
     connect(this,SIGNAL(Login(QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(onLogin(QString,QString,QVector<int>,bool,bool,bool)));
-    connect(this,SIGNAL(AskPublicKey()),this,SLOT(onAskPublicKey()));
-    connect(this,SIGNAL(State(QString)),this,SLOT(onState(QString)));
     connect(this,SIGNAL(AskInfo(QStringList)),this,SLOT(onAskInfo(QStringList)));
+    connect(this,SIGNAL(AskPublicKey()),this,SLOT(onAskPublicKey()));
     connect(this,SIGNAL(AskUserList(QString,QString,bool)),this,SLOT(onAskUserList(QString,QString,bool)));
     connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
+    connect(this,SIGNAL(State(QString)),this,SLOT(onState(QString)));
+    connect(this,SIGNAL(Logout()),this,SLOT(onLogout()));
+    connect(this,SIGNAL(SendMsg(QString,QString)),this,SLOT(onSendMsg(QString,QString)));
     connect(this,SIGNAL(UserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
     connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
     connect(this,SIGNAL(ModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
     connect(this,SIGNAL(AskUserInfo(QString,QStringList)),this,SLOT(onAskUserInfo(QString,QStringList)));
     connect(this,SIGNAL(ModifyInfo(QString,QMap<QString,QString>)),this,SLOT(onModifyInfo(QString,QMap<QString,QString>)));
+    connect(this,SIGNAL(OK(QString)),this,SLOT(onOK(QString)));
 
     OAbstractPeer::init();
 }
@@ -62,9 +65,10 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
             client->isLoged=true;
             client->isShowIp=isShowIp;
             (client->p2pPorts)<<p2pPort;
-            LoginResult(OK);
+            LoginResult(Protocol2::OK);
             core->userListChange(uname);
             core->processRequest(uname);
+            core->processMsg(uname);
         }
         else
         {//如果是次要连接
@@ -78,7 +82,7 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
                 delete client;
                 core->cl.remove(signature);
                 (core->cl[uname]->p2pPorts)<<p2pPort;
-                LoginResult(OK);
+                LoginResult(Protocol2::OK);
             }
             else
             {//如果没有同名的主连接
@@ -470,7 +474,44 @@ void OClientPeer::onLogout()
 
 void OClientPeer::onSendMsg(QString uname,QString message)
 {
+    using namespace OSDB;
 
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
+    if(core->db.checkUser(uname) || core->db.checkGroup(OGroupName(uname)))
+    {//如果存在这个用户或小组
+        if(OIsGroup(uname))
+        {//如果是往小组发信息
+            GroupMember memberInfo=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_uname,client->uname) );
+            if(memberInfo._isEmpty)
+            {//如果自己不在这个小组中
+                ProcessError(NOTINLIST);
+            }
+
+            if(memberInfo.isDeny)
+            {
+                ProcessError(NOTADMIN);
+            }
+        }
+
+        MsgLog msg;
+        msg.time=QDateTime::currentDateTime().toTime_t();
+        msg.signTime=0;
+        msg.uname=client->uname;
+        msg.user=uname;
+        msg.msg=message;
+        msg.isSign=false;
+        int id=core->db.insert<MsgLog>(msg);
+        core->processMsg(id);
+    }
+    else
+    {//如果不存在这个用户或小组
+        ProcessError(NOTEXIST);
+    }
 }
 
 void OClientPeer::onUserRequest(QString uname,QString message)
@@ -847,6 +888,28 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
     }
 
     UserInfo(uname,result);
+}
+
+void OClientPeer::onOK(QString id)
+{
+    if(!this->client->isLoged)
+    {//未登录
+        ProcessError(NEEDLOGIN);
+        return;
+    }
+
+    using namespace OSDB;
+
+    MsgLog msg=core->db.selectFrist<MsgLog>(OT(MsgLog::_id,id.toInt()));
+    if(msg.user==client->uname)
+    {
+        core->db.update<MsgLog>(OT(MsgLog::_id,id.toInt()),MsgLog::_isSign,true);
+        core->db.update<MsgLog>(OT(MsgLog::_id,id.toInt()),MsgLog::_signTime,QDateTime::currentDateTime().toTime_t());
+    }
+    else
+    {
+        ProcessError(NOTADMIN);
+    }
 }
 
 void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)

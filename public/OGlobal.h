@@ -26,13 +26,17 @@ inline bool OIsGroup(QString uname)
 inline QString OGroupName(QString uname)
 {
     //去除小组名前面的星号
-    return uname.right(uname.length()-1);
+    if(OIsGroup(uname))
+        return uname.right(uname.length()-1);
+    return uname;
 }
 
 inline QString OToGroup(QString group)
 {
     //在小组名字前面加上星号
-    return group.append("*");
+    if(!OIsGroup(group))
+        return group.append("*");
+    return group;
 }
 
 inline QString OSBEscSMap(QString str)

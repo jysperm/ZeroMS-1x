@@ -177,6 +177,71 @@ void OServerCore::processRequest(QString user)
     }
 }
 
+void OServerCore::processMsg()
+{
+    using namespace OSDB;
+
+    QVector<MsgLog> msgs=db.select<MsgLog>( OT(MsgLog::_isSign,false) );
+
+    QVectorIterator<MsgLog> i(msgs);
+    while(i.hasNext())
+    {
+        processMsg(i.next().id);
+    }
+}
+
+void OServerCore::processMsg(int id)
+{
+    using namespace OSDB;
+
+    MsgLog msg=db.selectFrist<MsgLog>( OT(MsgLog::_id,id) );
+    if(!msg._isEmpty)
+    {//如果查询结果不是空的
+        if(!msg.isSign)
+        {//如果消息还没有被签收
+            if(!OIsGroup(msg.user))
+            {//如果请求的目标是一个用户
+                if(OIsOnline(msg.user))
+                {//如果请求的目标用户在线
+                    cl[msg.user]->main->NewMsg(msg.id,msg.uname,msg.uname,msg.msg);
+                }
+            }
+            else
+            {//如果请求的目标是一个小组
+                //获取所有的成员
+                QVector<GroupMember> members=db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(msg.user)) );
+
+                QVectorIterator<GroupMember> i(members);
+                while(i.hasNext())
+                {
+                    GroupMember member=i.next();
+
+                    if(OIsOnline(member.uname))
+                    {//如果这个成员在线在线
+                        cl[member.uname]->main->NewMsg(msg.id,msg.user,msg.uname,msg.msg);
+                    }
+                }
+
+                core->db.update<MsgLog>(OT(MsgLog::_id,id),MsgLog::_isSign,true);
+                core->db.update<MsgLog>(OT(MsgLog::_id,id),MsgLog::_signTime,QDateTime::currentDateTime().toTime_t());
+            }
+        }
+    }
+}
+
+void OServerCore::processMsg(QString user)
+{
+    using namespace OSDB;
+
+    //处理目标是user的请求
+    QVector<MsgLog> msgs=db.select<MsgLog>( OT(MsgLog::_isSign,false) && OT(MsgLog::_user,user) );
+    QVectorIterator<MsgLog> i(msgs);
+    while(i.hasNext())
+    {
+        processMsg(i.next().id);
+    }
+}
+
 //public slots:
 void OServerCore::log(QString msg)
 {

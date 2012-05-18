@@ -116,10 +116,10 @@ void OAbstractPeer::SystemMsg(QString message)
     send(&msg);
 }
 
-void OAbstractPeer::NewMsg(QString view,QString uname,QString message)
+void OAbstractPeer::NewMsg(int id,QString view,QString uname,QString message)
 {
     OMessage msg(M_NewMsg);
-    msg.append(QString("%1 %2 %3").arg(view).arg(uname).arg(message));
+    msg.append(QString("%1 %2 %3 %4").arg(id).arg(view).arg(uname).arg(message));
     send(&msg);
 }
 
@@ -289,6 +289,12 @@ void OAbstractPeer::checkMsg()
                     QString uname=msg.split(0);
                     QStringList keys=msg.split(1).split(",");
                     emit AskUserInfo(uname,keys);
+                    break;
+                }
+            case M_OK:
+                {
+                    QString id=msg.split(0);
+                    emit OK(id);
                     break;
                 }
             case M_ModifyInfo:

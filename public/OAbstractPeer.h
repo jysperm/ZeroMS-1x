@@ -52,7 +52,7 @@ public:
     void UserListChanged(QString listname);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void SystemMsg(QString message);
-    void NewMsg(QString view,QString uname,QString message);
+    void NewMsg(int id,QString view,QString uname, QString message);
     void NewRequest(int id,QString uname,QString invitation,QString message);
     void UserInfo(QString uname, QMap<QString, QString> values);
     void ProcessError(QString errorName,QString other=QString());
@@ -83,6 +83,7 @@ signals:
     void RequestResult(int id,QString result);
     void ModifyGroup(QString group,QString uname,QStringList operators);
     void AskUserInfo(QString uname,QStringList keys);
+    void OK(QString id);
     void ModifyInfo(QString uname,QMap<QString,QString> values);
 protected slots:
     void onError(QAbstractSocket::SocketError s=QAbstractSocket::UnknownSocketError);//用于与conn的error()信号绑定
