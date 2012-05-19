@@ -5,8 +5,8 @@
 class OSettings;
 class OServerCore;
 
-const int VERNUM = 1;
-const QString VERSION = QObject::trUtf8("2.0.0.%1").arg(::VERNUM);
+const int VERNUM = 2;
+const QString VERSION = QObject::trUtf8("2.1.0.%1").arg(::VERNUM);
 const QString SERVER = QObject::trUtf8("ZeroMS-Server");
 const QString PROTOCOL = QObject::trUtf8("2.0");
 
