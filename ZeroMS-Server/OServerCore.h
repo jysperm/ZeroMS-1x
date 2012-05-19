@@ -5,7 +5,8 @@
 #include <QTextStream>
 #include <QTcpServer>
 #include <QMap>
-#include "OServerDataBase.h"
+#include "global.h"
+#include "../public/ODataBase.h"
 class OClient;
 
 class OServerCore:public QObject
@@ -35,7 +36,6 @@ public:
     QMap<QString,OClient*> cl;
     QTextStream cin;
     QTextStream cout;
-    OServerDataBase db;
     QMap<QString,QString> info;
     unsigned int upTime;
 public slots:

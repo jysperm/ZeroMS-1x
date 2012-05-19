@@ -41,16 +41,6 @@ public:
     }
 ?>
 
-<?php
-    $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);
-    while($row=mysql_fetch_array($rs))
-    {
-?>
-    const static QString _<?php echo S($row["Field"],1);?>;
-<?php
-    }
-?>
-
     static QString _table()
     {
         return "<?php echo $table;?>";
@@ -66,13 +56,13 @@ public:
       if(T($row["Type"])=="QString")
       {
 ?>
-        _result_.append(qMakePair(_<?php echo S($row["Field"],1);?>,<?php echo S($row["Field"],1);?>));
+        _result_.append(qMakePair("<?php echo S($row["Field"],1);?>",<?php echo S($row["Field"],1);?>));
 <?php
       }
       else
       {
 ?>
-        _result_.append(qMakePair(_<?php echo S($row["Field"],1);?>,QString::number(<?php echo S($row["Field"],1);?>)));
+        _result_.append(qMakePair("<?php echo S($row["Field"],1);?>",QString::number(<?php echo S($row["Field"],1);?>)));
 <?php
       }
     }
@@ -90,20 +80,6 @@ public:
 
 
 
-
-
-
-<?php
-  foreach($tables as $table)
-  {  
-    $rs=mysql_query("SHOW COLUMNS FROM  `{$table}`",$conn);
-    while($row=mysql_fetch_array($rs))
-    {
-?>
-const QString <?php echo S($table);?>::_<?php echo S($row["Field"],1);?>="<?php echo $row["Field"];?>";
-<?php
-    }
-?>
 
 <?php
   }

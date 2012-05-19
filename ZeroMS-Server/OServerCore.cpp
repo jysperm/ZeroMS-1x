@@ -39,9 +39,9 @@ void OServerCore::start()
 
 QString OServerCore::getUserStatus(QString uname)
 {
-    if(db.checkUser(uname))
+    if(OcheckUser(uname))
     {//如果存在这个用户
-        if(cl.contains(uname))
+        if(OIsOnline(uname))
         {//如果这个用户在线
             return cl[uname]->status;
         }
@@ -62,7 +62,7 @@ void OServerCore::userListChange(QString uname)
 
     if(!OIsGroup(uname))
     {//如果uname是一个用户
-        QVector<UserList> userlist=db.select<UserList>(OT(UserList::_user,uname));
+        QVector<UserList> userlist=db->select<UserList>("user",uname);
         QVectorIterator<UserList> iUserList(userlist);
         while(iUserList.hasNext())
         {
@@ -74,7 +74,7 @@ void OServerCore::userListChange(QString uname)
             }
         }
 
-        QVector<GroupMember> groups=db.select<GroupMember>(OT(GroupMember::_uname,uname));
+        QVector<GroupMember> groups=db->select<GroupMember>("uname",uname);
         QVectorIterator<GroupMember> iGroups(groups);
         while(iGroups.hasNext())
         {
@@ -87,7 +87,7 @@ void OServerCore::userListChange(QString uname)
     {//如果uname是一个小组
         QString group=uname.right(uname.length()-1);
 
-        QVector<GroupMember> groupsmembers=db.select<GroupMember>(OT(GroupMember::_groupname,group));
+        QVector<GroupMember> groupsmembers=db->select<GroupMember>("groupname",group);
         QVectorIterator<GroupMember> i(groupsmembers);
         while(i.hasNext())
         {
@@ -105,7 +105,7 @@ void OServerCore::processRequest()
 {
     using namespace OSDB;
 
-    QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) );
+    QVector<UserRequest> requests=db->select<UserRequest>("isHandle",false);
 
     QVectorIterator<UserRequest> i(requests);
     while(i.hasNext())
@@ -118,7 +118,7 @@ void OServerCore::processRequest(int id)
 {
     using namespace OSDB;
 
-    UserRequest request=db.selectFrist<UserRequest>( OT(UserRequest::_id,id) );
+    UserRequest request=db->selectFrist<UserRequest>("id",id);
     if(!request._isEmpty)
     {//如果查询结果不是空的
         if(!request.isHandle)
@@ -133,7 +133,7 @@ void OServerCore::processRequest(int id)
             else
             {//如果请求的目标是一个小组
                 //获取所有的管理员
-                QVector<GroupMember> members=db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(request.user)) && OT(GroupMember::_isAdmin,true) );
+                QVector<GroupMember> members=db->select<GroupMember>( OQuery("groupname",OGroupName(request.user)) && OQuery("isAdmin",true) );
 
                 QVectorIterator<GroupMember> i(members);
                 while(i.hasNext())
@@ -155,7 +155,7 @@ void OServerCore::processRequest(QString user)
     using namespace OSDB;
 
     //处理目标是user的请求
-    QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) && OT(UserRequest::_user,user) );
+    QVector<UserRequest> requests=db->select<UserRequest>( OQuery("isHandle",false) && OQuery("user",user) );
     QVectorIterator<UserRequest> i(requests);
     while(i.hasNext())
     {
@@ -163,11 +163,11 @@ void OServerCore::processRequest(QString user)
     }
 
     //处理user所管理的小组的请求
-    QVector<GroupMember> groups=db.select<GroupMember>( OT(GroupMember::_uname,user) && OT(GroupMember::_isAdmin,true) );
+    QVector<GroupMember> groups=db->select<GroupMember>( OQuery("uname",user) && OQuery("isAdmin",true) );
     QVectorIterator<GroupMember> iGroups(groups);
     while(iGroups.hasNext())
     {
-        QVector<UserRequest> requests=db.select<UserRequest>( OT(UserRequest::_isHandle,false) && OT(UserRequest::_user,OToGroup(iGroups.next().groupname)) );
+        QVector<UserRequest> requests=db->select<UserRequest>( OQuery("isHandle",false) && OQuery("user",OToGroup(iGroups.next().groupname)) );
 
         QVectorIterator<UserRequest> i(requests);
         while(i.hasNext())
@@ -181,7 +181,7 @@ void OServerCore::processMsg()
 {
     using namespace OSDB;
 
-    QVector<MsgLog> msgs=db.select<MsgLog>( OT(MsgLog::_isSign,false) );
+    QVector<MsgLog> msgs=db->select<MsgLog>("isSign",false);
 
     QVectorIterator<MsgLog> i(msgs);
     while(i.hasNext())
@@ -194,7 +194,7 @@ void OServerCore::processMsg(int id)
 {
     using namespace OSDB;
 
-    MsgLog msg=db.selectFrist<MsgLog>( OT(MsgLog::_id,id) );
+    MsgLog msg=db->selectFrist<MsgLog>("id",id);
     if(!msg._isEmpty)
     {//如果查询结果不是空的
         if(!msg.isSign)
@@ -209,7 +209,7 @@ void OServerCore::processMsg(int id)
             else
             {//如果请求的目标是一个小组
                 //获取所有的成员
-                QVector<GroupMember> members=db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(msg.user)) );
+                QVector<GroupMember> members=db->select<GroupMember>("groupname",OGroupName(msg.user));
 
                 QVectorIterator<GroupMember> i(members);
                 while(i.hasNext())
@@ -222,8 +222,8 @@ void OServerCore::processMsg(int id)
                     }
                 }
 
-                core->db.update<MsgLog>(OT(MsgLog::_id,id),MsgLog::_isSign,true);
-                core->db.update<MsgLog>(OT(MsgLog::_id,id),MsgLog::_signTime,QDateTime::currentDateTime().toTime_t());
+                db->update<MsgLog>("id",id,"isSign",true);
+                db->update<MsgLog>("id",id,"signTime",QDateTime::currentDateTime().toTime_t());
             }
         }
     }
@@ -234,7 +234,7 @@ void OServerCore::processMsg(QString user)
     using namespace OSDB;
 
     //处理目标是user的请求
-    QVector<MsgLog> msgs=db.select<MsgLog>( OT(MsgLog::_isSign,false) && OT(MsgLog::_user,user) );
+    QVector<MsgLog> msgs=db->select<MsgLog>( OQuery("isSign",false) && OQuery("user",user) );
     QVectorIterator<MsgLog> i(msgs);
     while(i.hasNext())
     {

@@ -42,7 +42,7 @@ void OClientPeer::onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,boo
 
     //测试用代码
     if(true)
-    //if(!publicKey.isEmpty() && core->db.checkPWD(uname,pwdHash,publicKey))
+    //if(!publicKey.isEmpty() && db->checkPWD(uname,pwdHash,publicKey))
     {//如果已经申请过公钥，且密码正确
         if(isMain)
         {//如果是主连接
@@ -149,17 +149,17 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
     if(listname!=client->uname)
     {//如果是在请求一个群的成员列表
         listname=listname.remove(0,1);//移除星号
-        if(core->db.checkGroup(listname) && core->db.checkGroupMember(listname,client->uname))
+        if(OcheckGroup(listname) && OcheckGroupMember(listname,client->uname))
         {//如果存在这个群,且是这个群的成员
-            QVector<GroupMember> memberList=core->db.select<GroupMember>(OT(GroupMember::_groupname,listname));
+            QVector<GroupMember> memberList=db->select<GroupMember>("groupname",listname);
 
             QVectorIterator<GroupMember> i(memberList);
             while(i.hasNext())
             {
                 QString user=i.next().uname;
-                User userInfo=core->db.selectFrist<User>(OT(User::_uname,user));
+                User userInfo=db->selectFrist<User>("uname",user);
 
-                GroupMember groupStatus=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,listname) && OT(GroupMember::_uname,user) );
+                GroupMember groupStatus=db->selectFrist<GroupMember>( OQuery("groupname",listname) && OQuery("uname",user) );
 
                 OUserlistItem item;
                 if(!core->cl.contains(user))
@@ -192,7 +192,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
         }
         else
         {//如果不存在这个群，或不是这个群的成员
-            if(core->db.checkGroup(listname))
+            if(OcheckGroup(listname))
             {//如果不是这个群的成员
                 ProcessError(NOTINLIST);
             }
@@ -205,11 +205,11 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
     }
     else
     {//如果是在请求自己的好友列表
-        QVector<GroupMember> groups=core->db.select<GroupMember>(OT(GroupMember::_uname,client->uname));
+        QVector<GroupMember> groups=db->select<GroupMember>("uname",client->uname);
         QVectorIterator<GroupMember> iGroup(groups);
         while(iGroup.hasNext())
         {
-            Group info=core->db.selectFrist<Group>(OT(Group::_groupname,iGroup.next().groupname));
+            Group info=db->selectFrist<Group>("groupname",iGroup.next().groupname);
             OUserlistItem item;
             item.uname=QString("*%1,%2").arg(info.groupname).arg(info.caption);
             item.status=ONLINE;
@@ -218,15 +218,15 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
             allList.append(item);
         }
 
-        QVector<OSDB::UserList> userlist=core->db.select<OSDB::UserList>(OT(OSDB::UserList::_uname,client->uname));
+        QVector<OSDB::UserList> userlist=db->select<OSDB::UserList>("uname",client->uname);
         QVectorIterator<OSDB::UserList> iUserlist(userlist);
         while(iUserlist.hasNext())
         {
             OSDB::UserList listItem=iUserlist.next();
             OUserlistItem item;
 
-            User userInfo=core->db.selectFrist<User>(OT(User::_uname,listItem.user));
-            if(!core->cl.contains(listItem.user))
+            User userInfo=db->selectFrist<User>("uname",listItem.user);
+            if(!OIsOnline(listItem.user))
             {//如果这个用户不在线
                 if(operation==ONLINE)
                     continue;
@@ -278,7 +278,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
                 {//如果是一个群
                     item.status=REMOVED;
                 }
-                else if(!core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,item.uname))._isEmpty)
+                else if(!db->selectFrist<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",item.uname))._isEmpty)
                 {//如果是一个用户，且这个用户还在用户列表中
                     item.status=OFFLINE;
                 }
@@ -309,16 +309,16 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
             bool isGroup=(uname.left(1)=="*")?true:false;
             if(!isGroup)
             {//如果要操作的目标用户名是用户
-                if(core->db.checkUser(uname))
+                if(OcheckUser(uname))
                 {//如果存在这个用户
                     if(operation==ADD)
                     {//如果是添加好友
-                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) )._isEmpty)
+                        if(db->selectFrist<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",uname) )._isEmpty)
                         {//如果他们不存在好友关系
                             OSDB::UserList userlist;
                             userlist.uname=client->uname;
                             userlist.user=uname;
-                            core->db.insert<OSDB::UserList>(userlist);
+                            db->insert<OSDB::UserList>(userlist);
                             UserListChanged(client->uname);
                         }
                         else
@@ -328,13 +328,13 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                     }
                     else
                     {//如果是删除好友
-                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) )._isEmpty)
+                        if(db->selectFrist<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",uname) )._isEmpty)
                         {//如果他们不存在好友关系
                             ProcessError(NOTINLIST);
                         }
                         else
                         {//如果他们存在好友关系
-                            core->db.deleteItem<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,uname) );
+                            db->deleteItem<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",uname) );
                             UserListChanged(client->uname);
                         }
                     }
@@ -346,14 +346,14 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
             }
             else
             {//如果要操作的目标用户名是小组
-                QString group=uname.right(uname.length()-1);//去掉星号后的小组名称
-                if(core->db.checkGroup(group))
+                QString group=OGroupName(uname);//去掉星号后的小组名称
+                if(OcheckGroup(group))
                 {//如果存在这个小组
                     if(operation==REMOVE)
                     {//如果是退出操作
-                        if(!core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+                        if(!db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",client->uname) )._isEmpty)
                         {//如果用户确实在这个小组中
-                            core->db.deleteItem<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
+                            db->deleteItem<GroupMember>( OQuery("groupname",group) && OQuery("uname",client->uname) );
                             UserListChanged(client->uname);
                             core->userListChange(uname);
                         }
@@ -376,16 +376,16 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
         else
         {//如果是在操作某个小组的列表
             QString group=listname.right(listname.length()-1);//去掉星号后的小组名称
-            if(core->db.checkGroup(group))
+            if(OcheckGroup(group))
             {//如果存在这个小组
-                GroupMember groupmember=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) );
+                GroupMember groupmember=db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",client->uname) );
                 if(!groupmember._isEmpty && groupmember.isAdmin)
                 {//如果用户在这个小组中且有管理员权限
                     if(operation==ADD)
                     {//如果是邀请其他用户加入小组
-                        if(core->db.checkUser(uname))
+                        if(OcheckUser(uname))
                         {//如果存在这个用户
-                            if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty)
+                            if(db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",uname) )._isEmpty)
                             {//如果这个用户不在这个小组中
                                 OSDB::UserRequest request;
                                 request.time=QDateTime::currentDateTime().toTime_t();
@@ -396,7 +396,7 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                                 request.isHandle=false;
                                 request.handleTime=0;
                                 request.result=false;
-                                int id=core->db.insert<OSDB::UserRequest>(request);
+                                int id=db->insert<OSDB::UserRequest>(request);
                                 core->processRequest(id);
                             }
                             else
@@ -411,11 +411,11 @@ void OClientPeer::onModifyUserList(QString listname,QString uname,QString operat
                     }
                     else
                     {//如果是从小组中踢除用户
-                        if(core->db.checkUser(uname))
+                        if(OcheckUser(uname))
                         {//如果存在这个用户
-                            if(!core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) )._isEmpty)
+                            if(!db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",uname) )._isEmpty)
                             {//如果这个用户在这个小组中
-                                core->db.deleteItem<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname) );
+                                db->deleteItem<GroupMember>( OQuery("groupname",group) && OQuery("uname",uname) );
                                 core->userListChange(listname);
                                 core->userListChange(uname);
                                 //TODO：还要给uname用户发送SystemMsg，通知它已经被踢出group小组
@@ -482,11 +482,11 @@ void OClientPeer::onSendMsg(QString uname,QString message)
         return;
     }
 
-    if(core->db.checkUser(uname) || core->db.checkGroup(OGroupName(uname)))
+    if(OcheckUser(uname) || OcheckGroup(OGroupName(uname)))
     {//如果存在这个用户或小组
         if(OIsGroup(uname))
         {//如果是往小组发信息
-            GroupMember memberInfo=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_uname,client->uname) );
+            GroupMember memberInfo=db->selectFrist<GroupMember>( OQuery("groupname",OGroupName(uname)) && OQuery("uname",client->uname) );
             if(memberInfo._isEmpty)
             {//如果自己不在这个小组中
                 ProcessError(NOTINLIST);
@@ -505,7 +505,7 @@ void OClientPeer::onSendMsg(QString uname,QString message)
         msg.user=uname;
         msg.msg=message;
         msg.isSign=false;
-        int id=core->db.insert<MsgLog>(msg);
+        int id=db->insert<MsgLog>(msg);
         core->processMsg(id);
     }
     else
@@ -524,16 +524,15 @@ void OClientPeer::onUserRequest(QString uname,QString message)
         return;
     }
 
-    bool isGroup=(uname.left(1)=="*")?true:false;
-    if(!isGroup)
+    if(!OIsGroup(uname))
     {//如果是在请求一个用户添加自己
-        if(core->db.checkUser(uname))
+        if(OcheckUser(uname))
         {//如果存在这个用户
-            if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,uname) && OT(OSDB::UserList::_user,client->uname) )._isEmpty)
+            if(db->selectFrist<OSDB::UserList>( OQuery("uname",uname) && OQuery("user",client->uname) )._isEmpty)
             {//如果他们之间没有好友关系
-                if(core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_uname,client->uname) &&
-                                                            OT(OSDB::UserRequest::_user,uname) &&
-                                                            OT(OSDB::UserRequest::_isHandle,false) )._isEmpty)
+                if(db->selectFrist<OSDB::UserRequest>( OQuery("uname",client->uname) &&
+                                                       OQuery("user",uname) &&
+                                                       OQuery("isHandle",false) )._isEmpty)
                 {//没有同样的未处理的请求
                     OSDB::UserRequest request;
                     request.time=QDateTime::currentDateTime().toTime_t();
@@ -543,15 +542,15 @@ void OClientPeer::onUserRequest(QString uname,QString message)
                     request.isHandle=false;
                     request.handleTime=0;
                     request.result=false;
-                    int id=core->db.insert<OSDB::UserRequest>(request);
+                    int id=db->insert<OSDB::UserRequest>(request);
                     core->processRequest(id);
                 }
                 else
                 {//有同样的未处理的请求
-                    core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_uname,client->uname) &&
-                                                       OT(OSDB::UserRequest::_user,uname) &&
-                                                       OT(OSDB::UserRequest::_isHandle,false) ,
-                                                       OSDB::UserRequest::_msg,message);
+                    db->update<OSDB::UserRequest>(OQuery("uname",client->uname) &&
+                                                  OQuery("user",uname) &&
+                                                  OQuery("isHandle",false),
+                                                  "msg",message);
                     ProcessError(ALREADYSEND);
                 }
             }
@@ -567,14 +566,14 @@ void OClientPeer::onUserRequest(QString uname,QString message)
     }
     else
     {//如果是申请加入小组
-        QString group=uname.right(uname.length()-1);//去掉星号后的小组名称
-        if(core->db.checkGroup(group))
+        QString group=OGroupName(uname);//去掉星号后的小组名称
+        if(OcheckGroup(group))
         {//如果存在这个小组
-            if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+            if(db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",client->uname) )._isEmpty)
             {//如果自己不在这个小组中
-                if(core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_uname,client->uname) &&
-                                                            OT(OSDB::UserRequest::_user,uname) &&
-                                                            OT(OSDB::UserRequest::_isHandle,false) )._isEmpty)
+                if(db->selectFrist<OSDB::UserRequest>( OQuery("uname",client->uname) &&
+                                                       OQuery("user",uname) &&
+                                                       OQuery("isHandle",false) )._isEmpty)
                 {//没有同样的未处理的请求
                     OSDB::UserRequest request;
                     request.time=QDateTime::currentDateTime().toTime_t();
@@ -584,15 +583,15 @@ void OClientPeer::onUserRequest(QString uname,QString message)
                     request.isHandle=false;
                     request.handleTime=0;
                     request.result=false;
-                    int id=core->db.insert<OSDB::UserRequest>(request);
+                    int id=db->insert<OSDB::UserRequest>(request);
                     core->processRequest(id);
                 }
                 else
                 {//有同样的未处理的请求
-                    core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_uname,client->uname) &&
-                                                       OT(OSDB::UserRequest::_user,uname) &&
-                                                       OT(OSDB::UserRequest::_isHandle,false) ,
-                                                       OSDB::UserRequest::_msg,message);
+                    db->update<OSDB::UserRequest>(OQuery("uname",client->uname) &&
+                                                       OQuery("user",uname) &&
+                                                       OQuery("isHandle",false),
+                                                       "msg",message);
                     ProcessError(ALREADYSEND);
                 }
             }
@@ -618,7 +617,7 @@ void OClientPeer::onRequestResult(int id,QString result)
 
     using namespace OSDB;
 
-    OSDB::UserRequest request=core->db.selectFrist<OSDB::UserRequest>( OT(OSDB::UserRequest::_id,id) );
+    OSDB::UserRequest request=db->selectFrist<OSDB::UserRequest>("id",id);
     if(request._isEmpty)
     {//如果不存在这个请求
         ProcessError(NOTEXIST);
@@ -630,12 +629,12 @@ void OClientPeer::onRequestResult(int id,QString result)
             if(!request.isHandle)
             {//如果这个请求还没有被处理
                 bool r=result==ALLOW?true:false;
-                if(request.uname.left(1)=="*")
+                if(OIsGroup(request.uname))
                 {//如果是邀请加入小组
-                    QString group=request.uname.right(request.uname.length()-1);//去掉星号后的小组名称
+                    QString group=OGroupName(request.uname);//去掉星号后的小组名称
                     if(r)
                     {//如果同意了请求
-                        if(core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname) )._isEmpty)
+                        if(db->selectFrist<GroupMember>( OQuery("groupname",group) && OQuery("uname",client->uname) )._isEmpty)
                         {//如果自己不在这个小组中
                             GroupMember groupMember;
                             groupMember.groupname=group;
@@ -643,7 +642,7 @@ void OClientPeer::onRequestResult(int id,QString result)
                             groupMember.isAdmin=false;
                             groupMember.isDeny=false;
                             groupMember.regTime=QDateTime::currentDateTime().toTime_t();
-                            core->db.insert<GroupMember>(groupMember);
+                            db->insert<GroupMember>(groupMember);
                         }
                         else
                         {//如果自己已经在这个小组中
@@ -655,12 +654,12 @@ void OClientPeer::onRequestResult(int id,QString result)
                 {//如果是请求对方添加我
                     if(r)
                     {//如果同意了请求
-                        if(core->db.selectFrist<OSDB::UserList>( OT(OSDB::UserList::_uname,client->uname) && OT(OSDB::UserList::_user,request.uname) )._isEmpty)
+                        if(db->selectFrist<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",request.uname) )._isEmpty)
                         {//如果不存在好友关系
                             OSDB::UserList userList;
                             userList.uname=client->uname;
                             userList.user=request.uname;
-                            core->db.insert<OSDB::UserList>(userList);
+                            db->insert<OSDB::UserList>(userList);
                         }
                         else
                         {//如果已经存在好友关系
@@ -669,9 +668,9 @@ void OClientPeer::onRequestResult(int id,QString result)
                     }
                 }
 
-                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_isHandle,true);
-                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_handleTime,QDateTime::currentDateTime().toTime_t());
-                core->db.update<OSDB::UserRequest>(OT(OSDB::UserRequest::_id,id),OSDB::UserRequest::_result,r);
+                db->update<OSDB::UserRequest>("id",id,"isHandle",true);
+                db->update<OSDB::UserRequest>("id",id,"handleTime",QDateTime::currentDateTime().toTime_t());
+                db->update<OSDB::UserRequest>("id",id,"result",r);
             }
             else
             {//如果这个请求已经被处理过了
@@ -696,14 +695,14 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
 
     using namespace OSDB;
 
-    if(core->db.checkGroup(group))
+    if(OcheckGroup(group))
     {//如果存在这个小组
-        Querys querys=OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,uname);
-        if(!core->db.selectFrist<GroupMember>(querys)._isEmpty)
+        OQuerys querys=OQuery("groupname",group) && OQuery("uname",uname);
+        if(!db->selectFrist<GroupMember>(querys)._isEmpty)
         {//如果被修改的用户在这个群里面
             int rowsAffected=0;
-            bool isMaster=(core->db.selectFrist<Group>(OT(Group::_groupname,group)).master==client->uname)?true:false;
-            bool isAdmin=core->db.selectFrist<GroupMember>(OT(GroupMember::_groupname,group) && OT(GroupMember::_uname,client->uname)).isAdmin;
+            bool isMaster=(db->selectFrist<Group>("groupname",group).master==client->uname)?true:false;
+            bool isAdmin=db->selectFrist<GroupMember>(OQuery("groupname",group) && OQuery("uname",client->uname)).isAdmin;
 
 
             QListIterator<QString> i(operators);
@@ -713,28 +712,28 @@ void OClientPeer::onModifyGroup(QString group,QString uname,QStringList operator
                 if(operation==ADMIN)
                 {
                     if(isMaster)
-                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,true);
+                        rowsAffected+=db->update<GroupMember>(querys,"isAdmin",true);
                     else
                         ProcessError(NOTADMIN);
                 }
                 else if(operation==NOTADMIN)
                 {
                     if(isMaster)
-                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isAdmin,false);
+                        rowsAffected+=db->update<GroupMember>(querys,"isAdmin",false);
                     else
                         ProcessError(NOTADMIN);
                 }
                 else if(operation==ALLOW)
                 {
                     if(isAdmin)
-                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,false);
+                        rowsAffected+=db->update<GroupMember>(querys,"isDeny",false);
                     else
                         ProcessError(NOTADMIN);
                 }
                 else if(operation==DENY)
                 {
                     if(isAdmin)
-                        rowsAffected+=core->db.update<GroupMember>(querys,GroupMember::_isDeny,true);
+                        rowsAffected+=db->update<GroupMember>(querys,"isDeny",true);
                     else
                         ProcessError(NOTADMIN);
                 }
@@ -768,21 +767,21 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
 
     if(isGroup)
     {//如果是在请求一个小组的信息
-        if(!core->db.checkGroup(OGroupName(uname)))
+        if(!OcheckGroup(OGroupName(uname)))
         {//如果不存在这个小组
             ProcessError(NOTEXIST);
             return;
         }
-        groupInfo=core->db.selectFrist<Group>( OT(Group::_groupname,OGroupName(uname)) );
+        groupInfo=db->selectFrist<Group>( OQuery("groupname",OGroupName(uname)) );
     }
     else
     {//如果是在请求一个用户的信息
-        if(!core->db.checkUser(uname))
+        if(!OcheckUser(uname))
         {//如果不存在这个用户
             ProcessError(NOTEXIST);
             return;
         }
-        userInfo=core->db.selectFrist<User>( OT(User::_uname,uname) );
+        userInfo=db->selectFrist<User>( OQuery("uname",uname) );
     }
 
     QListIterator<QString> i(keys);
@@ -849,7 +848,7 @@ void OClientPeer::onAskUserInfo(QString uname,QStringList keys)
             if(!isGroup)
                 continue;
             QString strAdmins;
-            QVector<GroupMember> admins=core->db.select<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_isAdmin,true) );
+            QVector<GroupMember> admins=db->select<GroupMember>( OQuery("groupname",OGroupName(uname)) && OQuery("isAdmin",true) );
             QVectorIterator<GroupMember> i(admins);
             while(i.hasNext())
             {
@@ -900,11 +899,11 @@ void OClientPeer::onOK(QString id)
 
     using namespace OSDB;
 
-    MsgLog msg=core->db.selectFrist<MsgLog>(OT(MsgLog::_id,id.toInt()));
+    MsgLog msg=db->selectFrist<MsgLog>(OQuery("id",id.toInt()));
     if(msg.user==client->uname)
     {
-        core->db.update<MsgLog>(OT(MsgLog::_id,id.toInt()),MsgLog::_isSign,true);
-        core->db.update<MsgLog>(OT(MsgLog::_id,id.toInt()),MsgLog::_signTime,QDateTime::currentDateTime().toTime_t());
+        db->update<MsgLog>(OQuery("id",id.toInt()),"isSign",true);
+        db->update<MsgLog>(OQuery("id",id.toInt()),"signTime",QDateTime::currentDateTime().toTime_t());
     }
     else
     {
@@ -933,8 +932,8 @@ void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
     }
     else
     {//如果修改的目标是一个小组
-        GroupMember memberInfo=core->db.selectFrist<GroupMember>( OT(GroupMember::_groupname,OGroupName(uname)) && OT(GroupMember::_uname,client->uname) );
-        if(core->db.checkGroup(OGroupName(uname)) && !memberInfo._isEmpty && memberInfo.isAdmin)
+        GroupMember memberInfo=db->selectFrist<GroupMember>( OQuery("groupname",OGroupName(uname)) && OQuery("uname",client->uname) );
+        if(OcheckGroup(OGroupName(uname)) && !memberInfo._isEmpty && memberInfo.isAdmin)
         {//如果存在这个小组，且自己是小组的管理员
 
         }
@@ -953,34 +952,34 @@ void OClientPeer::onModifyInfo(QString uname,QMap<QString,QString> values)
         {
             if(isGroup)
                 continue;
-            core->db.update<User>(OT(User::_uname,uname),User::_email,i.value());
+            db->update<User>(OQuery("uname",uname),"email",i.value());
         }
         else if(i.key()==CAPTION)
         {
             if(!isGroup)
                 continue;
-            core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_caption,i.value());
+            db->update<Group>(OQuery("groupname",OGroupName(uname)),"caption",i.value());
         }
         else if(i.key()==WEBSITE)
         {
             if(isGroup)
-                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_website,i.value());
+                db->update<Group>(OQuery("groupname",OGroupName(uname)),"website",i.value());
             else
-                core->db.update<User>(OT(User::_uname,uname),User::_website,i.value());
+                db->update<User>(OQuery("uname",uname),"website",i.value());
         }
         else if(i.key()==INFO)
         {
             if(isGroup)
-                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_info,i.value());
+                db->update<Group>(OQuery("groupname",OGroupName(uname)),"info",i.value());
             else
-                core->db.update<User>(OT(User::_uname,uname),User::_info,i.value());
+                db->update<User>(OQuery("uname",uname),"info",i.value());
         }
         else if(i.key()==AVATAR)
         {
             if(isGroup)
-                core->db.update<Group>(OT(Group::_groupname,OGroupName(uname)),Group::_avatar,i.value());
+                db->update<Group>(OQuery("groupname",OGroupName(uname)),"avatar",i.value());
             else
-                core->db.update<User>(OT(User::_uname,uname),User::_avatar,i.value());
+                db->update<User>(OQuery("uname",uname),"avatar",i.value());
         }
     }
 }

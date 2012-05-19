@@ -3,7 +3,6 @@
 
 #include <QSqlQuery>
 #include <QVariant>
-#include <QVector>
 
 //该文件内容由 makeSqlHeader.php 脚本自动生成
 //用于为OServerDataBase,提供数据库结构的相关信息
@@ -44,18 +43,6 @@ public:
     QString email;
     QString avatar;
 
-    const static QString _uid;
-    const static QString _uname;
-    const static QString _pwd;
-    const static QString _lastLoginTime;
-    const static QString _lastLoginIp;
-    const static QString _regTime;
-    const static QString _onlineTime;
-    const static QString _website;
-    const static QString _info;
-    const static QString _email;
-    const static QString _avatar;
-
     static QString _table()
     {
         return "user";
@@ -64,17 +51,17 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_uid,QString::number(uid)));
-        _result_.append(qMakePair(_uname,uname));
-        _result_.append(qMakePair(_pwd,pwd));
-        _result_.append(qMakePair(_lastLoginTime,QString::number(lastLoginTime)));
-        _result_.append(qMakePair(_lastLoginIp,lastLoginIp));
-        _result_.append(qMakePair(_regTime,QString::number(regTime)));
-        _result_.append(qMakePair(_onlineTime,QString::number(onlineTime)));
-        _result_.append(qMakePair(_website,website));
-        _result_.append(qMakePair(_info,info));
-        _result_.append(qMakePair(_email,email));
-        _result_.append(qMakePair(_avatar,avatar));
+        _result_.append(qMakePair(QString("uid"),QString::number(uid)));
+        _result_.append(qMakePair(QString("uname"),uname));
+        _result_.append(qMakePair(QString("pwd"),pwd));
+        _result_.append(qMakePair(QString("lastLoginTime"),QString::number(lastLoginTime)));
+        _result_.append(qMakePair(QString("lastLoginIp"),lastLoginIp));
+        _result_.append(qMakePair(QString("regTime"),QString::number(regTime)));
+        _result_.append(qMakePair(QString("onlineTime"),QString::number(onlineTime)));
+        _result_.append(qMakePair(QString("website"),website));
+        _result_.append(qMakePair(QString("info"),info));
+        _result_.append(qMakePair(QString("email"),email));
+        _result_.append(qMakePair(QString("avatar"),avatar));
         return _result_;
     }
 
@@ -108,15 +95,6 @@ public:
     QString info;
     QString avatar;
 
-    const static QString _gid;
-    const static QString _groupname;
-    const static QString _caption;
-    const static QString _master;
-    const static QString _regTime;
-    const static QString _website;
-    const static QString _info;
-    const static QString _avatar;
-
     static QString _table()
     {
         return "group";
@@ -125,14 +103,14 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_gid,QString::number(gid)));
-        _result_.append(qMakePair(_groupname,groupname));
-        _result_.append(qMakePair(_caption,caption));
-        _result_.append(qMakePair(_master,master));
-        _result_.append(qMakePair(_regTime,QString::number(regTime)));
-        _result_.append(qMakePair(_website,website));
-        _result_.append(qMakePair(_info,info));
-        _result_.append(qMakePair(_avatar,avatar));
+        _result_.append(qMakePair(QString("gid"),QString::number(gid)));
+        _result_.append(qMakePair(QString("groupname"),groupname));
+        _result_.append(qMakePair(QString("caption"),caption));
+        _result_.append(qMakePair(QString("master"),master));
+        _result_.append(qMakePair(QString("regTime"),QString::number(regTime)));
+        _result_.append(qMakePair(QString("website"),website));
+        _result_.append(qMakePair(QString("info"),info));
+        _result_.append(qMakePair(QString("avatar"),avatar));
         return _result_;
     }
 
@@ -156,10 +134,6 @@ public:
     QString uname;
     QString user;
 
-    const static QString _id;
-    const static QString _uname;
-    const static QString _user;
-
     static QString _table()
     {
         return "userlist";
@@ -168,9 +142,9 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_id,QString::number(id)));
-        _result_.append(qMakePair(_uname,uname));
-        _result_.append(qMakePair(_user,user));
+        _result_.append(qMakePair(QString("id"),QString::number(id)));
+        _result_.append(qMakePair(QString("uname"),uname));
+        _result_.append(qMakePair(QString("user"),user));
         return _result_;
     }
 
@@ -200,13 +174,6 @@ public:
     bool isDeny;
     unsigned int regTime;
 
-    const static QString _id;
-    const static QString _groupname;
-    const static QString _uname;
-    const static QString _isAdmin;
-    const static QString _isDeny;
-    const static QString _regTime;
-
     static QString _table()
     {
         return "group_member";
@@ -215,12 +182,12 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_id,QString::number(id)));
-        _result_.append(qMakePair(_groupname,groupname));
-        _result_.append(qMakePair(_uname,uname));
-        _result_.append(qMakePair(_isAdmin,QString::number(isAdmin)));
-        _result_.append(qMakePair(_isDeny,QString::number(isDeny)));
-        _result_.append(qMakePair(_regTime,QString::number(regTime)));
+        _result_.append(qMakePair(QString("id"),QString::number(id)));
+        _result_.append(qMakePair(QString("groupname"),groupname));
+        _result_.append(qMakePair(QString("uname"),uname));
+        _result_.append(qMakePair(QString("isAdmin"),QString::number(isAdmin)));
+        _result_.append(qMakePair(QString("isDeny"),QString::number(isDeny)));
+        _result_.append(qMakePair(QString("regTime"),QString::number(regTime)));
         return _result_;
     }
 
@@ -256,16 +223,6 @@ public:
     unsigned int handleTime;
     bool result;
 
-    const static QString _id;
-    const static QString _time;
-    const static QString _uname;
-    const static QString _user;
-    const static QString _invitation;
-    const static QString _msg;
-    const static QString _isHandle;
-    const static QString _handleTime;
-    const static QString _result;
-
     static QString _table()
     {
         return "userrequest";
@@ -274,15 +231,15 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_id,QString::number(id)));
-        _result_.append(qMakePair(_time,QString::number(time)));
-        _result_.append(qMakePair(_uname,uname));
-        _result_.append(qMakePair(_user,user));
-        _result_.append(qMakePair(_invitation,invitation));
-        _result_.append(qMakePair(_msg,msg));
-        _result_.append(qMakePair(_isHandle,QString::number(isHandle)));
-        _result_.append(qMakePair(_handleTime,QString::number(handleTime)));
-        _result_.append(qMakePair(_result,QString::number(result)));
+        _result_.append(qMakePair(QString("id"),QString::number(id)));
+        _result_.append(qMakePair(QString("time"),QString::number(time)));
+        _result_.append(qMakePair(QString("uname"),uname));
+        _result_.append(qMakePair(QString("user"),user));
+        _result_.append(qMakePair(QString("invitation"),invitation));
+        _result_.append(qMakePair(QString("msg"),msg));
+        _result_.append(qMakePair(QString("isHandle"),QString::number(isHandle)));
+        _result_.append(qMakePair(QString("handleTime"),QString::number(handleTime)));
+        _result_.append(qMakePair(QString("result"),QString::number(result)));
         return _result_;
     }
 
@@ -314,14 +271,6 @@ public:
     QString msg;
     bool isSign;
 
-    const static QString _id;
-    const static QString _time;
-    const static QString _signTime;
-    const static QString _uname;
-    const static QString _user;
-    const static QString _msg;
-    const static QString _isSign;
-
     static QString _table()
     {
         return "msg_log";
@@ -330,13 +279,13 @@ public:
     QVector<QPair<QString,QString> > _values()
     {
         QVector<QPair<QString,QString> > _result_;
-        _result_.append(qMakePair(_id,QString::number(id)));
-        _result_.append(qMakePair(_time,QString::number(time)));
-        _result_.append(qMakePair(_signTime,QString::number(signTime)));
-        _result_.append(qMakePair(_uname,uname));
-        _result_.append(qMakePair(_user,user));
-        _result_.append(qMakePair(_msg,msg));
-        _result_.append(qMakePair(_isSign,QString::number(isSign)));
+        _result_.append(qMakePair(QString("id"),QString::number(id)));
+        _result_.append(qMakePair(QString("time"),QString::number(time)));
+        _result_.append(qMakePair(QString("signTime"),QString::number(signTime)));
+        _result_.append(qMakePair(QString("uname"),uname));
+        _result_.append(qMakePair(QString("user"),user));
+        _result_.append(qMakePair(QString("msg"),msg));
+        _result_.append(qMakePair(QString("isSign"),QString::number(isSign)));
         return _result_;
     }
 

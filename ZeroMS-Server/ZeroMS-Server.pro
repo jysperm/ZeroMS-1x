@@ -18,9 +18,9 @@ HEADERS += \
     OServerCore.h \
     OClient.h \
     OClientPeer.h \
-    OServerDataBase.h \
     OServerDataBase.inline.h \
-    OServerDataBaseHeader.h
+    OServerDataBaseHeader.h \
+    ../public/ODataBase.h
 
 SOURCES += main.cpp \
     ../public/OGlobal/OGlobal.cpp \
@@ -30,8 +30,7 @@ SOURCES += main.cpp \
     OServerCore.cpp \
     OClient.cpp \
     OClientPeer.cpp \
-    OServerDataBase.cpp \
-    OServerDataBaseHeader.cpp
+    ../public/ODataBase.cpp
 
 RESOURCES += \
     res.qrc
