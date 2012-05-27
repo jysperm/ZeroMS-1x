@@ -82,8 +82,6 @@ public:
 
 
 <?php
-  }
-  
   function S($string,$n=0)
   {
     $string=str_replace("userlist","UserList",$string);

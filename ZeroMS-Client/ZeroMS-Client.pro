@@ -16,7 +16,9 @@ SOURCES += main.cpp\
     ../public/OMessage.cpp \
     ../public/OAbstractPeer.cpp \
     ../public/OGlobal/OGlobal.cpp \
-    ../public/ODataBase.cpp
+    ../public/ODataBase.cpp \
+    OClientCore.cpp \
+    OServerPeer.cpp
 
 HEADERS  += LoginWidget.h \
     ../public/OSettings.h \
@@ -25,7 +27,9 @@ HEADERS  += LoginWidget.h \
     ../public/OAbstractPeer.h \
     ../public/OGlobal/protocol2.0.h \
     global.h \
-    ../public/ODataBase.h
+    ../public/ODataBase.h \
+    OClientCore.h \
+    OServerPeer.h
 
 FORMS    += LoginWidget.ui
 

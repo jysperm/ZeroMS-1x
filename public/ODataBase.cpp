@@ -3,7 +3,6 @@
 #include <QSqlError>
 #include <QCoreApplication>
 #include "ODataBase.h"
-#include "OSettings.h"
 
 //class OQuery
 //public::

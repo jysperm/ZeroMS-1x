@@ -1,9 +1,10 @@
 #include <QApplication>
 #include <QTextCodec>
-#include "LoginWidget.h"
 #include "../public/OSettings.h"
+#include "OClientCore.h"
 
 OSettings *config;
+OClientCore *core;
 
 int main(int argc, char *argv[])
 {
@@ -14,8 +15,8 @@ int main(int argc, char *argv[])
 
     config=new OSettings;
 
-    LoginWidget w;
-    w.show();
+    core=new OClientCore;
+    core->init();
     
     return a.exec();
 }
