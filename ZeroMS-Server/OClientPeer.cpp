@@ -13,20 +13,20 @@ OClientPeer::OClientPeer(QTcpSocket *connect):OAbstractPeer(ClientPeer,connect)
 
 void OClientPeer::init()
 {
-    connect(this,SIGNAL(Login(QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(onLogin(QString,QString,QVector<int>,bool,bool,bool)));
-    connect(this,SIGNAL(AskInfo(QStringList)),this,SLOT(onAskInfo(QStringList)));
-    connect(this,SIGNAL(AskPublicKey()),this,SLOT(onAskPublicKey()));
-    connect(this,SIGNAL(AskUserList(QString,QString,bool)),this,SLOT(onAskUserList(QString,QString,bool)));
-    connect(this,SIGNAL(ModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
-    connect(this,SIGNAL(State(QString)),this,SLOT(onState(QString)));
-    connect(this,SIGNAL(Logout()),this,SLOT(onLogout()));
-    connect(this,SIGNAL(SendMsg(QString,QString)),this,SLOT(onSendMsg(QString,QString)));
-    connect(this,SIGNAL(UserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
-    connect(this,SIGNAL(RequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
-    connect(this,SIGNAL(ModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
-    connect(this,SIGNAL(AskUserInfo(QString,QStringList)),this,SLOT(onAskUserInfo(QString,QStringList)));
-    connect(this,SIGNAL(ModifyInfo(QString,QMap<QString,QString>)),this,SLOT(onModifyInfo(QString,QMap<QString,QString>)));
-    connect(this,SIGNAL(OK(QString)),this,SLOT(onOK(QString)));
+    connect(this,SIGNAL(onLogin(QString,QString,QVector<int>,bool,bool,bool)),this,SLOT(onLogin(QString,QString,QVector<int>,bool,bool,bool)));
+    connect(this,SIGNAL(onAskInfo(QStringList)),this,SLOT(onAskInfo(QStringList)));
+    connect(this,SIGNAL(onAskPublicKey()),this,SLOT(onAskPublicKey()));
+    connect(this,SIGNAL(onAskUserList(QString,QString,bool)),this,SLOT(onAskUserList(QString,QString,bool)));
+    connect(this,SIGNAL(onModifyUserList(QString,QString,QString,QString)),this,SLOT(onModifyUserList(QString,QString,QString,QString)));
+    connect(this,SIGNAL(onState(QString)),this,SLOT(onState(QString)));
+    connect(this,SIGNAL(onLogout()),this,SLOT(onLogout()));
+    connect(this,SIGNAL(onSendMsg(QString,QString)),this,SLOT(onSendMsg(QString,QString)));
+    connect(this,SIGNAL(onUserRequest(QString,QString)),this,SLOT(onUserRequest(QString,QString)));
+    connect(this,SIGNAL(onRequestResult(int,QString)),this,SLOT(onRequestResult(int,QString)));
+    connect(this,SIGNAL(onModifyGroup(QString,QString,QStringList)),this,SLOT(onModifyGroup(QString,QString,QStringList)));
+    connect(this,SIGNAL(onAskUserInfo(QString,QStringList)),this,SLOT(onAskUserInfo(QString,QStringList)));
+    connect(this,SIGNAL(onModifyInfo(QString,QMap<QString,QString>)),this,SLOT(onModifyInfo(QString,QMap<QString,QString>)));
+    connect(this,SIGNAL(onOK(QString)),this,SLOT(onOK(QString)));
 
     OAbstractPeer::init();
 }

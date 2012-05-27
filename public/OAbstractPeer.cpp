@@ -35,6 +35,24 @@ void OAbstractPeer::collect()
     }
 }
 
+void OAbstractPeer::Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp)
+{
+    OMessage msg(M_Login);
+
+    QStringList portList;
+    QVectorIterator<int> i(p2pPort);
+    while(i.hasNext())
+    {
+        portList.append(QString::number(i.next()));
+    }
+
+    msg.append(uname).aSpc().append(pwdHash).aSpc().append(portList.join(",")).aSpc();
+    msg.append(isMain?MAIN:SUB).aSpc().append(isForce?FORCE:TRY).aSpc();
+    msg.append(isShowIp?SHOWIP:HIDEIP);
+
+    send(&msg);
+}
+
 void OAbstractPeer::LoginResult(QString status,QString ip)
 {
     OMessage msg(M_LoginResult);
@@ -198,19 +216,28 @@ void OAbstractPeer::checkMsg()
                     bool isMain=(msg.split(3)==SUB)?false:true;
                     bool isForce=(msg.split(4)==FORCE)?true:false;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
-                    emit Login(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+                    emit onLogin(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
+                    break;
+                }
+            case M_LoginResult:
+            if(peerType==ServerPeer)
+                {
+                    QString status=msg.split(0);
+                    QString ip=msg.split(1);
+
+                    emit onLoginResult(status,ip);
                     break;
                 }
             case M_AskInfo:
                 {
                     QStringList keys=msg.split(0).split(",");
-                    emit AskInfo(keys);
+                    emit onAskInfo(keys);
                     break;
                 }
             case M_AskPublicKey:
                 if(peerType==ClientPeer)
                 {
-                    emit AskPublicKey();
+                    emit onAskPublicKey();
                     break;
                 }
             case M_ModifyUserList:
@@ -220,7 +247,7 @@ void OAbstractPeer::checkMsg()
                     QString uname=msg.split(1);
                     QString operation=(msg.split(2)==REMOVE)?REMOVE:ADD;
                     QString messages=msg.split(3);
-                    emit ModifyUserList(listname,uname,operation,messages);
+                    emit onModifyUserList(listname,uname,operation,messages);
                     break;
                 }
             case M_AskUserList:
@@ -229,7 +256,7 @@ void OAbstractPeer::checkMsg()
                     QString operation=(msg.split(0)==ALL || msg.split(0)==DIFFONLY)?msg.split(0):ONLINE;
                     bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
                     QString listname=msg.split(2);
-                    emit AskUserList(listname,operation,isHasAvatar);
+                    emit onAskUserList(listname,operation,isHasAvatar);
                     break;
                 }
             case M_State:
@@ -238,13 +265,13 @@ void OAbstractPeer::checkMsg()
                     QString status=msg.split(0);
                     if(!(status==BORED || status==BUZY || status==AWAY))
                         status==ONLINE;
-                    emit State(status);
+                    emit onState(status);
                     break;
                 }
             case M_Logout:
                 if(peerType==ClientPeer)
                 {
-                    emit Logout();
+                    emit onLogout();
                     break;
                 }
             case M_SendMsg:
@@ -252,7 +279,7 @@ void OAbstractPeer::checkMsg()
                 {
                     QString uname=msg.split(0);
                     QString message=msg.splitTail(1);
-                    emit SendMsg(uname,message);
+                    emit onSendMsg(uname,message);
                     break;
                 }
             case M_UserRequest:
@@ -260,7 +287,7 @@ void OAbstractPeer::checkMsg()
                 {
                     QString uname=msg.split(0);
                     QString message=msg.splitTail(1);
-                    emit UserRequest(uname,message);
+                    emit onUserRequest(uname,message);
                     break;
                 }
             case M_RequestResult:
@@ -269,7 +296,7 @@ void OAbstractPeer::checkMsg()
                     int id=msg.split(0).toInt();
                     QString result=msg.split(1);
                     if(result==ALLOW || result==DENY)
-                        emit RequestResult(id,result);
+                        emit onRequestResult(id,result);
                     else
                         Unknown();
                     break;
@@ -280,7 +307,7 @@ void OAbstractPeer::checkMsg()
                     QString group=OGroupName(msg.split(0));
                     QString uname=msg.split(1);
                     QStringList operators=msg.split(2).split(",");
-                    emit ModifyGroup(group,uname,operators);
+                    emit onModifyGroup(group,uname,operators);
                     break;
                 }
             case M_AskUserInfo:
@@ -288,13 +315,13 @@ void OAbstractPeer::checkMsg()
                 {
                     QString uname=msg.split(0);
                     QStringList keys=msg.split(1).split(",");
-                    emit AskUserInfo(uname,keys);
+                    emit onAskUserInfo(uname,keys);
                     break;
                 }
             case M_OK:
                 {
                     QString id=msg.split(0);
-                    emit OK(id);
+                    emit onOK(id);
                     break;
                 }
             case M_ModifyInfo:
@@ -312,7 +339,7 @@ void OAbstractPeer::checkMsg()
                             values.insert(strPair.front(),i.peekPrevious().right(i.peekPrevious().length() - strPair.front().length() -1));
                         }
                     }
-                    emit ModifyInfo(uname,values);
+                    emit onModifyInfo(uname,values);
                     break;
                 }
             default:

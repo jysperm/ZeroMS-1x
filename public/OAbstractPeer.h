@@ -45,6 +45,7 @@ public:
 
     //下面是用来发送消息的函数
 
+    void Login(QString uname,QString pwdHash,QVector<int> p2pPort=QVector<int>(),bool isMain=true,bool isForce=false,bool isShowIp=true);
     void LoginResult(QString status,QString ip=QString());
     void Info(QMap<QString,QString> values);
     void PublicKey(QString publicKey);
@@ -71,20 +72,21 @@ signals:
 
     //下面这些信号会在收到对应的消息时发射
 
-    void Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
-    void AskInfo(QStringList keys);
-    void AskPublicKey();
-    void AskUserList(QString listname,QString operation,bool isHasAvatar);
-    void ModifyUserList(QString listname,QString uname,QString operation,QString message);
-    void State(QString status);
-    void Logout();
-    void SendMsg(QString uname,QString message);
-    void UserRequest(QString uname,QString message);
-    void RequestResult(int id,QString result);
-    void ModifyGroup(QString group,QString uname,QStringList operators);
-    void AskUserInfo(QString uname,QStringList keys);
-    void OK(QString id);
-    void ModifyInfo(QString uname,QMap<QString,QString> values);
+    void onLogin(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp);
+    void onLoginResult(QString status,QString ip);
+    void onAskInfo(QStringList keys);
+    void onAskPublicKey();
+    void onAskUserList(QString listname,QString operation,bool isHasAvatar);
+    void onModifyUserList(QString listname,QString uname,QString operation,QString message);
+    void onState(QString status);
+    void onLogout();
+    void onSendMsg(QString uname,QString message);
+    void onUserRequest(QString uname,QString message);
+    void onRequestResult(int id,QString result);
+    void onModifyGroup(QString group,QString uname,QStringList operators);
+    void onAskUserInfo(QString uname,QStringList keys);
+    void onOK(QString id);
+    void onModifyInfo(QString uname,QMap<QString,QString> values);
 protected slots:
     void onError(QAbstractSocket::SocketError s=QAbstractSocket::UnknownSocketError);//用于与conn的error()信号绑定
 };

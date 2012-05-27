@@ -6,8 +6,12 @@
 class OServerPeer:public OAbstractPeer
 {
     Q_OBJECT
+    //资源类
+    //该类继承OAbstractPeer,实现一个与服务器连接的连接对象
 public:
     explicit OServerPeer(QTcpSocket *connect=0);
+    void init();
+public slots:
 };
 
 #endif // OSERVERPEER_H
