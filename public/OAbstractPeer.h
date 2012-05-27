@@ -48,6 +48,7 @@ public:
     void Login(QString uname,QString pwdHash,QVector<int> p2pPort=QVector<int>(),bool isMain=true,bool isForce=false,bool isShowIp=true);
     void LoginResult(QString status,QString ip=QString());
     void Info(QMap<QString,QString> values);
+    void AskPublicKey();
     void PublicKey(QString publicKey);
     void Unknown();
     void UserListChanged(QString listname);
@@ -76,6 +77,7 @@ signals:
     void onLoginResult(QString status,QString ip);
     void onAskInfo(QStringList keys);
     void onAskPublicKey();
+    void onPublicKey(QString publicKey);
     void onAskUserList(QString listname,QString operation,bool isHasAvatar);
     void onModifyUserList(QString listname,QString uname,QString operation,QString message);
     void onState(QString status);

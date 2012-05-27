@@ -2,7 +2,12 @@
 #define OCLIENTCORE_H
 
 #include <QObject>
+#include "global.h"
 #include "LoginWidget.h"
+#include "ui_LoginWidget.h"
+#include "OServerPeer.h"
+
+class LoginWidget;
 
 class OClientCore:public QObject
 {
@@ -12,7 +17,19 @@ public:
     void init();
     void initLoginWidget();
 
-    LoginWidget *loginWidget;
+    QString uname;//用户名
+    bool isLoged;//是否已经登录
+    bool isShowIp;//是否向其他用户展示IP
+    QString status;//在线状态
+
+    QString publicKey;//公钥
+
+    OServerPeer *main;//主连接
+    QList<OServerPeer*> subConnList;//次要连接数组
+    QVector<int> p2pPorts;
+    QMap<QString,QVector<OUserlistItem> > userlistCache;
+
+    LoginWidget *loginWidgeta;
 };
 
 #endif // OCLIENTCORE_H

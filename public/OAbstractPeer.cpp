@@ -75,6 +75,12 @@ void OAbstractPeer::Info(QMap<QString,QString> values)
     send(&msg);
 }
 
+void OAbstractPeer::AskPublicKey()
+{
+    OMessage msg(M_AskPublicKey);
+    send(&msg);
+}
+
 void OAbstractPeer::PublicKey(QString publicKey)
 {
     QByteArray key;
@@ -217,17 +223,17 @@ void OAbstractPeer::checkMsg()
                     bool isForce=(msg.split(4)==FORCE)?true:false;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
                     emit onLogin(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
-                    break;
                 }
+                break;
             case M_LoginResult:
-            if(peerType==ServerPeer)
+                if(peerType==ServerPeer)
                 {
                     QString status=msg.split(0);
                     QString ip=msg.split(1);
 
                     emit onLoginResult(status,ip);
-                    break;
                 }
+                break;
             case M_AskInfo:
                 {
                     QStringList keys=msg.split(0).split(",");
@@ -238,8 +244,15 @@ void OAbstractPeer::checkMsg()
                 if(peerType==ClientPeer)
                 {
                     emit onAskPublicKey();
-                    break;
                 }
+                break;
+            case M_PublicKey:
+                if(peerType==ServerPeer)
+                {
+                    QString publickey=msg.splitTail(0);
+                    emit onPublicKey(publickey);
+                }
+                break;
             case M_ModifyUserList:
                 if(peerType==ClientPeer)
                 {
@@ -248,8 +261,8 @@ void OAbstractPeer::checkMsg()
                     QString operation=(msg.split(2)==REMOVE)?REMOVE:ADD;
                     QString messages=msg.split(3);
                     emit onModifyUserList(listname,uname,operation,messages);
-                    break;
                 }
+                break;
             case M_AskUserList:
                 if(peerType==ClientPeer)
                 {
@@ -257,8 +270,8 @@ void OAbstractPeer::checkMsg()
                     bool isHasAvatar=(msg.split(1)==AVATAR)?true:false;
                     QString listname=msg.split(2);
                     emit onAskUserList(listname,operation,isHasAvatar);
-                    break;
                 }
+                break;
             case M_State:
                 if(peerType==ClientPeer)
                 {
@@ -266,30 +279,30 @@ void OAbstractPeer::checkMsg()
                     if(!(status==BORED || status==BUZY || status==AWAY))
                         status==ONLINE;
                     emit onState(status);
-                    break;
                 }
+                break;
             case M_Logout:
                 if(peerType==ClientPeer)
                 {
                     emit onLogout();
-                    break;
                 }
+                break;
             case M_SendMsg:
                 if(peerType==ClientPeer)
                 {
                     QString uname=msg.split(0);
                     QString message=msg.splitTail(1);
                     emit onSendMsg(uname,message);
-                    break;
                 }
+                break;
             case M_UserRequest:
                 if(peerType==ClientPeer)
                 {
                     QString uname=msg.split(0);
                     QString message=msg.splitTail(1);
                     emit onUserRequest(uname,message);
-                    break;
                 }
+                break;
             case M_RequestResult:
                 if(peerType==ClientPeer)
                 {
@@ -299,8 +312,8 @@ void OAbstractPeer::checkMsg()
                         emit onRequestResult(id,result);
                     else
                         Unknown();
-                    break;
                 }
+                break;
             case M_ModifyGroup:
                 if(peerType==ClientPeer)
                 {
@@ -308,16 +321,16 @@ void OAbstractPeer::checkMsg()
                     QString uname=msg.split(1);
                     QStringList operators=msg.split(2).split(",");
                     emit onModifyGroup(group,uname,operators);
-                    break;
                 }
+                break;
             case M_AskUserInfo:
                 if(peerType==ClientPeer)
                 {
                     QString uname=msg.split(0);
                     QStringList keys=msg.split(1).split(",");
                     emit onAskUserInfo(uname,keys);
-                    break;
                 }
+                break;
             case M_OK:
                 {
                     QString id=msg.split(0);
@@ -340,8 +353,8 @@ void OAbstractPeer::checkMsg()
                         }
                     }
                     emit onModifyInfo(uname,values);
-                    break;
                 }
+                break;
             default:
                 {
                     Unknown();

@@ -2,6 +2,7 @@
 #define OSERVERPEER_H
 
 #include "../public/OAbstractPeer.h"
+#include "global.h"
 
 class OServerPeer:public OAbstractPeer
 {
@@ -12,6 +13,8 @@ public:
     explicit OServerPeer(QTcpSocket *connect=0);
     void init();
 public slots:
+    void onLoginResult(QString status,QString ip);
+    void onPublicKey(QString publicKey);
 };
 
 #endif // OSERVERPEER_H

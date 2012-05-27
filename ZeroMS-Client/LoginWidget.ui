@@ -107,7 +107,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <widget class="QComboBox" name="UName">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -120,7 +120,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="Password">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -149,6 +149,30 @@
         </size>
        </property>
       </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="DoLogin">
+       <property name="text">
+        <string>登录 &gt;&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

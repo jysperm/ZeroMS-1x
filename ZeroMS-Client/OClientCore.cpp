@@ -1,6 +1,6 @@
 #include "OClientCore.h"
 
-OClientCore::OClientCore()
+OClientCore::OClientCore():isLoged(0),isShowIp(1),main(0),loginWidgeta(0)
 {
 
 }
@@ -12,6 +12,6 @@ void OClientCore::init()
 
 void OClientCore::initLoginWidget()
 {
-    loginWidget=new LoginWidget;
-    loginWidget->show();
+    loginWidgeta=new LoginWidget;
+    loginWidgeta->show();
 }
