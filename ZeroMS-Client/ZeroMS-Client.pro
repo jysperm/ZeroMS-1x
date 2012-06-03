@@ -18,7 +18,8 @@ SOURCES += main.cpp\
     ../public/OGlobal/OGlobal.cpp \
     ../public/ODataBase.cpp \
     OClientCore.cpp \
-    OServerPeer.cpp
+    OServerPeer.cpp \
+    MainWidget.cpp
 
 HEADERS  += LoginWidget.h \
     ../public/OSettings.h \
@@ -29,9 +30,11 @@ HEADERS  += LoginWidget.h \
     global.h \
     ../public/ODataBase.h \
     OClientCore.h \
-    OServerPeer.h
+    OServerPeer.h \
+    MainWidget.h
 
-FORMS    += LoginWidget.ui
+FORMS    += LoginWidget.ui \
+    MainWidget.ui
 
 RESOURCES += \
     res.qrc

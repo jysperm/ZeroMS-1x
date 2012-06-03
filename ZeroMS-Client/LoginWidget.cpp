@@ -2,17 +2,86 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QHostAddress>
+#include <QKeyEvent>
+#include <QDesktopWidget>
+#include <QTimer>
+#include <QMenu>
 #include "../public/OSettings.h"
 #include "global.h"
 #include "OClientCore.h"
 #include "LoginWidget.h"
 #include "ui_LoginWidget.h"
 
-LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0)
+LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0),isCanenl(false)
 {
     ui->setupUi(this);
 
+    ui->Password->installEventFilter(this);
+
     qDebug()<<QImageReader::supportedImageFormats();
+
+    QMenu *popMenu=new QMenu;
+    popMenu->addAction(tr("重置窗口大小"),this,SLOT(reSetWidgetSize()));
+    ui->ToolButton->setMenu(popMenu);
+
+    reSetUI();
+}
+
+LoginWidget::~LoginWidget()
+{
+    saveWidgetSize();
+
+    delete ui->ToolButton->menu();
+
+    delete ui->Avatar->movie();
+    delete ui;
+}
+
+void LoginWidget::destroyLink()
+{
+    if(conn)
+        DELETE(conn);
+    if(core->main)
+        core->main->deleteLater();
+
+    ui->DoLogin->setEnabled(true);
+    ui->DoLogin->setText(tr("登录 >>"));
+
+    isCanenl=true;
+}
+
+void LoginWidget::timeout()
+{
+    destroyLink();
+    QMessageBox::critical(this,tr("登录超时"),tr("与服务器通信超过%1秒，请检查网络连接后重试").arg((*config)["LOGIN_TIMEOUT"].toInt()));
+}
+
+void LoginWidget::saveWidgetSize()
+{
+    QSettings settings;
+
+    settings.setValue("UI/LoginWidget/pos",pos());
+    settings.setValue("UI/LoginWidget/size",size());
+    settings.sync();
+}
+
+void LoginWidget::reSetWidgetSize()
+{
+    QDesktopWidget* desktop = QApplication::desktop();
+    move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
+    resize(QSize(275,600));
+
+    saveWidgetSize();
+}
+
+void LoginWidget::reSetUI()
+{
+    setWindowTitle(tr("登录 - 零毫秒 %1").arg(::VERSION));
+    ui->LabVer->setText(tr("服务器 %1").arg((*config)["SERVER_ADDRESS"].toString()));
+
+    QSettings settings;
+    move(settings.value("UI/LoginWidget/pos",pos()).toPoint());
+    resize(settings.value("UI/LoginWidget/size",size()).toSize());
 
     QSize size(ui->Avatar->width(),ui->Avatar->height());
     QMovie *avatar = new QMovie(":/images/0ms2logo.png");
@@ -21,18 +90,18 @@ LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0)
     avatar->start();
 }
 
-LoginWidget::~LoginWidget()
+bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    delete ui;
-}
-
-void LoginWidget::cancel()
-{
-    if(conn)
-        DELETE(conn);
-
-    ui->DoLogin->setEnabled(true);
-    ui->DoLogin->setText(tr("登录 >>"));
+    if(watched==ui->Password && event->type()==QEvent::KeyPress)
+    {
+        int key=(static_cast<QKeyEvent*>(event))->key();
+        if(key==Qt::Key_Return || key==Qt::Key_Enter)
+        {
+            on_DoLogin_clicked();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }
 
 void LoginWidget::on_DoLogin_clicked()
@@ -43,13 +112,21 @@ void LoginWidget::on_DoLogin_clicked()
     QString uname=ui->UName->currentText();
     QString pwd=ui->Password->text();
 
-    QTcpSocket *conn=new QTcpSocket;
+    core->uname=uname;
+    isCanenl=false;
 
+    conn=new QTcpSocket;
+
+    QTimer timer;
+    timer.setSingleShot(true);
+    connect(&timer,SIGNAL(timeout()),this,SLOT(timeout()));
+    timer.start((*config)["LOGIN_TIMEOUT"].toInt() * 1000);
+
+    //等待连接到服务器
     QEventLoop waitConnected;
     connect(conn,SIGNAL(connected()),&waitConnected,SLOT(quit()));
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),&waitConnected,SLOT(quit()));
 
-    qDebug()<<(*config)["SERVER_ADDRESS"].toString();
     conn->connectToHost(QHostAddress((*config)["SERVER_ADDRESS"].toString()),(*config)["SERVER_PORT"].toInt());
 
     waitConnected.exec();
@@ -57,13 +134,19 @@ void LoginWidget::on_DoLogin_clicked()
     if(conn->state()!=QTcpSocket::ConnectedState)
     {
         QMessageBox::critical(this,tr("连接到服务器时发生错误"),conn->errorString());
-        cancel();
+        destroyLink();
         return;
     }
 
+    if(isCanenl)
+        return;
+
+    //创建主连接对象
     core->main=new OServerPeer(conn);
+    conn=0;
     core->main->init();
 
+    //等待获取公钥
     ui->DoLogin->setText(tr("获取公钥 ..."));
     QEventLoop waitPublicKey;
     connect(core->main,SIGNAL(onPublicKey(QString)),&waitPublicKey,SLOT(quit()));
@@ -72,6 +155,10 @@ void LoginWidget::on_DoLogin_clicked()
 
     waitPublicKey.exec();
 
+    if(isCanenl)
+        return;
+
+    //等待登录结果(LoginResult),接下来的逻辑将转到OServerPeer::onLoginResult()
     ui->DoLogin->setText(tr("等待登录结果 ..."));
 
     core->main->Login(uname,OSha1(core->publicKey+OSha1(uname+OSha1(pwd))));

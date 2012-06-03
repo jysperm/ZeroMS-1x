@@ -5,6 +5,7 @@
 #include "global.h"
 #include "LoginWidget.h"
 #include "ui_LoginWidget.h"
+#include "MainWidget.h"
 #include "OServerPeer.h"
 
 class LoginWidget;
@@ -14,8 +15,10 @@ class OClientCore:public QObject
     Q_OBJECT
 public:
     explicit OClientCore();
+    ~OClientCore();
     void init();
     void initLoginWidget();
+    void initMainWidget();
 
     QString uname;//用户名
     bool isLoged;//是否已经登录
@@ -29,7 +32,8 @@ public:
     QVector<int> p2pPorts;
     QMap<QString,QVector<OUserlistItem> > userlistCache;
 
-    LoginWidget *loginWidgeta;
+    LoginWidget *loginWidget;
+    MainWidget *mainWidget;
 };
 
 #endif // OCLIENTCORE_H

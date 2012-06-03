@@ -32,6 +32,8 @@ OMessage::OMessage(QByteArray data)
 
 OMessage OMessage::fromDataBuff(QByteArray *databuf,bool autoRemove)
 {
+    if(!databuf)
+        return OMessage();
     OMessage msg;
     if(databuf->size()>=P_HEADLEN)
     {

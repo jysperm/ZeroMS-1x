@@ -17,7 +17,17 @@ void OServerPeer::init()
 
 void OServerPeer::onLoginResult(QString status,QString ip)
 {
-    QMessageBox::information(0,tr("登录结果"),status);
+    if(status==OK)
+    {
+        QMessageBox::information(0,tr("登录成功"),status+ip);
+        core->initMainWidget();
+    }
+    else
+    {
+        if(core->loginWidget)
+            core->loginWidget->destroyLink();
+        QMessageBox::information(0,tr("登录失败"),status+ip);
+    }
 }
 
 void OServerPeer::onPublicKey(QString publicKey)
