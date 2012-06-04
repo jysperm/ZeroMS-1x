@@ -12,7 +12,7 @@ class MainWidget : public QMainWindow
     Q_OBJECT
     
 public:
-    explicit MainWidget(QWidget *parent = 0);
+    explicit MainWidget();
     ~MainWidget();
     
 private:

@@ -1,8 +1,11 @@
 <RCC>
-    <qresource prefix="/images">
-        <file>0ms2logo.png</file>
-    </qresource>
     <qresource prefix="/">
         <file>config.ini</file>
+        <file>images/0ms2logo.png</file>
+        <file>images/online.png</file>
+        <file>images/bored.png</file>
+        <file>images/buzy.png</file>
+        <file>images/offline.png</file>
+        <file>images/away.png</file>
     </qresource>
 </RCC>
