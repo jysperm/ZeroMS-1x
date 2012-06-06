@@ -105,6 +105,13 @@ void OAbstractPeer::UserListChanged(QString listname)
     send(&msg);
 }
 
+void OAbstractPeer::AskUserList(QString listname,QString operation,bool isHasAvatar)
+{
+    OMessage msg(M_AskUserList);
+    msg.append(operation).aSpc().append(isHasAvatar?AVATAR:NOAVATAR).aSpc().append(listname);
+    send(&msg);
+}
+
 void OAbstractPeer::UserList(QString listname,QString operation,QVector<OUserlistItem> userlist)
 {
     QByteArray data;

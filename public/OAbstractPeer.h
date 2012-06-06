@@ -52,6 +52,7 @@ public:
     void PublicKey(QString publicKey);
     void Unknown();
     void UserListChanged(QString listname);
+    void AskUserList(QString listname,QString operation,bool isHasAvatar);
     void UserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void SystemMsg(QString message);
     void NewMsg(int id,QString view,QString uname, QString message);
