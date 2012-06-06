@@ -11,6 +11,7 @@ void OServerPeer::init()
 {
     connect(this,SIGNAL(onLoginResult(QString,QString)),this,SLOT(onLoginResult(QString,QString)));
     connect(this,SIGNAL(onPublicKey(QString)),this,SLOT(onPublicKey(QString)));
+    connect(this,SIGNAL(onUserListChanged(QString)),this,SLOT(onUserListChanged(QString)));
 
     OAbstractPeer::init();
 }
@@ -32,4 +33,9 @@ void OServerPeer::onLoginResult(QString status,QString ip)
 void OServerPeer::onPublicKey(QString publicKey)
 {
     core->publicKey=publicKey;
+}
+
+void OServerPeer::onUserListChanged(QString listname)
+{
+
 }

@@ -78,6 +78,7 @@ signals:
     void onAskInfo(QStringList keys);
     void onAskPublicKey();
     void onPublicKey(QString publicKey);
+    void onUserListChanged(QString listname);
     void onAskUserList(QString listname,QString operation,bool isHasAvatar);
     void onModifyUserList(QString listname,QString uname,QString operation,QString message);
     void onState(QString status);

@@ -15,6 +15,7 @@ public:
 public slots:
     void onLoginResult(QString status,QString ip);
     void onPublicKey(QString publicKey);
+    void onUserListChanged(QString listname);
 };
 
 #endif // OSERVERPEER_H

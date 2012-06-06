@@ -263,6 +263,13 @@ void OAbstractPeer::checkMsg()
                     emit onModifyUserList(listname,uname,operation,messages);
                 }
                 break;
+            case M_UserListChanged:
+                if(peerType==ServerPeer)
+                {
+                    QString listname=msg.split(0);
+                    emit onUserListChanged(listname);
+                }
+                break;
             case M_AskUserList:
                 if(peerType==ClientPeer)
                 {
