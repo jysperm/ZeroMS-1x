@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QLabel" name="Avatar">
+    <widget class="QLabel" name="avatar">
      <property name="minimumSize">
       <size>
        <width>70</width>
@@ -36,7 +36,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="UName">
+      <widget class="QLabel" name="uname">
        <property name="text">
         <string>UName</string>
        </property>
