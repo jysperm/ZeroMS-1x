@@ -17,21 +17,7 @@ MainWidget::MainWidget():ui(new Ui::MainWidget)
 
     ui->myName->setText("MyName");
 
-    QBoxLayout *vlayout=new QBoxLayout(QBoxLayout::TopToBottom);
-
-    vlayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
-
-    vlayout->setMargin(0);
-    vlayout->setContentsMargins(0,0,0,0);
-
-    for(int i=0;i<30;i++)
-        vlayout->addWidget(new FriendListItem);
-
-    QWidget *main=new QWidget;
-    main->setLayout(vlayout);
-
-    ui->friendList->setWidget(main);
-
+    ui->friendList->init();
 }
 
 MainWidget::~MainWidget()

@@ -27,7 +27,6 @@ private:
     QString avatarFile;
 };
 
-
 inline QString FriendListItem::avatar()
 {
     return ui->avatar->movie()->fileName();
