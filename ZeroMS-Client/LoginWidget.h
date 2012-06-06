@@ -20,7 +20,7 @@ public:
     void destroyLink();
     void reSetUI();
 private slots:
-    void on_DoLogin_clicked();
+    void on_doLogin_clicked();
     //事件过滤器，用于处理回车登录
     bool eventFilter(QObject *watched, QEvent *event);
     void timeout();

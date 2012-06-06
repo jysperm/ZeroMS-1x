@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     ../public/ODataBase.cpp \
     OClientCore.cpp \
     OServerPeer.cpp \
-    MainWidget.cpp
+    MainWidget.cpp \
+    FriendListItem.cpp \
+    FriendList.cpp
 
 HEADERS  += LoginWidget.h \
     ../public/OSettings.h \
@@ -31,10 +33,13 @@ HEADERS  += LoginWidget.h \
     ../public/ODataBase.h \
     OClientCore.h \
     OServerPeer.h \
-    MainWidget.h
+    MainWidget.h \
+    FriendListItem.h \
+    FriendList.h
 
 FORMS    += LoginWidget.ui \
-    MainWidget.ui
+    MainWidget.ui \
+    FriendListItem.ui
 
 RESOURCES += \
     res.qrc

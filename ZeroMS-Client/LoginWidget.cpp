@@ -16,13 +16,19 @@ LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0),isCanenl(false)
 {
     ui->setupUi(this);
 
-    ui->Password->installEventFilter(this);
+    ui->password->installEventFilter(this);
 
     qDebug()<<QImageReader::supportedImageFormats();
 
     QMenu *popMenu=new QMenu;
     popMenu->addAction(tr("重置窗口大小"),this,SLOT(reSetWidgetSize()));
-    ui->ToolButton->setMenu(popMenu);
+    ui->toolButton->setMenu(popMenu);
+
+    QSize size(ui->avatar->width(),ui->avatar->height());
+    QMovie *avatar = new QMovie(":/images/0ms2logo.png");
+    avatar->setScaledSize(size);
+    ui->avatar->setMovie(avatar);
+    avatar->start();
 
     reSetUI();
 }
@@ -31,9 +37,9 @@ LoginWidget::~LoginWidget()
 {
     saveWidgetSize();
 
-    delete ui->ToolButton->menu();
+    delete ui->toolButton->menu();
 
-    delete ui->Avatar->movie();
+    delete ui->avatar->movie();
     delete ui;
 }
 
@@ -44,8 +50,8 @@ void LoginWidget::destroyLink()
     if(core->main)
         core->main->deleteLater();
 
-    ui->DoLogin->setEnabled(true);
-    ui->DoLogin->setText(tr("登录 >>"));
+    ui->doLogin->setEnabled(true);
+    ui->doLogin->setText(tr("登录 >>"));
 
     isCanenl=true;
 }
@@ -77,40 +83,34 @@ void LoginWidget::reSetWidgetSize()
 void LoginWidget::reSetUI()
 {
     setWindowTitle(tr("登录 - 零毫秒 %1").arg(::VERSION));
-    ui->LabVer->setText(tr("服务器 %1").arg((*config)["SERVER_ADDRESS"].toString()));
+    ui->verLab->setText(tr("服务器 %1").arg((*config)["SERVER_ADDRESS"].toString()));
 
     QSettings settings;
     move(settings.value("UI/LoginWidget/pos",pos()).toPoint());
     resize(settings.value("UI/LoginWidget/size",size()).toSize());
-
-    QSize size(ui->Avatar->width(),ui->Avatar->height());
-    QMovie *avatar = new QMovie(":/images/0ms2logo.png");
-    avatar->setScaledSize(size);
-    ui->Avatar->setMovie(avatar);
-    avatar->start();
 }
 
 bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    if(watched==ui->Password && event->type()==QEvent::KeyPress)
+    if(watched==ui->password && event->type()==QEvent::KeyPress)
     {
         int key=(static_cast<QKeyEvent*>(event))->key();
         if(key==Qt::Key_Return || key==Qt::Key_Enter)
         {
-            on_DoLogin_clicked();
+            on_doLogin_clicked();
             return true;
         }
     }
     return QWidget::eventFilter(watched, event);
 }
 
-void LoginWidget::on_DoLogin_clicked()
+void LoginWidget::on_doLogin_clicked()
 {
-    ui->DoLogin->setEnabled(false);
-    ui->DoLogin->setText(tr("正在连接 ..."));
+    ui->doLogin->setEnabled(false);
+    ui->doLogin->setText(tr("正在连接 ..."));
 
-    QString uname=ui->UName->currentText();
-    QString pwd=ui->Password->text();
+    QString uname=ui->uname->currentText();
+    QString pwd=ui->password->text();
 
     core->uname=uname;
     isCanenl=false;
@@ -147,7 +147,7 @@ void LoginWidget::on_DoLogin_clicked()
     core->main->init();
 
     //等待获取公钥
-    ui->DoLogin->setText(tr("获取公钥 ..."));
+    ui->doLogin->setText(tr("获取公钥 ..."));
     QEventLoop waitPublicKey;
     connect(core->main,SIGNAL(onPublicKey(QString)),&waitPublicKey,SLOT(quit()));
 
@@ -159,7 +159,7 @@ void LoginWidget::on_DoLogin_clicked()
         return;
 
     //等待登录结果(LoginResult),接下来的逻辑将转到OServerPeer::onLoginResult()
-    ui->DoLogin->setText(tr("等待登录结果 ..."));
+    ui->doLogin->setText(tr("等待登录结果 ..."));
 
     core->main->Login(uname,OSha1(core->publicKey+OSha1(uname+OSha1(pwd))));
 }

@@ -14,99 +14,142 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="MyAvatar">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>10</y>
-      <width>100</width>
-      <height>100</height>
-     </rect>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>100</width>
-      <height>100</height>
-     </size>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="MyName">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>151</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>50</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="iconSize">
-     <size>
-      <width>26</width>
-      <height>26</height>
-     </size>
-    </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <property name="text">
-      <string>在线</string>
-     </property>
-     <property name="icon">
-      <iconset resource="res.qrc">
-       <normaloff>:/images/online.png</normaloff>:/images/online.png</iconset>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="myName">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="statusCombo">
+          <property name="iconSize">
+           <size>
+            <width>26</width>
+            <height>26</height>
+           </size>
+          </property>
+          <item>
+           <property name="text">
+            <string>在线</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/online.png</normaloff>:/images/online.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>忙碌</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/buzy.png</normaloff>:/images/buzy.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>离开</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/away.png</normaloff>:/images/away.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>下线</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/offline.png</normaloff>:/images/offline.png</iconset>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>无聊求打扰</string>
+           </property>
+           <property name="icon">
+            <iconset resource="res.qrc">
+             <normaloff>:/images/bored.png</normaloff>:/images/bored.png</iconset>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QLabel" name="myAvatar">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>100</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
-     <property name="text">
-      <string>忙碌</string>
-     </property>
-     <property name="icon">
-      <iconset resource="res.qrc">
-       <normaloff>:/images/buzy.png</normaloff>:/images/buzy.png</iconset>
-     </property>
+     <widget class="FriendList" name="friendList">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOn</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>242</width>
+         <height>425</height>
+        </rect>
+       </property>
+      </widget>
+     </widget>
     </item>
-    <item>
-     <property name="text">
-      <string>离开</string>
-     </property>
-     <property name="icon">
-      <iconset resource="res.qrc">
-       <normaloff>:/images/away.png</normaloff>:/images/away.png</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>下线</string>
-     </property>
-     <property name="icon">
-      <iconset resource="res.qrc">
-       <normaloff>:/images/offline.png</normaloff>:/images/offline.png</iconset>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>无聊求打扰</string>
-     </property>
-     <property name="icon">
-      <iconset resource="res.qrc">
-       <normaloff>:/images/bored.png</normaloff>:/images/bored.png</iconset>
-     </property>
-    </item>
-   </widget>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -120,6 +163,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FriendList</class>
+   <extends>QScrollArea</extends>
+   <header location="global">FriendList.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="res.qrc"/>
  </resources>

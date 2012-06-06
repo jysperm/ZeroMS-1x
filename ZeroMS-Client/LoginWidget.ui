@@ -46,7 +46,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="Avatar">
+      <widget class="QLabel" name="avatar">
        <property name="minimumSize">
         <size>
          <width>130</width>
@@ -107,7 +107,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QComboBox" name="UName">
+        <widget class="QComboBox" name="uname">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -117,10 +117,15 @@
          <property name="editable">
           <bool>true</bool>
          </property>
+         <item>
+          <property name="text">
+           <string>jybox</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="Password">
+        <widget class="QLineEdit" name="password">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -129,6 +134,9 @@
          </property>
          <property name="inputMask">
           <string/>
+         </property>
+         <property name="text">
+          <string>123123</string>
          </property>
          <property name="echoMode">
           <enum>QLineEdit::Password</enum>
@@ -168,7 +176,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="DoLogin">
+      <widget class="QPushButton" name="doLogin">
        <property name="text">
         <string>登录 &gt;&gt;</string>
        </property>
@@ -195,7 +203,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="LabVer">
+      <widget class="QLabel" name="verLab">
        <property name="text">
         <string/>
        </property>
@@ -215,14 +223,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="LabReg">
+      <widget class="QLabel" name="regLab">
        <property name="text">
         <string>注册</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="ToolButton">
+      <widget class="QToolButton" name="toolButton">
        <property name="text">
         <string>...</string>
        </property>
