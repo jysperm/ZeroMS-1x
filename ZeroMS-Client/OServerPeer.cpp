@@ -39,3 +39,8 @@ void OServerPeer::onUserListChanged(QString listname)
 {
 
 }
+
+void OServerPeer::onUserList(QString listname,QString operation,QVector<OUserlistItem> userlist)
+{
+
+}

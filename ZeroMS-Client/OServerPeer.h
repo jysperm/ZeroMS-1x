@@ -16,6 +16,7 @@ public slots:
     void onLoginResult(QString status,QString ip);
     void onPublicKey(QString publicKey);
     void onUserListChanged(QString listname);
+    void onUserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
 };
 
 #endif // OSERVERPEER_H

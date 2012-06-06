@@ -279,6 +279,37 @@ void OAbstractPeer::checkMsg()
                     emit onAskUserList(listname,operation,isHasAvatar);
                 }
                 break;
+            case M_UserList:
+                if(peerType==ServerPeer)
+                {
+                    QString operation=msg.split(0);
+                    QString listname=msg.split(1);
+                    QVector<OUserlistItem> userlist;
+
+                    QStringList items=msg.split(2).split(";");
+                    QListIterator<QString> i(items);
+                    while(i.hasNext())
+                    {
+                        QStringList values=i.next().split(":");
+                        if(values.count()==6)
+                        {
+                            OUserlistItem item;
+                            item.uname=values[0];
+                            item.status=values[1];
+                            item.groupStatus=values[2];
+                            item.ip=values[3];
+                            QStringList ports=values[4].split(",");
+                            QListIterator<QString> i(ports);
+                            while(i.hasNext())
+                                item.p2pPorts.append(i.next().toInt());
+                            item.avatar=values[5];
+                            userlist.append(item);
+                        }
+                    }
+
+                    emit onUserList(listname,operation,userlist);
+                }
+                break;
             case M_State:
                 if(peerType==ClientPeer)
                 {

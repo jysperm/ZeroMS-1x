@@ -80,6 +80,7 @@ signals:
     void onPublicKey(QString publicKey);
     void onUserListChanged(QString listname);
     void onAskUserList(QString listname,QString operation,bool isHasAvatar);
+    void onUserList(QString listname,QString operation,QVector<OUserlistItem> userlist);
     void onModifyUserList(QString listname,QString uname,QString operation,QString message);
     void onState(QString status);
     void onLogout();
