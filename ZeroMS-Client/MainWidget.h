@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 
-namespace Ui {
+namespace Ui
+{
 class MainWidget;
 }
 
@@ -14,9 +15,12 @@ class MainWidget : public QMainWindow
 public:
     explicit MainWidget();
     ~MainWidget();
-    
-private:
     Ui::MainWidget *ui;
+private slots:
+    void on_actRefreshFriendList_triggered();
+
+private:
+
 };
 
 #endif // MAINWIDGET_H

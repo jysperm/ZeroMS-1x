@@ -160,8 +160,26 @@
      <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>控制</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>好友</string>
+    </property>
+    <addaction name="actRefreshFriendList"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actRefreshFriendList">
+   <property name="text">
+    <string>刷新好友列表</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

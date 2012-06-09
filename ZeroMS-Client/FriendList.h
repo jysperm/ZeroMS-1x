@@ -15,6 +15,7 @@ public:
     inline void addItem(QString avatar,QString uname);
     inline bool removeItem(QString uname);
     inline FriendListItem *item(QString uname);
+    void clear(bool onlineOnly=false);
 private:
     QMap<QString,FriendListItem*> map;
 };

@@ -4,6 +4,8 @@
 #include <QGroupBox>
 #include <QMovie>
 #include "FriendListItem.h"
+#include "global.h"
+#include "OClientCore.h"
 
 MainWidget::MainWidget():ui(new Ui::MainWidget)
 {
@@ -18,9 +20,16 @@ MainWidget::MainWidget():ui(new Ui::MainWidget)
     ui->myName->setText("MyName");
 
     ui->friendList->init();
+
+    on_actRefreshFriendList_triggered();
 }
 
 MainWidget::~MainWidget()
 {
     delete ui;
+}
+
+void MainWidget::on_actRefreshFriendList_triggered()
+{
+    core->main->AskUserList(core->uname,ALL,true);
 }

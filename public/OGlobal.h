@@ -3,6 +3,7 @@
 
 #include <QCryptographicHash>
 #include <QString>
+#include <QStringList>
 #include "OGlobal/protocol2.0.h"
 using namespace Protocol2;
 
@@ -43,6 +44,15 @@ inline QString OSBEscSMap(QString str)
 {
     //按照SB协议的键值对应表，转义分号
     return str.replace(";","\\;");
+}
+
+inline QString OGet(const QStringList &list,int index)
+{
+    //获得QStringList中指定索引的字符串，如果不存在这个索引返回空字符串
+    if(list.count()>index)
+        return list[index];
+    else
+        return QString();
 }
 
 #endif // PUBLIC_OGLOBAL_H

@@ -47,7 +47,7 @@ public:
 
     void Login(QString uname,QString pwdHash,QVector<int> p2pPort=QVector<int>(),bool isMain=true,bool isForce=false,bool isShowIp=true);
     void LoginResult(QString status,QString ip=QString());
-    void Info(QMap<QString,QString> values);
+    void Info(const QMap<QString, QString> &values);
     void AskPublicKey();
     void PublicKey(QString publicKey);
     void Unknown();

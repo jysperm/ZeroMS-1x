@@ -290,7 +290,9 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
                 result.append(item);
             }
         }
+        *cache=allList;
         UserList(listname,operation,result);
+        return;
     }
 
     *cache=allList;

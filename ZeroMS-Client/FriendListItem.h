@@ -22,6 +22,8 @@ public:
     inline QString uname();
     inline void setAvatar(QString avatar);
     inline void setUName(QString uname);
+    inline void setOnline(bool isOnline);
+    inline bool isOnline();
 private:
     Ui::FriendListItem *ui;
     QString avatarFile;
@@ -45,6 +47,16 @@ inline void FriendListItem::setAvatar(QString avatar)
 inline void FriendListItem::setUName(QString uname)
 {
     ui->uname->setText(uname);
+}
+
+inline void FriendListItem::setOnline(bool isOnline)
+{
+    ui->isOnline->setChecked(isOnline);
+}
+
+inline bool FriendListItem::isOnline()
+{
+    return (ui->isOnline->checkState()==Qt::Checked?true:false);
 }
 
 #endif // FRIENDLISTITEM_H

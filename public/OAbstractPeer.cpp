@@ -60,7 +60,7 @@ void OAbstractPeer::LoginResult(QString status,QString ip)
     send(&msg);
 }
 
-void OAbstractPeer::Info(QMap<QString,QString> values)
+void OAbstractPeer::Info(const QMap<QString, QString> &values)
 {
     QByteArray data;
     QMapIterator<QString,QString> i(values);
@@ -289,6 +289,7 @@ void OAbstractPeer::checkMsg()
             case M_UserList:
                 if(peerType==ServerPeer)
                 {
+                    qDebug()<<msg.data;
                     QString operation=msg.split(0);
                     QString listname=msg.split(1);
                     QVector<OUserlistItem> userlist;
@@ -298,20 +299,18 @@ void OAbstractPeer::checkMsg()
                     while(i.hasNext())
                     {
                         QStringList values=i.next().split(":");
-                        if(values.count()==6)
-                        {
-                            OUserlistItem item;
-                            item.uname=values[0];
-                            item.status=values[1];
-                            item.groupStatus=values[2];
-                            item.ip=values[3];
-                            QStringList ports=values[4].split(",");
-                            QListIterator<QString> i(ports);
-                            while(i.hasNext())
-                                item.p2pPorts.append(i.next().toInt());
-                            item.avatar=values[5];
-                            userlist.append(item);
-                        }
+
+                        OUserlistItem item;
+                        item.uname=OGet(values,0);
+                        item.status=OGet(values,1);
+                        item.groupStatus=OGet(values,2);
+                        item.ip=OGet(values,3);
+                        QStringList ports=OGet(values,4).split(",");
+                        QListIterator<QString> i(ports);
+                        while(i.hasNext())
+                            item.p2pPorts.append(i.next().toInt());
+                        item.avatar=OGet(values,5);
+                        userlist.append(item);
                     }
 
                     emit onUserList(listname,operation,userlist);

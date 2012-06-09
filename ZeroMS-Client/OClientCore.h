@@ -30,7 +30,7 @@ public:
     OServerPeer *main;//主连接
     QList<OServerPeer*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    QMap<QString,QVector<OUserlistItem> > userlistCache;
+    QMap<QString,OUserlistItem> ul;
 
     LoginWidget *loginWidget;
     MainWidget *mainWidget;
