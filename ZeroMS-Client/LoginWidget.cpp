@@ -25,8 +25,7 @@ LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0),isCanenl(false)
     ui->toolButton->setMenu(popMenu);
 
     QSize size(ui->avatar->width(),ui->avatar->height());
-    //QMovie *avatar = new QMovie(":/images/0ms2logo.png");
-    QMovie *avatar = new QMovie("/home/jybox/桌面/50.jpg");
+    QMovie *avatar = new QMovie(":/images/0ms2logo.png");
     avatar->setScaledSize(size);
     ui->avatar->setMovie(avatar);
     avatar->start();
