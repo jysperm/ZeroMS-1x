@@ -19,6 +19,7 @@ class OUserlistItem
     //抽象一个好友列表条目，见 http://0-ms.org/wiki/show/UserList
 public:
     inline bool operator==(const OUserlistItem other) const;
+    bool isInVector(QVector<OUserlistItem>* vector);
 
     QString uname;
     QString status;
@@ -38,7 +39,6 @@ public:
     virtual ~OAbstractPeer();
     //初始化,需要在设置conn后调用
     void init();
-    void collect();//回收内存
 
     inline OPeerType getPeerType();//返回连接类型，即peerType
     inline void send(OMessage *msg);//发送消息

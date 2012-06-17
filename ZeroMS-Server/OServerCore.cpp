@@ -287,7 +287,13 @@ void OServerCore::onError(OClient *client)
 {
     log(tr("%1 断开连接.").arg(client->getSignature()));
 
+    bool isLoged=client->isLoged;
+
     QString uname=client->getSignature();
     delete client;
     cl.remove(uname);
+
+    //如果已经登录，则更新在线状态
+    if(isLoged)
+        userListChange(uname);
 }

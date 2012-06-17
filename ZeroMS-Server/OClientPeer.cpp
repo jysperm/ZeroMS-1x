@@ -147,10 +147,10 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
 
     QVector<OUserlistItem> allList;
     if(listname!=client->uname)
-    {//如果是在请求一个群的成员列表
+    {//如果是在请求一个小组的成员列表
         listname=listname.remove(0,1);//移除星号
         if(OcheckGroup(listname) && OcheckGroupMember(listname,client->uname))
-        {//如果存在这个群,且是这个群的成员
+        {//如果存在这个小组,且是这个小组的成员
             QVector<GroupMember> memberList=db->select<GroupMember>("groupname",listname);
 
             QVectorIterator<GroupMember> i(memberList);
@@ -191,13 +191,13 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
             }
         }
         else
-        {//如果不存在这个群，或不是这个群的成员
+        {//如果不存在这个小组，或不是这个小组的成员
             if(OcheckGroup(listname))
-            {//如果不是这个群的成员
+            {//如果不是这个小组的成员
                 ProcessError(NOTINLIST);
             }
             else
-            {//如果这个群不存在
+            {//如果这个小组不存在
                 ProcessError(NOTEXIST);
             }
             return;
@@ -205,6 +205,8 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
     }
     else
     {//如果是在请求自己的好友列表
+
+        //自己加入的小组
         QVector<GroupMember> groups=db->select<GroupMember>("uname",client->uname);
         QVectorIterator<GroupMember> iGroup(groups);
         while(iGroup.hasNext())
@@ -218,6 +220,7 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
             allList.append(item);
         }
 
+        //自己的好友列表
         QVector<OSDB::UserList> userlist=db->select<OSDB::UserList>("uname",client->uname);
         QVectorIterator<OSDB::UserList> iUserlist(userlist);
         while(iUserlist.hasNext())
@@ -255,27 +258,50 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
 
     if(operation==DIFFONLY)
     {
-        QVector<OUserlistItem> result;
+        QVector<OUserlistItem> result;//"仅变动"的结果
 
         QVectorIterator<OUserlistItem> iAll(allList),iCache(*cache);
+
+        //如果allList中有，而cache中没有，则为新条目，加入result
         while(iAll.hasNext())
         {
             OUserlistItem item=iAll.next();
 
-            if(!iCache.findNext(item))
+            if(!item.isInVector(cache))
                 result.append(item);
-            iCache.toFront();
         }
 
+        //如果allList和cache中有同用户名的条目，而其他信息不同，则为修改条目，加入result
+        iAll.toFront();
+        while(iAll.hasNext())
+        {
+            OUserlistItem item=iAll.next();
+
+            iCache.toFront();
+            while(iCache.hasNext())
+            {
+                OUserlistItem itemCache=iCache.next();
+                if(itemCache.uname==item.uname)
+                {//如果用户名相同
+                    if(!(itemCache==item))  //没重载!=运算符
+                    {//如果其他资料不同
+                        result.append(item);
+                    }
+                    break;
+                }
+            }
+        }
+
+        //如果cache中有，而allList中没有，则说明这个用户下线或被删除
+        iCache.toFront();
         while(iCache.hasNext())
         {
             OUserlistItem item=iCache.next();
 
-            iAll.toFront();
-            if(!iAll.findNext(item))
+            if(!item.isInVector(&allList))
             {
-                if(item.uname.left(1)=="*")
-                {//如果是一个群
+                if(OIsGroup(item.uname))
+                {//如果是一个小组
                     item.status=REMOVED;
                 }
                 else if(!db->selectFrist<OSDB::UserList>( OQuery("uname",client->uname) && OQuery("user",item.uname))._isEmpty)
@@ -286,18 +312,17 @@ void OClientPeer::onAskUserList(QString listname,QString operation,bool isHasAva
                 {//如果这个用户已经不在用户列表中了
                     item.status=REMOVED;
                 }
-
                 result.append(item);
             }
         }
         *cache=allList;
         UserList(listname,operation,result);
-        return;
     }
-
-    *cache=allList;
-
-    UserList(listname,operation,allList);
+    else
+    {
+        *cache=allList;
+        UserList(listname,operation,allList);
+    }
 }
 
 void OClientPeer::onModifyUserList(QString listname,QString uname,QString operation,QString message)
@@ -591,9 +616,9 @@ void OClientPeer::onUserRequest(QString uname,QString message)
                 else
                 {//有同样的未处理的请求
                     db->update<OSDB::UserRequest>(OQuery("uname",client->uname) &&
-                                                       OQuery("user",uname) &&
-                                                       OQuery("isHandle",false),
-                                                       "msg",message);
+                                                  OQuery("user",uname) &&
+                                                  OQuery("isHandle",false),
+                                                  "msg",message);
                     ProcessError(ALREADYSEND);
                 }
             }

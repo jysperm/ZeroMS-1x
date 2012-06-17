@@ -3,6 +3,20 @@
 #include "global.h"
 #include "../public/OSettings.h"
 
+//class OUserlistItem
+//public:
+bool OUserlistItem::isInVector(QVector<OUserlistItem> *vector)
+{
+    QVectorIterator<OUserlistItem> i(*vector);
+    while(i.hasNext())
+    {
+        if(i.next().uname==uname)
+            return true;
+    }
+    return false;
+}
+
+//class OAbstractPeer
 //public:
 OAbstractPeer::OAbstractPeer(OPeerType peerType,QTcpSocket *connect):conn(connect),peerType(peerType)
 {
@@ -11,7 +25,7 @@ OAbstractPeer::OAbstractPeer(OPeerType peerType,QTcpSocket *connect):conn(connec
 
 OAbstractPeer::~OAbstractPeer()
 {
-    collect();
+
 }
 
 void OAbstractPeer::init()
@@ -21,18 +35,6 @@ void OAbstractPeer::init()
 
     connect(conn,SIGNAL(readyRead()),this,SLOT(checkMsg()));
     connect(conn,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(onError(QAbstractSocket::SocketError)));
-}
-
-void OAbstractPeer::collect()
-{
-    if(conn)
-    {
-        conn->abort();
-        conn->disconnect();
-        conn->deleteLater();
-
-        conn=0;
-    }
 }
 
 void OAbstractPeer::Login(QString uname,QString pwdHash,QVector<int> p2pPort,bool isMain,bool isForce,bool isShowIp)
@@ -419,6 +421,5 @@ void OAbstractPeer::onError(QAbstractSocket::SocketError s)
         //这个类的情况就是这样：如果出错了，就表示这个类将要被销毁了
         //发射信号也是为了通知它的所有者销毁该类
         emit error(this,conn->errorString(),s);
-        collect();
     }
 }

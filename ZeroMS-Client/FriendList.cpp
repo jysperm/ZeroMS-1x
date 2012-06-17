@@ -38,7 +38,6 @@ void FriendList::clear(bool onlineOnly)
             widget()->layout()->removeWidget(i.value());
             delete i.value();
             map.remove(i.key());
-            i.next();
         }
     }
 }
