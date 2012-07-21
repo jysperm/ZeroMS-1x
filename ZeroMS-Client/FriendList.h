@@ -3,40 +3,40 @@
 
 #include <QScrollArea>
 #include "FriendListItem.h"
+#include "OServerPeer.h"
 
 class FriendList : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit FriendList(QWidget *parent = 0);
+    explicit FriendList(QWidget *parent);
     ~FriendList();
-    void init();
+    void init(QMap<QString,FriendListItem*> *map);
 
-    inline void addItem(QString avatar,QString uname);
+    inline void addItem(OUserlistItem user);
     inline bool removeItem(QString uname);
     inline FriendListItem *item(QString uname);
-    void clear(bool onlineOnly=false);
+    void clear(bool isOnlineOnly=false);
 private:
-    QMap<QString,FriendListItem*> map;
+    QMap<QString,FriendListItem*> *map;
 };
 
-inline void FriendList::addItem(QString avatar,QString uname)
+inline void FriendList::addItem(OUserlistItem user)
 {
-    FriendListItem *item=new FriendListItem(avatar,uname);
-    widget()->layout()->addWidget(item);
-    map.insert(uname,item);
+    map->insert(user.uname,new FriendListItem(user));
+    widget()->layout()->addWidget(map->value(user.uname));
 }
 
 inline bool FriendList::removeItem(QString uname)
 {
-    widget()->layout()->removeWidget(map[uname]);
-    delete map[uname];
-    return map.remove(uname);
+    widget()->layout()->removeWidget(map->value(uname));
+    delete map->value(uname);
+    return map->remove(uname);
 }
 
 inline FriendListItem *FriendList::item(QString uname)
 {
-    return map[uname];
+    return map->value(uname);
 }
 
 #endif // FRIENDLIST_H

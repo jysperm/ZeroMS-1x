@@ -17,9 +17,9 @@ MainWidget::MainWidget():ui(new Ui::MainWidget)
     ui->myAvatar->setMovie(avatar);
     avatar->start();
 
-    ui->myName->setText("MyName");
+    ui->myName->setText(core->uname);
 
-    ui->friendList->init();
+    ui->friendList->init(&(core->ul[core->uname]));
 
     on_actRefreshFriendList_triggered();
 }

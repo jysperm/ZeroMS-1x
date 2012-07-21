@@ -7,6 +7,7 @@
 #include "ui_LoginWidget.h"
 #include "MainWidget.h"
 #include "OServerPeer.h"
+#include "FriendListItem.h"
 
 class LoginWidget;
 
@@ -30,7 +31,7 @@ public:
     OServerPeer *main;//主连接
     QList<OServerPeer*> subConnList;//次要连接数组
     QVector<int> p2pPorts;
-    QMap<QString,OUserlistItem> ul;
+    QMap<QString,QMap<QString,FriendListItem*> > ul;//用户列表
 
     LoginWidget *loginWidget;
     MainWidget *mainWidget;

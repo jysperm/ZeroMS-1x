@@ -47,4 +47,5 @@ RESOURCES += \
     res.qrc
 
 OTHER_FILES += \
-    config.ini
+    config.ini \
+    zeroms-client-2.x.desktop

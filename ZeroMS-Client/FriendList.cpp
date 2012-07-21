@@ -6,8 +6,10 @@ FriendList::FriendList(QWidget *parent):QScrollArea(parent)
 
 }
 
-void FriendList::init()
+void FriendList::init(QMap<QString,FriendListItem*> *map)
 {
+    this->map=map;
+
     QBoxLayout *layoutBox=new QBoxLayout(QBoxLayout::TopToBottom);
 
     layoutBox->setMargin(0);
@@ -27,17 +29,17 @@ FriendList::~FriendList()
     delete this->widget();
 }
 
-void FriendList::clear(bool onlineOnly)
+void FriendList::clear(bool isOnlineOnly)
 {
-    QMapIterator<QString,FriendListItem*> i(map);
+    QMapIterator<QString,FriendListItem*> i(*map);
     while(i.hasNext())
     {
         i.next();
-        if(i.value()->isOnline() || !onlineOnly)
+        if(i.value()->status()!=OFFLINE || !isOnlineOnly)
         {
             widget()->layout()->removeWidget(i.value());
             delete i.value();
-            map.remove(i.key());
+            map->remove(i.key());
         }
     }
 }

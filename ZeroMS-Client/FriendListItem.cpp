@@ -2,22 +2,22 @@
 #include "FriendListItem.h"
 #include "ui_FriendListItem.h"
 
-FriendListItem::FriendListItem(QString avatar,QString uname):ui(new Ui::FriendListItem)
+FriendListItem::FriendListItem(OUserlistItem info):ui(new Ui::FriendListItem),info(info)
 {
     ui->setupUi(this);
 
-    if(avatar.isEmpty())
-        avatar=":/images/0ms2logo.png";
+    if(info.avatar.isEmpty())
+        info.avatar=":/images/0ms2logo.png";
 
     QSize size(ui->avatar->width(),ui->avatar->height());
-    QMovie *movie = new QMovie(avatar);
+    QMovie *movie = new QMovie(info.avatar);
     movie->setScaledSize(size);
     ui->avatar->setMovie(movie);
     movie->start();
 
     setContentsMargins(0,0,0,0);
 
-    setUName(uname);
+    setUName(info.uname);
 }
 
 FriendListItem::~FriendListItem()

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Encoding=UTF-8
+Name=零毫秒2.x
+Comment=一个开源、跨平台的即时通讯软件
+Exec=～/Zeroms/exec
+Icon=zeroms2.x.png
+Terminal=false

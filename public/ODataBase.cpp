@@ -39,7 +39,7 @@ QString OQuerys::getSQL()
 ODataBase::ODataBase(QString drive,QString host,QString name,QString user,QString password)
 {
     //调试信息
-    qDebug()<<Q_FUNC_INFO<<QSqlDatabase::drivers();
+    qDebug()<<QSqlDatabase::drivers();
 
     //连接数据库
     dbConn=new QSqlDatabase(QSqlDatabase::addDatabase(drive));

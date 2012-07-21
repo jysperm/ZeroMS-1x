@@ -45,18 +45,12 @@ void OServerPeer::onUserListChanged(QString listname)
 
 void OServerPeer::onUserList(QString listname,QString operation,const QVector<OUserlistItem> &userlist)
 {
+    //先按照情况删除好友
     if(operation==ALL)
     {//如果是请求全部好友
         if(listname==core->uname)
         {//如果是自己的好友列表
             core->mainWidget->ui->friendList->clear();
-            QMapIterator<QString,OUserlistItem> i(core->ul);
-            while(i.hasNext())
-            {
-                i.next();
-                core->ul.remove(i.key());
-                i.next();
-            }
         }
         else
         {//如果是某个群的用户列表
@@ -68,16 +62,6 @@ void OServerPeer::onUserList(QString listname,QString operation,const QVector<OU
         if(listname==core->uname)
         {//如果是自己的好友列表
             core->mainWidget->ui->friendList->clear(true);
-            QMapIterator<QString,OUserlistItem> i(core->ul);
-            while(i.hasNext())
-            {
-                i.next();
-                if(i.value().status!=OFFLINE)
-                {
-                    core->ul.remove(i.key());
-                    i.next();
-                }
-            }
         }
         else
         {//如果是某个群的用户列表
@@ -85,18 +69,14 @@ void OServerPeer::onUserList(QString listname,QString operation,const QVector<OU
         }
     }
 
+    //添加好友到好友列表
     if(operation!=DIFFONLY)
     {//如果是请求全部好友或在线部分好友
         QVectorIterator<OUserlistItem> i(userlist);
         while(i.hasNext())
         {
             OUserlistItem item=i.next();
-            core->ul.insert(item.uname,item);
-            core->mainWidget->ui->friendList->addItem(item.avatar,item.uname);
-            if(item.status!=OFFLINE)
-            {
-                core->mainWidget->ui->friendList->item(item.uname)->setOnline(true);
-            }
+            core->mainWidget->ui->friendList->addItem(item);
         }
     }
 }

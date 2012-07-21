@@ -5,28 +5,32 @@
 #include <QMovie>
 #include <QFile>
 #include "ui_FriendListItem.h"
+#include "OServerPeer.h"
 
 namespace Ui
 {
+
 class FriendListItem;
+
 }
 
 class FriendListItem : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FriendListItem(QString avatar=QString(":/images/0ms2logo.png"),QString uname=QString());
+    explicit FriendListItem(OUserlistItem info);
     ~FriendListItem();
 
     inline QString avatar();
     inline QString uname();
     inline void setAvatar(QString avatar);
     inline void setUName(QString uname);
-    inline void setOnline(bool isOnline);
-    inline bool isOnline();
+    inline void setStatus(QString status);
+    inline QString status();
+
 private:
     Ui::FriendListItem *ui;
-    QString avatarFile;
+    OUserlistItem info;
 };
 
 inline QString FriendListItem::avatar()
@@ -41,22 +45,25 @@ inline QString FriendListItem::uname()
 
 inline void FriendListItem::setAvatar(QString avatar)
 {
+    info.avatar=avatar;
     ui->avatar->movie()->setFileName(avatar);
 }
 
 inline void FriendListItem::setUName(QString uname)
 {
+    info.uname=uname;
     ui->uname->setText(uname);
 }
 
-inline void FriendListItem::setOnline(bool isOnline)
+inline void FriendListItem::setStatus(QString status)
 {
-    ui->isOnline->setChecked(isOnline);
+    info.status=status;
+    ui->isOnline->setChecked(!(status==OFFLINE));
 }
 
-inline bool FriendListItem::isOnline()
+inline QString FriendListItem::status()
 {
-    return (ui->isOnline->checkState()==Qt::Checked?true:false);
+    return info.status;
 }
 
 #endif // FRIENDLISTITEM_H
