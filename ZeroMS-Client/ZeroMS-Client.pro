@@ -9,6 +9,8 @@ QT       += core gui network sql
 TARGET = ZeroMS-Client
 TEMPLATE = app
 
+INCLUDEPATH += .
+
 
 SOURCES += main.cpp\
         LoginWidget.cpp \

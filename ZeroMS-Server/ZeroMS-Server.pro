@@ -8,6 +8,8 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter
 
 TEMPLATE = app
 
+INCLUDEPATH += .
+
 HEADERS += \
     ../public/OGlobal.h \
     ../public/OGlobal/protocol2.0.h \
