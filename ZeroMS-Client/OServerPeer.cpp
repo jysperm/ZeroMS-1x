@@ -29,7 +29,7 @@ void OServerPeer::onLoginResult(QString status,QString ip)
     {
         if(core->loginWidget)
             core->loginWidget->destroyLink();
-        QMessageBox::information(0,tr("登录失败"),status);
+        QMessageBox::critical(core->loginWidget,tr("登录失败"),status);
     }
 }
 
