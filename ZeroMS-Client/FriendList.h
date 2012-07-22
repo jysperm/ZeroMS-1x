@@ -13,26 +13,14 @@ public:
     ~FriendList();
     void init(QMap<QString,FriendListItem*> *map);
 
-    inline void addItem(OUserlistItem user);
-    inline bool removeItem(QString uname);
+    void addItem(OUserlistItem user);
+    bool removeItem(QString uname);
     inline FriendListItem *item(QString uname);
     void clear(bool isOnlineOnly=false);
 private:
     QMap<QString,FriendListItem*> *map;
+    QBoxLayout *layoutBox;
 };
-
-inline void FriendList::addItem(OUserlistItem user)
-{
-    map->insert(user.uname,new FriendListItem(user));
-    widget()->layout()->addWidget(map->value(user.uname));
-}
-
-inline bool FriendList::removeItem(QString uname)
-{
-    widget()->layout()->removeWidget(map->value(uname));
-    delete map->value(uname);
-    return map->remove(uname);
-}
 
 inline FriendListItem *FriendList::item(QString uname)
 {

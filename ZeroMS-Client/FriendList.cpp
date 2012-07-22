@@ -10,10 +10,12 @@ void FriendList::init(QMap<QString,FriendListItem*> *map)
 {
     this->map=map;
 
-    QBoxLayout *layoutBox=new QBoxLayout(QBoxLayout::TopToBottom);
+    layoutBox=new QBoxLayout(QBoxLayout::TopToBottom);
 
     layoutBox->setMargin(0);
     layoutBox->setContentsMargins(0,0,0,0);
+
+    layoutBox->addItem(new QSpacerItem(20,40,QSizePolicy::Minimum,QSizePolicy::Expanding));
 
     QWidget *main=new QWidget;
     main->setLayout(layoutBox);
@@ -27,6 +29,19 @@ FriendList::~FriendList()
 {
     delete this->widget()->layout();
     delete this->widget();
+}
+
+void FriendList::addItem(OUserlistItem user)
+{
+    map->insert(user.uname,new FriendListItem(user));
+    layoutBox->insertWidget(layoutBox->count()-1,map->value(user.uname));
+}
+
+bool FriendList::removeItem(QString uname)
+{
+    layoutBox->removeWidget(map->value(uname));
+    delete map->value(uname);
+    return map->remove(uname);
 }
 
 void FriendList::clear(bool isOnlineOnly)
