@@ -1,6 +1,7 @@
 #include "OServerPeer.h"
 #include "OClientCore.h"
 #include <QMessageBox>
+#include <QDebug>
 #include "ui_MainWidget.h"
 #include "FriendListItem.h"
 
@@ -29,7 +30,20 @@ void OServerPeer::onLoginResult(QString status,QString ip)
     {
         if(core->loginWidget)
             core->loginWidget->destroyLink();
-        QMessageBox::critical(core->loginWidget,tr("登录失败"),status);
+        if(status==ISONLINE)
+        {//如果已有同名用户在线
+            if(QMessageBox::Yes==QMessageBox::question(core->loginWidget,tr("登录失败"),
+                                                       tr("您的帐号已在%1处登录，是否重新强制登录(对方会掉线)").arg(ip),
+                                                       QMessageBox::Yes|QMessageBox::No,QMessageBox::Yes))
+            {//如果点击了Yes按钮
+                core->loginWidget->doLogin(true);
+                qDebug()<<1;
+            }
+        }
+        else
+        {//其他错误
+            QMessageBox::critical(core->loginWidget,tr("登录失败"),status);
+        }
     }
 }
 

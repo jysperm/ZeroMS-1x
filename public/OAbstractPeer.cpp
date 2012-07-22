@@ -216,6 +216,7 @@ void OAbstractPeer::checkMsg()
             case M_Login:
                 if(peerType==ClientPeer)
                 {
+                    qDebug()<<QString(msg.data);
                     QString uname=msg.split(0);
                     QString pwdHash=msg.split(1);
                     QStringList ports=msg.split(2).split(",");
@@ -230,6 +231,7 @@ void OAbstractPeer::checkMsg()
 
                     bool isMain=(msg.split(3)==SUB)?false:true;
                     bool isForce=(msg.split(4)==FORCE)?true:false;
+                    qDebug()<<msg.split(4)<<isForce;
                     bool isShowIp=(msg.split(5)==HIDEIP)?false:true;
                     emit onLogin(uname,pwdHash,p2pPort,isMain,isForce,isShowIp);
                 }

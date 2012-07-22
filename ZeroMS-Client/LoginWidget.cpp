@@ -22,6 +22,10 @@ LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0),isCanenl(false)
 
     QMenu *popMenu=new QMenu;
     popMenu->addAction(tr("重置窗口大小"),this,SLOT(reSetWidgetSize()));
+    popMenu->addSeparator();
+    Act_isShowIp=new QAction("隐藏IP(不使用P2P功能)",popMenu);
+    Act_isShowIp->setCheckable(true);
+    popMenu->addAction(Act_isShowIp);
     ui->toolButton->setMenu(popMenu);
 
     QSize size(ui->avatar->width(),ui->avatar->height());
@@ -68,6 +72,7 @@ void LoginWidget::saveWidgetSize()
 
     settings.setValue("UI/LoginWidget/pos",pos());
     settings.setValue("UI/LoginWidget/size",size());
+    settings.setValue("UI/LoginWidget/isShowIP",!Act_isShowIp->isChecked());
     settings.sync();
 }
 
@@ -89,29 +94,17 @@ void LoginWidget::reSetUI()
     QSettings settings;
     move(settings.value("UI/LoginWidget/pos",pos()).toPoint());
     resize(settings.value("UI/LoginWidget/size",size()).toSize());
+    Act_isShowIp->setChecked(!settings.value("UI/LoginWidget/isShowIP",true).toBool());
 }
 
-bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
-{
-    if(watched==ui->password && event->type()==QEvent::KeyPress)
-    {
-        int key=(static_cast<QKeyEvent*>(event))->key();
-        if(key==Qt::Key_Return || key==Qt::Key_Enter)
-        {
-            on_doLogin_clicked();
-            return true;
-        }
-    }
-    return QWidget::eventFilter(watched, event);
-}
-
-void LoginWidget::on_doLogin_clicked()
+void LoginWidget::doLogin(bool isForce)
 {
     ui->doLogin->setEnabled(false);
     ui->doLogin->setText(tr("正在连接 ..."));
 
     QString uname=ui->uname->currentText();
     QString pwd=ui->password->text();
+    bool isShowIp=!Act_isShowIp->isChecked();
 
     core->uname=uname;
     isCanenl=false;
@@ -162,5 +155,24 @@ void LoginWidget::on_doLogin_clicked()
     //等待登录结果(LoginResult),接下来的逻辑将转到OServerPeer::onLoginResult()
     ui->doLogin->setText(tr("等待登录结果 ..."));
 
-    core->main->Login(uname,OSha1(core->publicKey+OSha1(uname+OSha1(pwd))));
+    core->main->Login(uname,OSha1(core->publicKey+OSha1(uname+OSha1(pwd))),QVector<int>(),true,isForce,isShowIp);
+}
+
+bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if(watched==ui->password && event->type()==QEvent::KeyPress)
+    {
+        int key=(static_cast<QKeyEvent*>(event))->key();
+        if(key==Qt::Key_Return || key==Qt::Key_Enter)
+        {
+            on_doLogin_clicked();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(watched, event);
+}
+
+void LoginWidget::on_doLogin_clicked()
+{
+    doLogin();
 }

@@ -19,6 +19,7 @@ public:
     ~LoginWidget();
     void destroyLink();
     void reSetUI();
+    void doLogin(bool isForce=false);
 private slots:
     void on_doLogin_clicked();
     //事件过滤器，用于处理回车登录
@@ -30,6 +31,7 @@ private:
     Ui::LoginWidget *ui;
     QTcpSocket *conn;
     bool isCanenl;
+    QAction *Act_isShowIp;
 };
 
 #endif // LOGINWIDGET_H
