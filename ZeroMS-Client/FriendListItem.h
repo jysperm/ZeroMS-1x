@@ -21,13 +21,18 @@ public:
     explicit FriendListItem(OUserlistItem info);
     ~FriendListItem();
 
+    FriendListItem &operator =(OUserlistItem info);
+
     inline QString avatar();
     inline QString uname();
     inline void setAvatar(QString avatar);
     inline void setUName(QString uname);
     inline void setStatus(QString status);
     inline QString status();
-
+    inline QString ip();
+    inline void setIp(QString ip);
+    inline QVector<int> p2pPorts();
+    inline void setP2pPorts(QVector<int> ports);
 private:
     Ui::FriendListItem *ui;
     OUserlistItem info;
@@ -64,6 +69,26 @@ inline void FriendListItem::setStatus(QString status)
 inline QString FriendListItem::status()
 {
     return info.status;
+}
+
+inline QString FriendListItem::ip()
+{
+    return info.ip;
+}
+
+inline void FriendListItem::setIp(QString ip)
+{
+    info.ip=ip;
+}
+
+inline QVector<int> FriendListItem::p2pPorts()
+{
+    return info.p2pPorts;
+}
+
+inline void FriendListItem::setP2pPorts(QVector<int> ports)
+{
+    info.p2pPorts=ports;
 }
 
 #endif // FRIENDLISTITEM_H

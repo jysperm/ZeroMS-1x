@@ -16,6 +16,7 @@ public:
     void addItem(OUserlistItem user);
     bool removeItem(QString uname);
     inline FriendListItem *item(QString uname);
+    inline bool isHas(QString uname);
     void clear(bool isOnlineOnly=false);
 private:
     QMap<QString,FriendListItem*> *map;
@@ -25,6 +26,11 @@ private:
 inline FriendListItem *FriendList::item(QString uname)
 {
     return map->value(uname);
+}
+
+inline bool FriendList::isHas(QString uname)
+{
+    return map->contains(uname);
 }
 
 #endif // FRIENDLIST_H
