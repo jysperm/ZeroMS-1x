@@ -296,7 +296,9 @@ void OAbstractPeer::checkMsg()
                     QString listname=msg.split(1);
                     QVector<OUserlistItem> userlist;
 
-                    QStringList items=msg.split(2).split(";");
+                    QStringList items=msg.split(2).trimmed().split(";");
+                    if(!items.isEmpty() && items.at(0).isEmpty())
+                        items.clear();
                     QListIterator<QString> i(items);
                     while(i.hasNext())
                     {
