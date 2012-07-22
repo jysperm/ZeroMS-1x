@@ -105,7 +105,6 @@ void OServerPeer::onUserList(QString listname,QString operation,const QVector<OU
             {//如果好友列表中没有这个用户
                 friendList->addItem(item);
             }
-
         }
     }
 }

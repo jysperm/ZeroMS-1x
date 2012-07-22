@@ -73,9 +73,10 @@ void LoginWidget::saveWidgetSize()
 
 void LoginWidget::reSetWidgetSize()
 {
+    resize(QSize(275,600));
+
     QDesktopWidget* desktop = QApplication::desktop();
     move((desktop->width() - this->width())/2, (desktop->height() - this->height())/2);
-    resize(QSize(275,600));
 
     saveWidgetSize();
 }
