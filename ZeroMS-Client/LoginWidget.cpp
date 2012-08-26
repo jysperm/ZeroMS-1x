@@ -16,7 +16,7 @@ LoginWidget::LoginWidget():ui(new Ui::LoginWidget),conn(0),isCanenl(false)
 {
     ui->setupUi(this);
 
-    ui->password->installEventFilter(this);
+    ui->passwd->installEventFilter(this);
 
     qDebug()<<QImageReader::supportedImageFormats();
 
@@ -103,7 +103,7 @@ void LoginWidget::doLogin(bool isForce)
     ui->doLogin->setText(tr("正在连接 ..."));
 
     QString uname=ui->uname->currentText();
-    QString pwd=ui->password->text();
+    QString pwd=ui->passwd->text();
     bool isShowIp=!Act_isShowIp->isChecked();
 
     core->uname=uname;
@@ -160,7 +160,7 @@ void LoginWidget::doLogin(bool isForce)
 
 bool LoginWidget::eventFilter(QObject *watched, QEvent *event)
 {
-    if(watched==ui->password && event->type()==QEvent::KeyPress)
+    if(watched==ui->passwd && event->type()==QEvent::KeyPress)
     {
         int key=(static_cast<QKeyEvent*>(event))->key();
         if(key==Qt::Key_Return || key==Qt::Key_Enter)

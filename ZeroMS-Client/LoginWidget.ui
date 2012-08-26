@@ -125,7 +125,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="password">
+        <widget class="QLineEdit" name="passwd">
          <property name="minimumSize">
           <size>
            <width>200</width>
