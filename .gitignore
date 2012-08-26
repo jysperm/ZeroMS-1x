@@ -1,21 +1,27 @@
-﻿#注意,该文件只新增条目,不要删除!!
-
-*.pro.user
-*.pro.user*
-*.qm
-*.autosave
-*.exe
+﻿#Linux
 *~
-*.o
-*.egg-info
-*.obj
-*.pyc
 
-/*build*/*
+#Winodws
+Thumbs.db
 
-debug
-release
-ui_*
+*.exe
+
+#C++
 Makefile*
-object_script*
+*.o
+
+#Qt
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+
+#Qt Creator
+*.pro.user
+*.autosave
+/*build*/*
+*/release/*
+*/debug/*
+
+#Virtual Studio
+*.suo
 
