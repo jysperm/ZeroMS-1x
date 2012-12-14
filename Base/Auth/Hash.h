@@ -9,12 +9,25 @@ namespace ZeroMS
 namespace Auth
 {
 
-class Hash
+#ifndef INPRIVATE
+class MD5Private;
+#endif
+
+class MD5
 {
 public:
+    MD5();
+    ~MD5();
+
+    void append(const QByteArray data);
+    QByteArray result();
+    void clear();
+
     static QString md5(const QString data);
+    static QByteArray md5(const QByteArray data);
 private:
-    Hash(){};
+    bool isFinal;
+    MD5Private *data;
 };
 
 }   //namespace Auth
