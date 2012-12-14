@@ -9,10 +9,6 @@ namespace ZeroMS
 namespace Auth
 {
 
-#ifndef INPRIVATE
-class MD5Private;
-#endif
-
 class MD5
 {
 public:
@@ -26,8 +22,39 @@ public:
     static QString md5(const QString data);
     static QByteArray md5(const QByteArray data);
 private:
+#ifndef INPRIVATE_MD5
+    class MD5Private;
+#endif
     bool isFinal;
     MD5Private *data;
+};
+
+class SHA
+{
+public:
+    enum SHAType
+    {
+        SHA1,SHA224,SHA256,SHA384,SHA512
+    };
+
+    SHA(SHAType type=SHA1);
+    ~SHA();
+
+    void append(const QByteArray data);
+    QByteArray result();
+    void clear();
+
+    static QString sha(const QString data,SHAType type=SHA1);
+    static QByteArray sha(const QByteArray data,SHAType type=SHA1);
+
+    static int digestLength(SHAType type);
+private:
+#ifndef INPRIVATE_SHA
+    class SHAPrivate;
+#endif
+    bool isFinal;
+    SHAType type;
+    SHAPrivate *data;
 };
 
 }   //namespace Auth

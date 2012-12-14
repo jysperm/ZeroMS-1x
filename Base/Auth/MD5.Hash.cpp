@@ -1,6 +1,6 @@
 #include <openssl/md5.h>
 
-#define INPRIVATE
+#define INPRIVATE_MD5
 class MD5Private
 {
 public:
