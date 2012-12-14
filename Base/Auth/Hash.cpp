@@ -38,7 +38,7 @@ QByteArray ZeroMS::Auth::MD5::result()
     MD5_Final(out,&this->data->data);
     this->isFinal=true;
 
-    return QByteArray((const char*)out,20);
+    return QByteArray(reinterpret_cast<const char*>(out),20);
 }
 
 void ZeroMS::Auth::MD5::clear()
@@ -57,7 +57,7 @@ QString ZeroMS::Auth::MD5::md5(const QString data)
         data.toUtf8().size(),
         out);
 
-    return QByteArray((const char*)out,MD5_DIGEST_LENGTH).toHex();
+    return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH).toHex();
 }
 
 QByteArray ZeroMS::Auth::MD5::md5(const QByteArray data)
@@ -68,5 +68,5 @@ QByteArray ZeroMS::Auth::MD5::md5(const QByteArray data)
         data.size(),
         out);
 
-    return QByteArray((const char*)out,MD5_DIGEST_LENGTH);
+    return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH);
 }
