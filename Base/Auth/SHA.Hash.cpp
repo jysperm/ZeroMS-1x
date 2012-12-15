@@ -1,34 +1,38 @@
 #include <openssl/sha.h>
+#include "Hash.h"
 
-#define INPRIVATE_SHA
+namespace ZeroMS {
+namespace Auth {
 
-class SHAPrivate
+class SHA::SHAPrivate
 {
 public:
     virtual ~SHAPrivate(){}
 };
 
-class SHA1Private : public SHAPrivate
+class SHA::SHA1Private : public SHA::SHAPrivate
 {
 public:
     SHA_CTX data;
 };
 
-class SHA256Private : public SHAPrivate
+class SHA::SHA256Private : public SHA::SHAPrivate
 {
 public:
     SHA256_CTX data;
 };
 
-class SHA512Private : public SHAPrivate
+class SHA::SHA512Private : public SHA::SHAPrivate
 {
 public:
     SHA512_CTX data;
 };
 
-#include "Hash.h"
+}}   //namespace ZeroMS::Auth
 
-ZeroMS::Auth::SHA::SHA(SHAType type):isFinal(false),type(type)
+using namespace ZeroMS::Auth;
+
+SHA::SHA(SHAType type):isFinal(false),type(type)
 {
     switch(this->type)
     {
@@ -55,14 +59,14 @@ ZeroMS::Auth::SHA::SHA(SHAType type):isFinal(false),type(type)
     }
 }
 
-ZeroMS::Auth::SHA::~SHA()
+SHA::~SHA()
 {
     if(!this->isFinal)
         this->result();
     delete this->data;
 }
 
-void ZeroMS::Auth::SHA::append(const QByteArray data)
+void SHA::append(const QByteArray data)
 {
     if(this->isFinal)
         this->clear();
@@ -89,7 +93,7 @@ void ZeroMS::Auth::SHA::append(const QByteArray data)
     }
 }
 
-QByteArray ZeroMS::Auth::SHA::result()
+QByteArray SHA::result()
 {
     int digestLength=SHA::digestLength(this->type);
 
@@ -119,7 +123,7 @@ QByteArray ZeroMS::Auth::SHA::result()
     return QByteArray(reinterpret_cast<const char*>(out),digestLength);
 }
 
-void ZeroMS::Auth::SHA::clear()
+void SHA::clear()
 {
     if(!this->isFinal)
         this->result();
@@ -146,7 +150,7 @@ void ZeroMS::Auth::SHA::clear()
     this->isFinal=false;
 }
 
-QString ZeroMS::Auth::SHA::sha(const QString data,SHAType type)
+QString SHA::sha(const QString data,SHAType type)
 {
     int digestLength=SHA::digestLength(type);
 
@@ -176,7 +180,7 @@ QString ZeroMS::Auth::SHA::sha(const QString data,SHAType type)
     return QByteArray(reinterpret_cast<const char*>(out),digestLength).toHex();
 }
 
-QByteArray ZeroMS::Auth::SHA::sha(const QByteArray data,SHAType type)
+QByteArray SHA::sha(const QByteArray data,SHAType type)
 {
     int digestLength=SHA::digestLength(type);
 
@@ -206,7 +210,7 @@ QByteArray ZeroMS::Auth::SHA::sha(const QByteArray data,SHAType type)
     return QByteArray(reinterpret_cast<const char*>(out),digestLength);
 }
 
-int ZeroMS::Auth::SHA::digestLength(SHAType type)
+int SHA::digestLength(SHAType type)
 {
     switch(type)
     {

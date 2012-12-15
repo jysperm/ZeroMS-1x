@@ -1,28 +1,33 @@
 #include <openssl/md5.h>
+#include "Hash.h"
 
-#define INPRIVATE_MD5
-class MD5Private
+namespace ZeroMS {
+namespace Auth {
+
+class MD5::MD5Private
 {
 public:
     MD5_CTX data;
 };
 
-#include "Hash.h"
+}}   //namespace ZeroMS::Auth
 
-ZeroMS::Auth::MD5::MD5():isFinal(false)
+using namespace ZeroMS::Auth;
+
+MD5::MD5():isFinal(false)
 {
     this->data=new MD5Private;
     MD5_Init(&this->data->data);
 }
 
-ZeroMS::Auth::MD5::~MD5()
+MD5::~MD5()
 {
     if(!this->isFinal)
         this->result();
     delete this->data;
 }
 
-void ZeroMS::Auth::MD5::append(const QByteArray data)
+void MD5::append(const QByteArray data)
 {
     if(this->isFinal)
         this->clear();
@@ -31,7 +36,7 @@ void ZeroMS::Auth::MD5::append(const QByteArray data)
                data.size());
 }
 
-QByteArray ZeroMS::Auth::MD5::result()
+QByteArray MD5::result()
 {
     unsigned char out[MD5_DIGEST_LENGTH];
 
@@ -41,7 +46,7 @@ QByteArray ZeroMS::Auth::MD5::result()
     return QByteArray(reinterpret_cast<const char*>(out),20);
 }
 
-void ZeroMS::Auth::MD5::clear()
+void MD5::clear()
 {
     if(!this->isFinal)
         this->result();
@@ -49,7 +54,7 @@ void ZeroMS::Auth::MD5::clear()
     this->isFinal=false;
 }
 
-QString ZeroMS::Auth::MD5::md5(const QString data)
+QString MD5::md5(const QString data)
 {
     unsigned char out[MD5_DIGEST_LENGTH];
 
@@ -60,7 +65,7 @@ QString ZeroMS::Auth::MD5::md5(const QString data)
     return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH).toHex();
 }
 
-QByteArray ZeroMS::Auth::MD5::md5(const QByteArray data)
+QByteArray MD5::md5(const QByteArray data)
 {
     unsigned char out[MD5_DIGEST_LENGTH];
 

@@ -22,9 +22,8 @@ public:
     static QString md5(const QString data);
     static QByteArray md5(const QByteArray data);
 private:
-#ifndef INPRIVATE_MD5
     class MD5Private;
-#endif
+
     bool isFinal;
     MD5Private *data;
 };
@@ -49,9 +48,11 @@ public:
 
     static int digestLength(SHAType type);
 private:
-#ifndef INPRIVATE_SHA
     class SHAPrivate;
-#endif
+    class SHA1Private;
+    class SHA256Private;
+    class SHA512Private;
+
     bool isFinal;
     SHAType type;
     SHAPrivate *data;
