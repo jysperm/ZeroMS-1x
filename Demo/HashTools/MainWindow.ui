@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>611</width>
+    <height>485</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>HashTools</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>原文</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTextEdit" name="source">
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>散列值</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QTextEdit" name="hashResult">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>611</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuMD5">
+    <property name="title">
+     <string>MD5</string>
+    </property>
+    <addaction name="actionMD5"/>
+   </widget>
+   <widget class="QMenu" name="menuSHA">
+    <property name="title">
+     <string>SHA</string>
+    </property>
+    <addaction name="actionSHA1"/>
+    <addaction name="actionSHA224"/>
+    <addaction name="actionSHA256"/>
+    <addaction name="actionSHA384"/>
+    <addaction name="actionSHA512"/>
+   </widget>
+   <addaction name="menuMD5"/>
+   <addaction name="menuSHA"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionMD5">
+   <property name="text">
+    <string>MD5</string>
+   </property>
+  </action>
+  <action name="actionSHA1">
+   <property name="text">
+    <string>SHA-1</string>
+   </property>
+  </action>
+  <action name="actionSHA224">
+   <property name="text">
+    <string>SHA-224</string>
+   </property>
+  </action>
+  <action name="actionSHA256">
+   <property name="text">
+    <string>SHA-256</string>
+   </property>
+  </action>
+  <action name="actionSHA384">
+   <property name="text">
+    <string>SHA-384</string>
+   </property>
+  </action>
+  <action name="actionSHA512">
+   <property name="text">
+    <string>SHA-512</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
