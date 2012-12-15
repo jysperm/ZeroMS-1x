@@ -1,27 +1,27 @@
-﻿#Linux
+﻿# Linux
 *~
 
-#Winodws
+# Winodws
 Thumbs.db
 
 *.exe
 
-#C++
+# C++
 Makefile*
 *.o
 
-#Qt
+# Qt
 ui_*.h
 moc_*.cpp
 qrc_*.cpp
 
-#Qt Creator
+# Qt Creator
 *.pro.user
 *.autosave
-/*build*/*
-*/release/*
-*/debug/*
 
-#Virtual Studio
+# Virtual Studio
 *.suo
+
+# Build
+/*/*build*/*
 
