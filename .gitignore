@@ -3,11 +3,10 @@
 
 # Winodws
 Thumbs.db
+*.exe
 
 # OS X
 .DS_Store
-
-*.exe
 
 # C++
 Makefile*
@@ -27,4 +26,5 @@ qrc_*.cpp
 
 # Build
 /*/*build*/*
+/*build*/*
 
