@@ -1,18 +1,17 @@
 #include <openssl/md5.h>
 #include "Hash.h"
 
-namespace ZeroMS {
-namespace Auth {
+namespace ZeroMS
+{
+
+namespace Auth
+{
 
 class MD5::MD5Private
 {
 public:
     MD5_CTX data;
 };
-
-}}   //namespace ZeroMS::Auth
-
-using namespace ZeroMS::Auth;
 
 MD5::MD5():isFinal(false)
 {
@@ -75,3 +74,7 @@ QByteArray MD5::md5(const QByteArray data)
 
     return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH);
 }
+
+}   //namespace Auth
+
+}   //namespace ZeroMS

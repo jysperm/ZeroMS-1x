@@ -1,8 +1,11 @@
 #include <openssl/sha.h>
 #include "Hash.h"
 
-namespace ZeroMS {
-namespace Auth {
+namespace ZeroMS
+{
+
+namespace Auth
+{
 
 class SHA::SHAPrivate
 {
@@ -27,10 +30,6 @@ class SHA::SHA512Private : public SHA::SHAPrivate
 public:
     SHA512_CTX data;
 };
-
-}}   //namespace ZeroMS::Auth
-
-using namespace ZeroMS::Auth;
 
 SHA::SHA(SHAType type):isFinal(false),type(type)
 {
@@ -227,3 +226,7 @@ int SHA::digestLength(SHAType type)
     }
     return -1;
 }
+
+}   //namespace Auth
+
+}   //namespace ZeroMS
