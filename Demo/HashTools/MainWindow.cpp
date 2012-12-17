@@ -1,26 +1,16 @@
 #include "MainWindow.h"
 
-namespace ZeroMS
-{
-
-namespace Demo
-{
-
-namespace HashTools
-{
+namespace ZeroMS {
+namespace Demo {
+namespace HashTools {
 
 #include "ui_MainWindow.h"
 
-}   //namespace HashTools
-
-}   //namespace Demo
-
-}   //namespace ZeroMS
-
+}}}   // namespace ZeroMS::Demo::HashTools
 
 #include "Base/Auth/Hash.h"
 
-using namespace ZeroMS::Auth;
+using namespace ZeroMS::Base::Auth;
 using namespace ZeroMS::Demo::HashTools;
 
 MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new ::Ui::MainWindow)

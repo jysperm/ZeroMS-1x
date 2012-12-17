@@ -3,11 +3,9 @@
 
 #include <QString>
 
-namespace ZeroMS
-{
-
-namespace Auth
-{
+namespace ZeroMS {
+namespace Base {
+namespace Auth {
 
 class MD5
 {
@@ -58,8 +56,29 @@ private:
     SHAPrivate *data;
 };
 
-}   //namespace Auth
+}}}   // namespace ZeroMS::Base::Auth
 
-}   //namespace ZeroMS
+#ifdef QT_TESTLIB_LIB
+
+#include <QObject>
+
+namespace ZeroMS {
+namespace UnitTest {
+namespace Base {
+namespace Auth {
+
+class HashTest : public QObject
+{
+    Q_OBJECT
+public:
+    HashTest();
+private slots:
+    void testMD5();
+    void testSHA();
+};
+
+}}}}    // namespace ZeroMS::UnitTest::Base::Auth
+
+#endif
 
 #endif // ZEROMS_BASE_AUTH_HASH_H

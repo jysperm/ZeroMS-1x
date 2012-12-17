@@ -1,11 +1,9 @@
 #include <openssl/sha.h>
 #include "Hash.h"
 
-namespace ZeroMS
-{
-
-namespace Auth
-{
+namespace ZeroMS {
+namespace Base {
+namespace Auth {
 
 class SHA::SHAPrivate
 {
@@ -227,6 +225,4 @@ int SHA::digestLength(SHAType type)
     return -1;
 }
 
-}   //namespace Auth
-
-}   //namespace ZeroMS
+}}}   // namespace ZeroMS::Base::Auth

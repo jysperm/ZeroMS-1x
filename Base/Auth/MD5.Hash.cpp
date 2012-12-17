@@ -1,11 +1,9 @@
 #include <openssl/md5.h>
 #include "Hash.h"
 
-namespace ZeroMS
-{
-
-namespace Auth
-{
+namespace ZeroMS {
+namespace Base {
+namespace Auth {
 
 class MD5::MD5Private
 {
@@ -75,6 +73,4 @@ QByteArray MD5::md5(const QByteArray data)
     return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH);
 }
 
-}   //namespace Auth
-
-}   //namespace ZeroMS
+}}}   // namespace ZeroMS::Base::Auth
