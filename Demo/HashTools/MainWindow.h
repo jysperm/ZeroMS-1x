@@ -3,14 +3,9 @@
 
 #include <QtGui>
 
-namespace ZeroMS
-{
-
-namespace Demo
-{
-
-namespace HashTools
-{
+namespace ZeroMS {
+namespace Demo {
+namespace HashTools {
 
 namespace Ui {
 class MainWindow;
@@ -36,10 +31,6 @@ private:
     Ui::MainWindow *ui;
 };
 
-}   //namespace HashTools
-
-}   //namespace Demo
-
-}   //namespace ZeroMS
+}}}   //namespace ZeroMS::Demo::HashTools
 
 #endif // MAINWINDOW_H
