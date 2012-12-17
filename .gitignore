@@ -1,8 +1,11 @@
-﻿# Linux
+# Linux
 *~
 
 # Winodws
 Thumbs.db
+
+# OS X
+.DS_Store
 
 *.exe
 
