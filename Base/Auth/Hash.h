@@ -73,8 +73,10 @@ class HashTest : public QObject
 public:
     HashTest();
 private slots:
-    void testMD5();
+    void testMD5_md5();
     void testSHA();
+
+    void testMD5_md5_data();
 };
 
 }}}}    // namespace ZeroMS::UnitTest::Base::Auth
