@@ -40,7 +40,7 @@ QByteArray MD5::result()
     MD5_Final(out,&this->data->data);
     this->isFinal=true;
 
-    return QByteArray(reinterpret_cast<const char*>(out),20);
+    return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH);
 }
 
 void MD5::clear()

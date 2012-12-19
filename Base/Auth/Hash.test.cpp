@@ -22,7 +22,40 @@ void HashTest::testMD5_md5()
     QFETCH(QString,text);
     QFETCH(QString,hash);
 
+    QByteArray bText;
+    bText.append(text);
+    QByteArray bHash;
+    bHash.append(hash);
+    bHash=QByteArray::fromHex(bHash);
+
     QCOMPARE(MD5::md5(text),hash);
+    QCOMPARE(MD5::md5(bText),bHash);
+}
+
+void HashTest::testMD5_MD5()
+{
+    using namespace ZeroMS::Base::Auth;
+
+    MD5 md5;
+
+    QString total;
+
+    for(int i=0;i<10;i++)
+    {
+        QString str=TestTools::randString(i*100);
+
+        total.append(str);
+
+        QByteArray bStr;
+        bStr.append(str);
+
+        md5.append(bStr);
+    }
+
+    QByteArray bTotal;
+    bTotal.append(total);
+
+    QCOMPARE(md5.result(),MD5::md5(bTotal));
 }
 
 void HashTest::testSHA()
