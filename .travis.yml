@@ -11,4 +11,4 @@ before_install:
 
 script: 
   - bash ./UnitTest/Travis/make.sh
-  - ./UnitTest/ZeroMSUnitTestTest
+  - bash ./UnitTest/Travis/test.sh
