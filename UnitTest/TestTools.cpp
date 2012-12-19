@@ -23,4 +23,11 @@ QString TestTools::randString(int length)
     return str;
 }
 
+QByteArray TestTools::toQByteArray(const QString str)
+{
+    QByteArray ba;
+    ba.append(str);
+    return ba;
+}
+
 }}  // ZeroMS::UnitTest

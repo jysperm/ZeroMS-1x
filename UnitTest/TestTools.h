@@ -11,6 +11,7 @@ class TestTools
 public:
     TestTools();
     static QString randString(int length);
+    static QByteArray toQByteArray(const QString str);
 };
 
 }}  // ZeroMS::UnitTest

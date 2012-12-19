@@ -99,7 +99,7 @@ QByteArray SHA::result()
     switch(this->type)
     {
     case SHA1:
-        SHA_Final(out,&dynamic_cast<SHA1Private*>(this->data)->data);
+        SHA1_Final(out,&dynamic_cast<SHA1Private*>(this->data)->data);
         break;
     case SHA224:
         SHA224_Final(out,&dynamic_cast<SHA256Private*>(this->data)->data);
@@ -158,7 +158,7 @@ QString SHA::sha(const QString data,SHAType type)
     switch(type)
     {
     case SHA1:
-        ::SHA(cucData,data.toUtf8().size(),out);
+        ::SHA1(cucData,data.toUtf8().size(),out);
         break;
     case SHA224:
         ::SHA224(cucData,data.toUtf8().size(),out);
@@ -188,7 +188,7 @@ QByteArray SHA::sha(const QByteArray data,SHAType type)
     switch(type)
     {
     case SHA1:
-        ::SHA(cucData,data.size(),out);
+        ::SHA1(cucData,data.size(),out);
         break;
     case SHA224:
         ::SHA224(cucData,data.size(),out);

@@ -75,9 +75,11 @@ public:
 private slots:
     void testMD5_md5();
     void testMD5_MD5();
-    void testSHA();
+    void testSHA_sha();
+    void testSHA_SHA();
 
     void testMD5_md5_data();
+    void testSHA_sha_data();
 };
 
 }}}}    // namespace ZeroMS::UnitTest::Base::Auth
