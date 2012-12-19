@@ -11,9 +11,7 @@ TestTools::TestTools()
 QString TestTools::randString(int length)
 {
     QString charList = QString("0123456789ABCDEFGHIJKLMNOPQRSTUVWZYZ");
-    QString str = QString();
-    QTime t;
-    t= QTime::currentTime();
+    QString str;
     qsrand(QTime::currentTime().second() * QTime::currentTime().msec());
     for(int i=0;i<length;i++)
     {
