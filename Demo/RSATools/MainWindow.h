@@ -1,7 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtGui>
+
+namespace ZeroMS {
+namespace Demo {
+namespace RSATools {
 
 namespace Ui {
 class MainWindow;
@@ -18,5 +22,7 @@ public:
 private:
     Ui::MainWindow *ui;
 };
+
+}}}   //namespace ZeroMS::Demo::RSATools
 
 #endif // MAINWINDOW_H

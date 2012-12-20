@@ -1,3 +1,4 @@
+#include "Base/Auth/Hash.h"
 #include "MainWindow.h"
 
 namespace ZeroMS {
@@ -6,14 +7,10 @@ namespace HashTools {
 
 #include "ui_MainWindow.h"
 
-}}}   // namespace ZeroMS::Demo::HashTools
+using namespace ::ZeroMS::Base::Auth;
+using namespace ::ZeroMS::Demo::HashTools;
 
-#include "Base/Auth/Hash.h"
-
-using namespace ZeroMS::Base::Auth;
-using namespace ZeroMS::Demo::HashTools;
-
-MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new ::Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent):QMainWindow(parent),ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 }
@@ -52,3 +49,5 @@ void MainWindow::on_actionSHA512_triggered()
 {
     ui->hashResult->append(SHA::sha(ui->source->toPlainText(),SHA::SHA512));
 }
+
+}}}   // namespace ZeroMS::Demo::HashTools
