@@ -2,5 +2,4 @@
 
 cd UnitTest/
 ./ZeroMSUnitTestTest | tee output
-grep "^FAIL!" output 
-exit $?
+exit `grep '^FAIL!' output | wc -l`
