@@ -153,7 +153,7 @@ void HashTest::testSHA_sha_data()
     QTest::addColumn<QString>("sha384");
     QTest::addColumn<QString>("sha512");
 
-    QTest::newRow("English")<<"jybox"<<"84784aa06ef166742e546c5f65642d95c6e95892"
+    QTest::newRow("English")<<"jybox"<<"84784aa06ef166742e546c5f65642d95c6e958920"
                             <<"4da591f87c7870a84a507a7441bc1a1763c3b8fcb24c85403ab7b610"
                             <<"a9af99a4bde423121f626c8c214aed71c873ff80e7f309ef6c87d6ae40c4a1fd"
                             <<"abd1e6761774fb306937f671ab1e834905a8a7b0abb2639c779dc0169df489e8eab9b3ab1f736e0e9a9efde0e6cb46bb"

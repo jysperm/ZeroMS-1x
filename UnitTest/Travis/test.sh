@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 cd UnitTest/
 ./ZeroMSUnitTestTest | tee output
