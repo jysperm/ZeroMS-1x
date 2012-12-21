@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ZEROMS_DEMO_RSATOOLS_MAINWINDOW_H
+#define ZEROMS_DEMO_RSATOOLS_MAINWINDOW_H
 
 #include <QtGui>
 
@@ -19,10 +19,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+private slots:
+    void on_actionMakeKeyPair_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
 
 }}}   //namespace ZeroMS::Demo::RSATools
 
-#endif // MAINWINDOW_H
+#endif // ZEROMS_DEMO_RSATOOLS_MAINWINDOW_H

@@ -1,5 +1,6 @@
 #include "Base/Auth/Hash.h"
 #include "MainWindow.h"
+#include "Base/Auth/RSA.h"
 
 namespace ZeroMS {
 namespace Demo {
@@ -19,4 +20,14 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::on_actionMakeKeyPair_triggered()
+{
+    QPair<RSAPrivateKey,RSAPublicKey> pair=RSA::makeKeyPair();
+    pair.first.print(stdout);
+    pair.second.print(stdout);
+}
+
 }}}   // namespace ZeroMS::Demo::RSATools
+
+

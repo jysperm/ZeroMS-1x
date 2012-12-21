@@ -10,7 +10,7 @@ namespace Auth {
 class MD5
 {
 public:
-    MD5();
+    explicit MD5();
     ~MD5();
 
     void append(const QByteArray data);
@@ -34,7 +34,7 @@ public:
         SHA1,SHA224,SHA256,SHA384,SHA512
     };
 
-    SHA(SHAType type=SHA1);
+    explicit SHA(SHAType type=SHA1);
     ~SHA();
 
     void append(const QByteArray data);

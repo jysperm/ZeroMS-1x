@@ -14,11 +14,13 @@ TEMPLATE = app
 
 INCLUDEPATH += ../../
 
-LIBS+= -lcrypto -lssl
+LIBS+= -lcrypto -lssl -lgdi32
 
 SOURCES += main.cpp\
-        MainWindow.cpp
+        MainWindow.cpp \
+    ../../Base/Auth/RSA.cpp
 
-HEADERS  += MainWindow.h
+HEADERS  += MainWindow.h \
+    ../../Base/Auth/RSA.h
 
 FORMS    += MainWindow.ui

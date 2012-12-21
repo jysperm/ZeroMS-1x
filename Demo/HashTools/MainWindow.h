@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ZEROMS_DEMO_HASHTOOLS_MAINWINDOW_H
+#define ZEROMS_DEMO_HASHTOOLS_MAINWINDOW_H
 
 #include <QtGui>
 
@@ -33,4 +33,4 @@ private:
 
 }}}   //namespace ZeroMS::Demo::HashTools
 
-#endif // MAINWINDOW_H
+#endif // ZEROMS_DEMO_HASHTOOLS_MAINWINDOW_H
