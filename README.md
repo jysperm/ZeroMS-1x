@@ -20,7 +20,7 @@ Wiki： <https://github.com/jybox/ZeroMS/wiki>
 
 ### 技术细节
 预计支持平台： Windows、Linux、Mac OS、Android、iOS  
-主要应用技术：IPv6、C++11、加密和数字签名
+主要应用技术：IPv6、C++11、加密和数字签名  
 主要使用的库：Qt5、openssl
 
 ### 目前进度
