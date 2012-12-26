@@ -40,13 +40,6 @@ RSAKey &RSAKey::operator =(const RSAKey &other)
     return *this;
 }
 
-/*!
- * \brief RSAKey::RSAKey
- * \param key
- *
- *  key中的::RSA的所有权将被转移到该类，而不是复制
- */
-
 RSAKey::RSAKey(RSAKeyPrivate *key)
 {
     this->data=new RSAKeyPrivate;

@@ -1,0 +1,19 @@
+﻿project = ZeroMS
+
+outputdir = html
+
+defines = Q_QDOC
+
+indexes = $QT_INSTALL_DOCS/html/qt.index
+
+outputencoding = UTF-8
+sourceencoding = UTF-8
+naturallanguage = zh-Hans
+
+headerdirs = ../
+sourcedirs = ../
+
+sources.fileextensions = "*.cpp *.qdoc"
+headers.fileextensions = "*.h"
+
+HTML.stylesheets = style.css
