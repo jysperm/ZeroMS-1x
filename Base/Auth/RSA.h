@@ -7,11 +7,11 @@ namespace ZeroMS {
 namespace Base {
 namespace Auth {
 
-class RSA;
+class RSAKeyMaker;
 
 class RSAKey
 {
-    friend class RSA;
+    friend class RSAKeyMaker;
 public:
     enum PublicExp
     {
@@ -20,31 +20,38 @@ public:
 
     RSAKey();
     RSAKey(const RSAKey &other);
+    RSAKey &operator =(const RSAKey &other);
     virtual ~RSAKey();
 
-    void print(FILE *file);
+    QString print();
 protected:
     class RSAKeyPrivate;
     RSAKey(RSAKeyPrivate *key);
-private:
     RSAKeyPrivate *data;
 };
 
 class RSAPrivateKey : public RSAKey
 {
-    friend class RSA;
+    friend class RSAKeyMaker;
+public:
+    RSAPrivateKey():RSAKey(){}
+    QByteArray toPEM(QString passwd="passwd");
+    bool isValid();
 private:
     RSAPrivateKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
 };
 
 class RSAPublicKey : public RSAKey
 {
-    friend class RSA;
+    friend class RSAKeyMaker;
+public:
+    RSAPublicKey():RSAKey(){}
+    QByteArray toPEM();
 private:
     RSAPublicKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
 };
 
-class RSA
+class RSAKeyMaker
 {
 public:
     static QPair<RSAPrivateKey,RSAPublicKey> makeKeyPair(int bits=2048,RSAKey::PublicExp publicExp=RSAKey::RSAF4);

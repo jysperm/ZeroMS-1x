@@ -28,6 +28,8 @@
      <string>密钥管理</string>
     </property>
     <addaction name="actionMakeKeyPair"/>
+    <addaction name="actionSavePriKeyToFile"/>
+    <addaction name="actionSavePubKeyToFile"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -46,6 +48,16 @@
    </property>
    <property name="toolTip">
     <string>生成密钥对</string>
+   </property>
+  </action>
+  <action name="actionSavePriKeyToFile">
+   <property name="text">
+    <string>保存私钥到文件</string>
+   </property>
+  </action>
+  <action name="actionSavePubKeyToFile">
+   <property name="text">
+    <string>保存公钥到文件</string>
    </property>
   </action>
  </widget>
