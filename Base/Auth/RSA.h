@@ -37,6 +37,8 @@ public:
     RSAPrivateKey():RSAKey(){}
     QByteArray toPEM(QString passwd="passwd");
     bool isValid();
+
+    static RSAPrivateKey fromPEM(QByteArray pem,QString passwd="passwd");
 private:
     RSAPrivateKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
 };
@@ -47,6 +49,8 @@ class RSAPublicKey : public RSAKey
 public:
     RSAPublicKey():RSAKey(){}
     QByteArray toPEM();
+
+    static RSAPublicKey fromPEM(QByteArray pem);
 private:
     RSAPublicKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
 };

@@ -1,6 +1,6 @@
 #include "Base/Auth/Hash.h"
-#include "MainWindow.h"
 #include "Base/Auth/RSA.h"
+#include "MainWindow.h"
 
 namespace ZeroMS {
 namespace Demo {
@@ -33,32 +33,70 @@ void MainWindow::on_actionMakeKeyPair_triggered()
 
 void MainWindow::on_actionSavePriKeyToFile_triggered()
 {
-    if(!this->isHasKeyPair)
-    {
-        QMessageBox::critical(this,tr("错误"),tr("还没载入密钥对"));
-        return;
-    }
     QString filename=QFileDialog::getSaveFileName(this,tr("保存私钥"));
 
-    QFile f(filename);
-    f.open(QFile::WriteOnly);
-    f.write(this->priKey.toPEM());
-    f.close();
+    if(!filename.isEmpty())
+    {
+        QFile f(filename);
+        f.open(QFile::WriteOnly);
+        f.write(this->priKey.toPEM());
+        f.close();
+    }
 }
 
 void MainWindow::on_actionSavePubKeyToFile_triggered()
 {
-    if(!this->isHasKeyPair)
-    {
-        QMessageBox::critical(this,tr("错误"),tr("还没载入密钥对"));
-        return;
-    }
     QString filename=QFileDialog::getSaveFileName(this,tr("保存公钥"));
 
-    QFile f(filename);
-    f.open(QFile::WriteOnly);
-    f.write(this->pubKey.toPEM());
-    f.close();
+    if(!filename.isEmpty())
+    {
+        QFile f(filename);
+        f.open(QFile::WriteOnly);
+        f.write(this->pubKey.toPEM());
+        f.close();
+    }
+}
+
+void MainWindow::on_actionReadPriKeyFromFile_triggered()
+{
+    QString filename=QFileDialog::getOpenFileName(this,tr("读取私钥"));
+
+    if(!filename.isEmpty())
+    {
+        QFile f(filename);
+        f.open(QFile::ReadOnly);
+        this->priKey=RSAPrivateKey::fromPEM(f.readAll());
+        f.close();
+    }
+}
+
+void MainWindow::on_actionReadPubKeyFromFile_triggered()
+{
+    QString filename=QFileDialog::getOpenFileName(this,tr("读取公钥"));
+
+    if(!filename.isEmpty())
+    {
+        QFile f(filename);
+        f.open(QFile::ReadOnly);
+        this->pubKey=RSAPublicKey::fromPEM(f.readAll());
+        f.close();
+    }
+}
+
+void MainWindow::on_actionValiy_triggered()
+{
+    //TODO：当私钥无效时(即刚打开程序时), 会直接崩溃.
+    QMessageBox::information(this,tr("验证私钥"),(this->priKey.isValid()?tr("私钥有效"):tr("私钥无效")));
+}
+
+void MainWindow::on_actionPriKeyInfo_triggered()
+{
+    this->ui->textOut->append(this->priKey.print());
+}
+
+void MainWindow::on_actionPubKeyInfo_triggered()
+{
+    this->ui->textOut->append(this->pubKey.print());
 }
 
 }}}   // namespace ZeroMS::Demo::RSATools

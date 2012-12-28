@@ -6,20 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>691</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTextEdit" name="textOut"/>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>691</width>
      <height>23</height>
     </rect>
    </property>
@@ -28,8 +34,17 @@
      <string>密钥管理</string>
     </property>
     <addaction name="actionMakeKeyPair"/>
+    <addaction name="separator"/>
     <addaction name="actionSavePriKeyToFile"/>
     <addaction name="actionSavePubKeyToFile"/>
+    <addaction name="separator"/>
+    <addaction name="actionReadPriKeyFromFile"/>
+    <addaction name="actionReadPubKeyFromFile"/>
+    <addaction name="separator"/>
+    <addaction name="actionValiy"/>
+    <addaction name="separator"/>
+    <addaction name="actionPriKeyInfo"/>
+    <addaction name="actionPubKeyInfo"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -58,6 +73,46 @@
   <action name="actionSavePubKeyToFile">
    <property name="text">
     <string>保存公钥到文件</string>
+   </property>
+  </action>
+  <action name="actionValiy">
+   <property name="text">
+    <string>验证私钥</string>
+   </property>
+   <property name="toolTip">
+    <string>验证私钥</string>
+   </property>
+  </action>
+  <action name="actionReadPriKeyFromFile">
+   <property name="text">
+    <string>从文件读取私钥</string>
+   </property>
+   <property name="toolTip">
+    <string>从文件读取私钥</string>
+   </property>
+  </action>
+  <action name="actionReadPubKeyFromFile">
+   <property name="text">
+    <string>从文件读取公钥</string>
+   </property>
+   <property name="toolTip">
+    <string>从文件读取公钥</string>
+   </property>
+  </action>
+  <action name="actionPriKeyInfo">
+   <property name="text">
+    <string>私钥信息</string>
+   </property>
+   <property name="toolTip">
+    <string>私钥信息</string>
+   </property>
+  </action>
+  <action name="actionPubKeyInfo">
+   <property name="text">
+    <string>公钥信息</string>
+   </property>
+   <property name="toolTip">
+    <string>公钥信息</string>
    </property>
   </action>
  </widget>

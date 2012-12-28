@@ -72,6 +72,7 @@ QByteArray RSAPrivateKey::toPEM(QString passwd)
 {
     BIO *bio=BIO_new(BIO_s_mem());
 
+    //TODO:调研去掉下一行是否可以正常工作
     OpenSSL_add_all_algorithms();
 
     EVP_PKEY *evpkey=EVP_PKEY_new();
@@ -102,6 +103,31 @@ bool RSAPrivateKey::isValid()
     return RSA_check_key(this->data->data);
 }
 
+RSAPrivateKey RSAPrivateKey::fromPEM(QByteArray pem,QString passwd)
+{
+    BIO *bio=BIO_new(BIO_s_mem());
+
+    //TODO:调研去掉下一行是否可以正常工作
+    OpenSSL_add_all_algorithms();
+
+    BIO_write(bio,pem.constData(),pem.size());
+
+    EVP_PKEY *evpkey=PEM_read_bio_PrivateKey(bio,NULL,NULL,reinterpret_cast<void*>(passwd.toUtf8().data()));
+
+    ::RSA *rsa=EVP_PKEY_get1_RSA(evpkey);
+
+    ::RSA *priRsa=RSAPrivateKey_dup(rsa);
+
+    RSAKeyPrivate *pKey=new RSAKeyPrivate;
+    pKey->data=priRsa;
+
+    EVP_PKEY_free(evpkey);
+    BIO_free(bio);
+    RSA_free(rsa);
+
+    return RSAPrivateKey(pKey);
+}
+
 QByteArray RSAPublicKey::toPEM()
 {
     BIO *bio=BIO_new(BIO_s_mem());
@@ -117,6 +143,27 @@ QByteArray RSAPublicKey::toPEM()
     BIO_free(bio);
 
     return ba;
+}
+
+RSAPublicKey RSAPublicKey::fromPEM(QByteArray pem)
+{
+    BIO *bio=BIO_new(BIO_s_mem());
+
+    BIO_write(bio,pem.constData(),pem.size());
+
+    qDebug()<<BIO_ctrl_pending(bio);
+
+    ::RSA *rsa=PEM_read_bio_RSAPublicKey(bio,NULL,NULL,NULL);
+
+    ::RSA *pubRsa=RSAPublicKey_dup(rsa);
+
+    RSAKeyPrivate *pKey=new RSAKeyPrivate;
+    pKey->data=pubRsa;
+
+    BIO_free(bio);
+    RSA_free(rsa);
+
+    return RSAPublicKey(pKey);
 }
 
 QPair<RSAPrivateKey,RSAPublicKey> RSAKeyMaker::makeKeyPair(int bits,RSAKey::PublicExp publicExp)

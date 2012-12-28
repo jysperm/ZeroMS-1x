@@ -27,6 +27,16 @@ private slots:
 
     void on_actionSavePubKeyToFile_triggered();
 
+    void on_actionValiy_triggered();
+
+    void on_actionReadPriKeyFromFile_triggered();
+
+    void on_actionPriKeyInfo_triggered();
+
+    void on_actionReadPubKeyFromFile_triggered();
+
+    void on_actionPubKeyInfo_triggered();
+
 private:
     Ui::MainWindow *ui;
     bool isHasKeyPair;
