@@ -5,6 +5,10 @@ namespace ZeroMS {
 namespace Base {
 namespace Auth {
 
+/*
+    纯粹用于包装来自openssl的MD5_CTX
+*/
+
 class MD5::MD5Private
 {
 public:
@@ -87,7 +91,7 @@ void MD5::clear()
 /*!
     \overload md5()
 
-    该函数返回的是十六进制字符串格式的散列值.
+    该函数返回的是转换为十六进制字符串格式的散列值.
 */
 
 QString MD5::md5(const QString data)

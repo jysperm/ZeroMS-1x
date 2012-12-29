@@ -58,7 +58,10 @@ private:
     SHAPrivate *data;
 };
 
+#ifndef Q_QDOC
 }}}   // namespace ZeroMS::Base::Auth
+#endif
+
 
 #ifdef QT_TESTLIB_LIB
 
@@ -84,9 +87,7 @@ private slots:
     void testSHA_sha_data();
 };
 
-#ifndef Q_QDOC
 }}}}    // namespace ZeroMS::UnitTest::Base::Auth
-#endif
 
 #endif  // QT_TESTLIB_LIB
 

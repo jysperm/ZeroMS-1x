@@ -5,9 +5,10 @@ compiler:
 before_install:
   - sudo apt-get update -qq > /dev/null 2>&1
   - sudo apt-get install -qq qt4-dev-tools g++ > /dev/null
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
 
 script: 
   - bash ./UnitTest/Travis/make.sh
   - bash ./UnitTest/Travis/test.sh
+  
