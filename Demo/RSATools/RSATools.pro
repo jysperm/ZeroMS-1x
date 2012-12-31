@@ -14,7 +14,11 @@ TEMPLATE = app
 
 INCLUDEPATH += ../../
 
-LIBS+= -lcrypto -lssl -lgdi32
+win32{
+LIBS+= -lgdi32
+}
+
+LIBS+= -lcrypto -lssl
 
 SOURCES += main.cpp\
         MainWindow.cpp \
