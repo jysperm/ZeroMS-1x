@@ -2,6 +2,7 @@
 #define ZEROMS_DEMO_RSATOOLS_MAINWINDOW_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include "Base/Auth/RSA.h"
 
 namespace ZeroMS {

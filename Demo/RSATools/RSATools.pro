@@ -6,6 +6,8 @@
 
 QT       += core gui
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 CONFIG += c++11
 QMAKE_CXXFLAGS += -std=c++0x
 
@@ -14,11 +16,13 @@ TEMPLATE = app
 
 INCLUDEPATH += ../../
 
+
+
+LIBS+= -lcrypto -lssl
+
 win32{
 LIBS+= -lgdi32
 }
-
-LIBS+= -lcrypto -lssl
 
 SOURCES += main.cpp\
         MainWindow.cpp \

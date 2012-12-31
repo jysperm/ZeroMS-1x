@@ -2,6 +2,7 @@
 #define ZEROMS_DEMO_HASHTOOLS_MAINWINDOW_H
 
 #include <QtGui>
+#include <QtWidgets>
 
 namespace ZeroMS {
 namespace Demo {
