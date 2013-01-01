@@ -23,11 +23,11 @@ LIBS+= -lcrypto -lssl
 
 
 SOURCES += \
-    ZeroMSUnitTest.cpp \
     ../Base/Auth/Hash.test.cpp \
     TestTools.cpp \
     ../Base/Auth/SHA.Hash.cpp \
-    ../Base/Auth/MD5.Hash.cpp
+    ../Base/Auth/MD5.Hash.cpp \
+    main.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 HEADERS += \

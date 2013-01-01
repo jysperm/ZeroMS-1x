@@ -1,4 +1,4 @@
-#include <QtWidgets/QApplication>
+#include <QApplication>
 #include <QtTest>
 
 #if QT_VERSION < 0x050000
