@@ -26,9 +26,11 @@ LIBS+= -lgdi32
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    ../../Base/Auth/RSA.cpp
+    ../../Base/Auth/RSA.cpp \
+    ../../Base/Exception.cpp
 
 HEADERS  += MainWindow.h \
-    ../../Base/Auth/RSA.h
+    ../../Base/Auth/RSA.h \
+    ../../Base/Exception.h
 
 FORMS    += MainWindow.ui
