@@ -1,5 +1,8 @@
 #include "Exception.h"
 
+namespace ZeroMS {
+namespace Base {
+
 /*!
     \class Exception
     \brief 异常基类
@@ -19,14 +22,30 @@
     \class ArgumentException
     \brief 参数异常
 
+    模仿 \c std::runtime_error 的行为.
     用于传递给函数的参数不符合要求时，偏向于可在编写时避免.
 */
+
+ArgumentException::ArgumentException(std::string msg):msg(msg)
+{
+
+}
+
+ArgumentException::~ArgumentException() throw()
+{
+
+}
+
+const char *ArgumentException::what() const throw()
+{
+    return this->msg.c_str();
+}
 
 /*!
     \class RuntimeException
     \brief 运行时异常
 
-    是 \c std::logic_error 的 \c typdef .
+    是 \c std::runtime_error 的 \c typdef .
     用于不可预测的运行时错误.
 */
 
@@ -66,3 +85,4 @@
     \brief 用户输入异常
 */
 
+}}  // namespace ZeroMS::Base

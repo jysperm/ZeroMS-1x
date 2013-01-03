@@ -14,7 +14,12 @@ typedef ::std::runtime_error RuntimeException;
 
 class ArgumentException : public Exception
 {
-
+public:
+    explicit ArgumentException(std::string msg);
+    virtual ~ArgumentException() throw();
+    virtual const char* what() const throw();
+private:
+    std::string msg;
 };
 
 class RangeException : public ArgumentException

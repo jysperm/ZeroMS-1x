@@ -2,6 +2,7 @@
 #define ZEROMS_BASE_AUTH_RSA_H
 
 #include <QPair>
+#include "Base/Exception.h"
 
 namespace ZeroMS {
 namespace Base {
@@ -16,6 +17,12 @@ public:
     enum PublicExp
     {
         RSA3,RSAF4
+    };
+
+    class InvalidKeyException : public LogicException
+    {
+    public:
+        explicit InvalidKeyException():LogicException(""){}
     };
 
     RSAKey();

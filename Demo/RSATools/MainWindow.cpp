@@ -101,9 +101,15 @@ void MainWindow::on_actionPubKeyInfo_triggered()
 
 void MainWindow::on_actionGetSize_triggered()
 {
-    QMessageBox::information(this,tr("密钥长度"),QString("私钥长度：%1 bit\n公钥长度：%2 bit")
-                                               .arg(QString::number(this->priKey.size()*8))
-                                               .arg(QString::number(this->pubKey.size()*8)));
+    try{
+        QMessageBox::information(this,tr("密钥长度"),QString("私钥长度：%1 bit\n公钥长度：%2 bit")
+                                                   .arg(QString::number(this->priKey.size()*8))
+                                                   .arg(QString::number(this->pubKey.size()*8)));
+    }
+    catch(RSAKey::InvalidKeyException e)
+    {
+        QMessageBox::information(this,tr("密钥长度"),tr("密钥无效"));
+    }
 }
 
 void MainWindow::on_actionPublicEncrypt_triggered()

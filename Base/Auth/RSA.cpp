@@ -54,6 +54,8 @@ RSAKey::~RSAKey()
 
 int RSAKey::size()
 {
+    if(!this->data->rsa->n)
+        throw InvalidKeyException();
     return RSA_size(this->data->rsa);
 }
 
