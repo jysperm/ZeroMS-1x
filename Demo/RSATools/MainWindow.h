@@ -33,6 +33,12 @@ private slots:
     void on_actionReadPubKeyFromFile_triggered();
     void on_actionPubKeyInfo_triggered();
 
+    void on_actionGetSize_triggered();
+
+    void on_actionPublicEncrypt_triggered();
+
+    void on_actionPrivateDecrypt_triggered();
+
 private:
     Ui::MainWindow *ui;
     bool isHasKeyPair;

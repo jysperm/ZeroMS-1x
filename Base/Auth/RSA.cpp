@@ -12,20 +12,20 @@ namespace Auth {
 class RSAKey::RSAKeyPrivate
 {
 public:
-    ::RSA *data;
+    ::RSA *rsa;
 };
 
 RSAKey::RSAKey()
 {
     this->data=new RSAKeyPrivate;
-    this->data->data=RSA_new();
+    this->data->rsa=RSA_new();
 }
 
 RSAKey::RSAKey(const RSAKey &other)
 {
     this->data=new RSAKeyPrivate;
-    this->data->data=other.data->data;
-    RSA_up_ref(this->data->data);
+    this->data->rsa=other.data->rsa;
+    RSA_up_ref(this->data->rsa);
 }
 
 RSAKey &RSAKey::operator =(const RSAKey &other)
@@ -33,9 +33,9 @@ RSAKey &RSAKey::operator =(const RSAKey &other)
     if(this==&other)
         return *this;
 
-    RSA_free(this->data->data);
-    this->data->data=other.data->data;
-    RSA_up_ref(this->data->data);
+    RSA_free(this->data->rsa);
+    this->data->rsa=other.data->rsa;
+    RSA_up_ref(this->data->rsa);
 
     return *this;
 }
@@ -43,19 +43,24 @@ RSAKey &RSAKey::operator =(const RSAKey &other)
 RSAKey::RSAKey(RSAKeyPrivate *key)
 {
     this->data=new RSAKeyPrivate;
-    this->data->data=key->data;
+    this->data->rsa=key->rsa;
 }
 
 RSAKey::~RSAKey()
 {
-    RSA_free(this->data->data);
+    RSA_free(this->data->rsa);
     delete this->data;
+}
+
+int RSAKey::size()
+{
+    return RSA_size(this->data->rsa);
 }
 
 QString RSAKey::print()
 {
     BIO *bio=BIO_new(BIO_s_mem());
-    RSA_print(bio,this->data->data,0);
+    RSA_print(bio,this->data->rsa,0);
 
     int len=BIO_ctrl_pending(bio);
     char *out=new char[len];
@@ -76,8 +81,8 @@ QByteArray RSAPrivateKey::toPEM(QString passwd)
     OpenSSL_add_all_algorithms();
 
     EVP_PKEY *evpkey=EVP_PKEY_new();
-    EVP_PKEY_assign_RSA(evpkey,this->data->data);
-    RSA_up_ref(this->data->data);
+    EVP_PKEY_assign_RSA(evpkey,this->data->rsa);
+    RSA_up_ref(this->data->rsa);
 
     PEM_write_bio_PrivateKey(bio,
                              evpkey,EVP_des_ede3_cbc(),
@@ -100,7 +105,30 @@ QByteArray RSAPrivateKey::toPEM(QString passwd)
 
 bool RSAPrivateKey::isValid()
 {
-    return RSA_check_key(this->data->data);
+    if(!this->data->rsa->n)
+        return false;
+    return RSA_check_key(this->data->rsa);
+}
+
+QByteArray RSAPrivateKey::decrypt(QByteArray data)
+{
+    int rsaSize=this->size();
+    int blocks=data.size()/rsaSize;
+
+    QByteArray result;
+
+    for(int i=0;i<blocks;i++)
+    {
+        unsigned char *from=i*rsaSize+reinterpret_cast<unsigned char*>(data.data());
+        unsigned char *to=new unsigned char[rsaSize];
+
+        int len=RSA_private_decrypt(rsaSize,from,to,this->data->rsa,RSA_PKCS1_PADDING);
+
+        result.append(reinterpret_cast<const char*>(to),len);
+        delete [] to;
+    }
+
+    return result;
 }
 
 RSAPrivateKey RSAPrivateKey::fromPEM(QByteArray pem,QString passwd)
@@ -119,7 +147,7 @@ RSAPrivateKey RSAPrivateKey::fromPEM(QByteArray pem,QString passwd)
     ::RSA *priRsa=RSAPrivateKey_dup(rsa);
 
     RSAKeyPrivate *pKey=new RSAKeyPrivate;
-    pKey->data=priRsa;
+    pKey->rsa=priRsa;
 
     EVP_PKEY_free(evpkey);
     BIO_free(bio);
@@ -132,7 +160,7 @@ QByteArray RSAPublicKey::toPEM()
 {
     BIO *bio=BIO_new(BIO_s_mem());
 
-    PEM_write_bio_RSAPublicKey(bio,this->data->data);
+    PEM_write_bio_RSAPublicKey(bio,this->data->rsa);
 
     int len=BIO_ctrl_pending(bio);
     char *out=new char[len];
@@ -143,6 +171,34 @@ QByteArray RSAPublicKey::toPEM()
     BIO_free(bio);
 
     return ba;
+}
+
+QByteArray RSAPublicKey::encrypt(QByteArray data)
+{
+    int rsaSize=this->size();
+    int blen=rsaSize-11;
+    int blocks=data.size()/blen + 1;
+
+    QByteArray result;
+
+    for(int i=0;i<blocks;i++)
+    {
+        unsigned char *from=i*blen+reinterpret_cast<unsigned char*>(data.data());
+        unsigned char *to=new unsigned char[rsaSize];
+
+        int flen;
+        if(i!=blocks-1)
+            flen=blen;
+        else
+            flen=data.size()%blen;
+
+        RSA_public_encrypt(flen,from,to,this->data->rsa,RSA_PKCS1_PADDING);
+
+        result.append(reinterpret_cast<const char*>(to),rsaSize);
+        delete [] to;
+    }
+
+    return result;
 }
 
 RSAPublicKey RSAPublicKey::fromPEM(QByteArray pem)
@@ -158,7 +214,7 @@ RSAPublicKey RSAPublicKey::fromPEM(QByteArray pem)
     ::RSA *pubRsa=RSAPublicKey_dup(rsa);
 
     RSAKeyPrivate *pKey=new RSAKeyPrivate;
-    pKey->data=pubRsa;
+    pKey->rsa=pubRsa;
 
     BIO_free(bio);
     RSA_free(rsa);
@@ -175,9 +231,9 @@ QPair<RSAPrivateKey,RSAPublicKey> RSAKeyMaker::makeKeyPair(int bits,RSAKey::Publ
     RSA_free(rsa);
 
     RSAKey::RSAKeyPrivate *ppublicRsa=new RSAKey::RSAKeyPrivate;
-    ppublicRsa->data=publicRsa;
+    ppublicRsa->rsa=publicRsa;
     RSAKey::RSAKeyPrivate *pprivateRsa=new RSAKey::RSAKeyPrivate;
-    pprivateRsa->data=privateRsa;
+    pprivateRsa->rsa=privateRsa;
 
     auto pair=qMakePair(RSAPrivateKey(pprivateRsa),RSAPublicKey(ppublicRsa));
 

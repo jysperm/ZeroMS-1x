@@ -23,6 +23,7 @@ public:
     RSAKey &operator =(const RSAKey &other);
     virtual ~RSAKey();
 
+    int size();
     QString print();
 protected:
     class RSAKeyPrivate;
@@ -38,6 +39,9 @@ public:
     QByteArray toPEM(QString passwd="passwd");
     bool isValid();
 
+    QByteArray encrypt(QByteArray data);
+    QByteArray decrypt(QByteArray data);
+
     static RSAPrivateKey fromPEM(QByteArray pem,QString passwd="passwd");
 private:
     RSAPrivateKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
@@ -49,6 +53,9 @@ class RSAPublicKey : public RSAKey
 public:
     RSAPublicKey():RSAKey(){}
     QByteArray toPEM();
+
+    QByteArray encrypt(QByteArray data);
+    QByteArray decrypt(QByteArray data);
 
     static RSAPublicKey fromPEM(QByteArray pem);
 private:

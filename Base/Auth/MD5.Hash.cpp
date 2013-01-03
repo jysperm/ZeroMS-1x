@@ -12,7 +12,7 @@ namespace Auth {
 class MD5::MD5Private
 {
 public:
-    MD5_CTX data;
+    MD5_CTX md5;
 };
 
 /*!
@@ -30,7 +30,7 @@ public:
 MD5::MD5():isFinal(false)
 {
     this->data=new MD5Private;
-    MD5_Init(&this->data->data);
+    MD5_Init(&this->data->md5);
 }
 
 /*!
@@ -52,7 +52,7 @@ void MD5::append(const QByteArray data)
 {
     if(this->isFinal)
         this->clear();
-    MD5_Update(&this->data->data,
+    MD5_Update(&this->data->md5,
                reinterpret_cast<const unsigned char*>(data.constData()),
                data.size());
 }
@@ -70,7 +70,7 @@ QByteArray MD5::result()
 {
     unsigned char out[MD5_DIGEST_LENGTH];
 
-    MD5_Final(out,&this->data->data);
+    MD5_Final(out,&this->data->md5);
     this->isFinal=true;
 
     return QByteArray(reinterpret_cast<const char*>(out),MD5_DIGEST_LENGTH);
@@ -84,7 +84,7 @@ void MD5::clear()
 {
     if(!this->isFinal)
         this->result();
-    MD5_Init(&this->data->data);
+    MD5_Init(&this->data->md5);
     this->isFinal=false;
 }
 

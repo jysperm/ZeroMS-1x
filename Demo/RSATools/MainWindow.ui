@@ -16,6 +16,13 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QTextEdit" name="textIn">
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTextEdit" name="textOut"/>
     </item>
    </layout>
@@ -41,12 +48,21 @@
     <addaction name="actionReadPriKeyFromFile"/>
     <addaction name="actionReadPubKeyFromFile"/>
     <addaction name="separator"/>
+    <addaction name="actionGetSize"/>
     <addaction name="actionValiy"/>
     <addaction name="separator"/>
     <addaction name="actionPriKeyInfo"/>
     <addaction name="actionPubKeyInfo"/>
    </widget>
+   <widget class="QMenu" name="menu_Base64">
+    <property name="title">
+     <string>加解密(Base64)</string>
+    </property>
+    <addaction name="actionPublicEncrypt"/>
+    <addaction name="actionPrivateDecrypt"/>
+   </widget>
    <addaction name="menu"/>
+   <addaction name="menu_Base64"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -113,6 +129,21 @@
    </property>
    <property name="toolTip">
     <string>公钥信息</string>
+   </property>
+  </action>
+  <action name="actionGetSize">
+   <property name="text">
+    <string>密钥长度</string>
+   </property>
+  </action>
+  <action name="actionPublicEncrypt">
+   <property name="text">
+    <string>公钥加密(数据加密)</string>
+   </property>
+  </action>
+  <action name="actionPrivateDecrypt">
+   <property name="text">
+    <string>私钥解密(数据解密)</string>
    </property>
   </action>
  </widget>

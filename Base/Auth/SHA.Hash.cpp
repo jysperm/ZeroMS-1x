@@ -21,19 +21,19 @@ public:
 class SHA::SHA1Private : public SHA::SHAPrivate
 {
 public:
-    SHA_CTX data;
+    SHA_CTX sha;
 };
 
 class SHA::SHA256Private : public SHA::SHAPrivate
 {
 public:
-    SHA256_CTX data;
+    SHA256_CTX sha256;
 };
 
 class SHA::SHA512Private : public SHA::SHAPrivate
 {
 public:
-    SHA512_CTX data;
+    SHA512_CTX sha512;
 };
 
 /*!
@@ -75,23 +75,23 @@ SHA::SHA(SHAType type):isFinal(false),type(type)
     {
     case SHA1:
         this->data=new SHA1Private;
-        SHA1_Init(&dynamic_cast<SHA1Private*>(this->data)->data);
+        SHA1_Init(&dynamic_cast<SHA1Private*>(this->data)->sha);
         break;
     case SHA224:
         this->data=new SHA256Private;
-        SHA224_Init(&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA224_Init(&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA256:
         this->data=new SHA256Private;
-        SHA256_Init(&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA256_Init(&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA384:
         this->data=new SHA512Private;
-        SHA384_Init(&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA384_Init(&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     case SHA512:
         this->data=new SHA512Private;
-        SHA512_Init(&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA512_Init(&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     }
 }
@@ -121,19 +121,19 @@ void SHA::append(const QByteArray data)
     switch(this->type)
     {
     case SHA1:
-        SHA1_Update(&dynamic_cast<SHA1Private*>(this->data)->data,cucData,data.size());
+        SHA1_Update(&dynamic_cast<SHA1Private*>(this->data)->sha,cucData,data.size());
         break;
     case SHA224:
-        SHA224_Update(&dynamic_cast<SHA256Private*>(this->data)->data,cucData,data.size());
+        SHA224_Update(&dynamic_cast<SHA256Private*>(this->data)->sha256,cucData,data.size());
         break;
     case SHA256:
-        SHA256_Update(&dynamic_cast<SHA256Private*>(this->data)->data,cucData,data.size());
+        SHA256_Update(&dynamic_cast<SHA256Private*>(this->data)->sha256,cucData,data.size());
         break;
     case SHA384:
-        SHA384_Update(&dynamic_cast<SHA512Private*>(this->data)->data,cucData,data.size());
+        SHA384_Update(&dynamic_cast<SHA512Private*>(this->data)->sha512,cucData,data.size());
         break;
     case SHA512:
-        SHA512_Update(&dynamic_cast<SHA512Private*>(this->data)->data,cucData,data.size());
+        SHA512_Update(&dynamic_cast<SHA512Private*>(this->data)->sha512,cucData,data.size());
         break;
     }
 }
@@ -156,19 +156,19 @@ QByteArray SHA::result()
     switch(this->type)
     {
     case SHA1:
-        SHA1_Final(out,&dynamic_cast<SHA1Private*>(this->data)->data);
+        SHA1_Final(out,&dynamic_cast<SHA1Private*>(this->data)->sha);
         break;
     case SHA224:
-        SHA224_Final(out,&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA224_Final(out,&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA256:
-        SHA256_Final(out,&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA256_Final(out,&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA384:
-        SHA384_Final(out,&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA384_Final(out,&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     case SHA512:
-        SHA512_Final(out,&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA512_Final(out,&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     }
 
@@ -189,19 +189,19 @@ void SHA::clear()
     switch(this->type)
     {
     case SHA1:
-        SHA1_Init(&dynamic_cast<SHA1Private*>(this->data)->data);
+        SHA1_Init(&dynamic_cast<SHA1Private*>(this->data)->sha);
         break;
     case SHA224:
-        SHA224_Init(&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA224_Init(&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA256:
-        SHA256_Init(&dynamic_cast<SHA256Private*>(this->data)->data);
+        SHA256_Init(&dynamic_cast<SHA256Private*>(this->data)->sha256);
         break;
     case SHA384:
-        SHA384_Init(&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA384_Init(&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     case SHA512:
-        SHA512_Init(&dynamic_cast<SHA512Private*>(this->data)->data);
+        SHA512_Init(&dynamic_cast<SHA512Private*>(this->data)->sha512);
         break;
     }
 
