@@ -7,4 +7,4 @@ qmake ZeroMSUnitTest.pro
 make
 
 cd ../Doc
-qdoc3 ZeroMS.qdocconf
+qdoc ZeroMS.qdocconf
