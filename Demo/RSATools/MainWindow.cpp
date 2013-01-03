@@ -120,4 +120,19 @@ void MainWindow::on_actionPrivateDecrypt_triggered()
     this->ui->textOut->append(this->priKey.decrypt(QByteArray::fromBase64(data)));
 }
 
+void MainWindow::on_actionPrivateEncrypt_triggered()
+{
+    QByteArray data;
+    data.append(this->ui->textIn->toPlainText());
+    this->ui->textOut->append(this->priKey.encrypt(data).toBase64());
+}
+
+void MainWindow::on_actionPublicDecrypt_triggered()
+{
+    QByteArray data;
+    data.append(this->ui->textIn->toPlainText());
+    this->ui->textOut->append(this->pubKey.decrypt(QByteArray::fromBase64(data)));
+}
+
 }}}   // namespace ZeroMS::Demo::RSATools
+

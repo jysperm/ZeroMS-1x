@@ -39,6 +39,10 @@ private slots:
 
     void on_actionPrivateDecrypt_triggered();
 
+    void on_actionPrivateEncrypt_triggered();
+
+    void on_actionPublicDecrypt_triggered();
+
 private:
     Ui::MainWindow *ui;
     bool isHasKeyPair;

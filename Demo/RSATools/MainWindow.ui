@@ -60,6 +60,8 @@
     </property>
     <addaction name="actionPublicEncrypt"/>
     <addaction name="actionPrivateDecrypt"/>
+    <addaction name="actionPrivateEncrypt"/>
+    <addaction name="actionPublicDecrypt"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_Base64"/>
@@ -138,12 +140,28 @@
   </action>
   <action name="actionPublicEncrypt">
    <property name="text">
-    <string>公钥加密(数据加密)</string>
+    <string>公钥加密(加密)</string>
+   </property>
+   <property name="toolTip">
+    <string>公钥加密(加密)</string>
    </property>
   </action>
   <action name="actionPrivateDecrypt">
    <property name="text">
-    <string>私钥解密(数据解密)</string>
+    <string>私钥解密(解密)</string>
+   </property>
+   <property name="toolTip">
+    <string>私钥解密(解密)</string>
+   </property>
+  </action>
+  <action name="actionPrivateEncrypt">
+   <property name="text">
+    <string>私钥加密(签名)</string>
+   </property>
+  </action>
+  <action name="actionPublicDecrypt">
+   <property name="text">
+    <string>公钥解密(验签)</string>
    </property>
   </action>
  </widget>

@@ -110,6 +110,34 @@ bool RSAPrivateKey::isValid()
     return RSA_check_key(this->data->rsa);
 }
 
+QByteArray RSAPrivateKey::encrypt(QByteArray data)
+{
+    int rsaSize=this->size();
+    int blen=rsaSize-11;
+    int blocks=data.size()/blen + 1;
+
+    QByteArray result;
+
+    for(int i=0;i<blocks;i++)
+    {
+        unsigned char *from=i*blen+reinterpret_cast<unsigned char*>(data.data());
+        unsigned char *to=new unsigned char[rsaSize];
+
+        int flen;
+        if(i!=blocks-1)
+            flen=blen;
+        else
+            flen=data.size()%blen;
+
+        RSA_private_encrypt(flen,from,to,this->data->rsa,RSA_PKCS1_PADDING);
+
+        result.append(reinterpret_cast<const char*>(to),rsaSize);
+        delete [] to;
+    }
+
+    return result;
+}
+
 QByteArray RSAPrivateKey::decrypt(QByteArray data)
 {
     int rsaSize=this->size();
@@ -195,6 +223,27 @@ QByteArray RSAPublicKey::encrypt(QByteArray data)
         RSA_public_encrypt(flen,from,to,this->data->rsa,RSA_PKCS1_PADDING);
 
         result.append(reinterpret_cast<const char*>(to),rsaSize);
+        delete [] to;
+    }
+
+    return result;
+}
+
+QByteArray RSAPublicKey::decrypt(QByteArray data)
+{
+    int rsaSize=this->size();
+    int blocks=data.size()/rsaSize;
+
+    QByteArray result;
+
+    for(int i=0;i<blocks;i++)
+    {
+        unsigned char *from=i*rsaSize+reinterpret_cast<unsigned char*>(data.data());
+        unsigned char *to=new unsigned char[rsaSize];
+
+        int len=RSA_public_decrypt(rsaSize,from,to,this->data->rsa,RSA_PKCS1_PADDING);
+
+        result.append(reinterpret_cast<const char*>(to),len);
         delete [] to;
     }
 
