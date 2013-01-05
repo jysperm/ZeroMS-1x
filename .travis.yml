@@ -14,4 +14,4 @@ script:
   - /opt/qt5/bin/qmake ZeroMS.pro
   - make
   - cd Doc && export QT_INSTALL_DOCS=/usr/share/qt5/doc && /opt/qt5/bin/qdoc ZeroMS.qdocconf
-  - bash ./UnitTest/Travis/test.sh
+  - bash ~/jybox/ZeroMS/UnitTest/Travis/test.sh

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd UnitTest/
+cd ../UnitTest/
 ./ZeroMSUnitTest | tee output
 exit `grep '^FAIL!' output | wc -l`
