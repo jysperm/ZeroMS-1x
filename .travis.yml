@@ -13,5 +13,5 @@ before_install:
 script: 
   - /opt/qt5/bin/qmake ZeroMS.pro
   - make
-  - export QT_INSTALL_DOCS=/usr/share/qt5/doc && /opt/qt5/bin/qdoc Doc/ZeroMS.qdocconf
+  - cd Doc && export QT_INSTALL_DOCS=/usr/share/qt5/doc && /opt/qt5/bin/qdoc ZeroMS.qdocconf
   - bash ./UnitTest/Travis/test.sh
