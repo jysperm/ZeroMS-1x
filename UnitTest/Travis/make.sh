@@ -1,10 +1,11 @@
 #!/bin/bash
 
-qmake ZeroMS.pro
+/opt/qt5/bin/qmake ZeroMS.pro
 make
 cd UnitTest/
-qmake ZeroMSUnitTest.pro
+/opt/qt5/bin/qmake ZeroMSUnitTest.pro
 make
 
 cd ../Doc
-qdoc ZeroMS.qdocconf
+export QT_INSTALL_DOCS=/usr/share/qt5/doc
+/opt/qt5/bin/qdoc ZeroMS.qdocconf

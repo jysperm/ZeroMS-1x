@@ -85,7 +85,6 @@ void MainWindow::on_actionReadPubKeyFromFile_triggered()
 
 void MainWindow::on_actionValiy_triggered()
 {
-    //TODO：当私钥无效时(即刚打开程序时), 会直接崩溃.
     QMessageBox::information(this,tr("验证私钥"),(this->priKey.isValid()?tr("私钥有效"):tr("私钥无效")));
 }
 
