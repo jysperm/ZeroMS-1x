@@ -3,8 +3,8 @@ compiler:
   - gcc
 
 before_install:
-  - sudo add-apt-repository "deb http://ppa.launchpad.net/canonical-qt5-edgers/qt5-daily/ubuntu precise main" > /dev/null
-  - sudo apt-get update -qq > /dev/null
+  - sudo add-apt-repository "deb http://ppa.launchpad.net/canonical-qt5-edgers/qt5-daily/ubuntu precise main" > /dev/null 2>&1
+  - sudo apt-get update -qq > /dev/null 2>&1
   - sudo apt-get install -qq g++ > /dev/null
   - sudo apt-get install qtbase qttools > /dev/null
   - export DISPLAY=:99.0

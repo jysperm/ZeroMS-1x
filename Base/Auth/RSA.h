@@ -2,6 +2,7 @@
 #define ZEROMS_BASE_AUTH_RSA_H
 
 #include <QPair>
+#include <QString>
 #include "Base/Exception.h"
 
 #ifndef Q_QDOC
