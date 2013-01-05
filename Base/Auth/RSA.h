@@ -4,9 +4,11 @@
 #include <QPair>
 #include "Base/Exception.h"
 
+#ifndef Q_QDOC
 namespace ZeroMS {
 namespace Base {
 namespace Auth {
+#endif
 
 class RSAKeyMaker;
 
@@ -77,6 +79,8 @@ private:
     static unsigned long getPublicExp(RSAKey::PublicExp publicExp);
 };
 
+#ifndef Q_QDOC
 }}}   // namespace ZeroMS::Base::Auth
+#endif
 
 #endif // ZEROMS_BASE_AUTH_RSA_H

@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <openssl/rsa.h>
 #include <openssl/bio.h>
 #include <openssl/pem.h>
@@ -9,11 +8,44 @@ namespace ZeroMS {
 namespace Base {
 namespace Auth {
 
+/*!
+    \class RSAKey
+    \brief RSA密钥基类
+
+    RSAKey的储存着一个RSA密钥.
+*/
+
+/*!
+    \enum RSAKey::PublicExp
+
+    该枚举指定了RSA密钥的指数类型.
+
+    \value RSA3
+           0x3L
+    \value RSAF4
+           0x10001L
+*/
+
+/*!
+    \class RSAKey::InvalidKeyException
+    \brief RSA密钥错误异常
+
+    当RSA密钥错误时使用.
+*/
+
+/*
+    纯粹用于包装来自openssl的RSA
+*/
+
 class RSAKey::RSAKeyPrivate
 {
 public:
     ::RSA *rsa;
 };
+
+/*!
+    构造一个RSA密钥.
+*/
 
 RSAKey::RSAKey()
 {
@@ -21,12 +53,20 @@ RSAKey::RSAKey()
     this->data->rsa=RSA_new();
 }
 
+/*!
+    从一个已有的RSA密钥( \a other )复制构造.
+*/
+
 RSAKey::RSAKey(const RSAKey &other)
 {
     this->data=new RSAKeyPrivate;
     this->data->rsa=other.data->rsa;
     RSA_up_ref(this->data->rsa);
 }
+
+/*!
+    从一个已有的RSA密钥( \a other )赋值.
+*/
 
 RSAKey &RSAKey::operator =(const RSAKey &other)
 {
@@ -40,11 +80,20 @@ RSAKey &RSAKey::operator =(const RSAKey &other)
     return *this;
 }
 
+/*
+    从RSAKeyPrivate中的RSA结构构造
+    \a key 的所有权将被转移到该类.
+*/
+
 RSAKey::RSAKey(RSAKeyPrivate *key)
 {
     this->data=new RSAKeyPrivate;
     this->data->rsa=key->rsa;
 }
+
+/*!
+    析构函数
+*/
 
 RSAKey::~RSAKey()
 {
@@ -52,12 +101,20 @@ RSAKey::~RSAKey()
     delete this->data;
 }
 
+/*!
+    获取RSA密钥的长度，单位字节.
+*/
+
 int RSAKey::size()
 {
     if(!this->data->rsa->n)
         throw InvalidKeyException();
     return RSA_size(this->data->rsa);
 }
+
+/*!
+    以文本的格式返回密钥的信息.
+*/
 
 QString RSAKey::print()
 {
@@ -74,6 +131,19 @@ QString RSAKey::print()
 
     return ba;
 }
+
+/*!
+    \class RSAPrivateKey
+    \brief RSA私钥
+
+    RSAKey的储存着一个RSA私钥.
+*/
+
+/*!
+    转换为PEM格式， \a passwd 为密码.
+
+    \sa fromPEM()
+*/
 
 QByteArray RSAPrivateKey::toPEM(QString passwd)
 {
@@ -105,12 +175,22 @@ QByteArray RSAPrivateKey::toPEM(QString passwd)
     return ba;
 }
 
+/*!
+    检查私钥是否有效.
+*/
+
 bool RSAPrivateKey::isValid()
 {
     if(!this->data->rsa->n)
         return false;
     return RSA_check_key(this->data->rsa);
 }
+
+/*!
+    私钥加密(\a data), 即签名.
+
+    \sa RSAPublicKey::decrypt()
+*/
 
 QByteArray RSAPrivateKey::encrypt(QByteArray data)
 {
@@ -140,6 +220,12 @@ QByteArray RSAPrivateKey::encrypt(QByteArray data)
     return result;
 }
 
+/*!
+    私钥解密(\a data), 即解密.
+
+    \sa RSAPublicKey::encrypt()
+*/
+
 QByteArray RSAPrivateKey::decrypt(QByteArray data)
 {
     int rsaSize=this->size();
@@ -160,6 +246,12 @@ QByteArray RSAPrivateKey::decrypt(QByteArray data)
 
     return result;
 }
+
+/*!
+    从PEM格式创建实例， \a passwd 为密码.
+
+    \sa toPEM()
+*/
 
 RSAPrivateKey RSAPrivateKey::fromPEM(QByteArray pem,QString passwd)
 {
@@ -186,6 +278,19 @@ RSAPrivateKey RSAPrivateKey::fromPEM(QByteArray pem,QString passwd)
     return RSAPrivateKey(pKey);
 }
 
+/*!
+    \class RSAPublicKey
+    \brief RSA公钥
+
+    RSAKey的储存着一个RSA公钥.
+*/
+
+/*!
+    转换为PEM格式.
+
+    \sa fromPEM()
+*/
+
 QByteArray RSAPublicKey::toPEM()
 {
     BIO *bio=BIO_new(BIO_s_mem());
@@ -202,6 +307,12 @@ QByteArray RSAPublicKey::toPEM()
 
     return ba;
 }
+
+/*!
+    公钥加密(\a data), 即加密.
+
+    \sa RSAPrivateKey::decrypt()
+*/
 
 QByteArray RSAPublicKey::encrypt(QByteArray data)
 {
@@ -231,6 +342,12 @@ QByteArray RSAPublicKey::encrypt(QByteArray data)
     return result;
 }
 
+/*!
+    公钥解密(\a data), 即验签.
+
+    \sa RSAPrivateKey::encrypt()
+*/
+
 QByteArray RSAPublicKey::decrypt(QByteArray data)
 {
     int rsaSize=this->size();
@@ -252,13 +369,17 @@ QByteArray RSAPublicKey::decrypt(QByteArray data)
     return result;
 }
 
+/*!
+    从PEM格式创建实例.
+
+    \sa toPEM()
+*/
+
 RSAPublicKey RSAPublicKey::fromPEM(QByteArray pem)
 {
     BIO *bio=BIO_new(BIO_s_mem());
 
     BIO_write(bio,pem.constData(),pem.size());
-
-    qDebug()<<BIO_ctrl_pending(bio);
 
     ::RSA *rsa=PEM_read_bio_RSAPublicKey(bio,NULL,NULL,NULL);
 
@@ -272,6 +393,19 @@ RSAPublicKey RSAPublicKey::fromPEM(QByteArray pem)
 
     return RSAPublicKey(pKey);
 }
+
+/*!
+    \class RSAKeyMaker
+    \brief RSA密钥对生成器类
+
+    该类只有一个静态函数 makeKeyPair() 用于生成密钥对.
+*/
+
+/*!
+    生成密钥对.
+
+    \a bits 为密钥长度，单位比特； \a publicExp 指定公钥指数.
+*/
 
 QPair<RSAPrivateKey,RSAPublicKey> RSAKeyMaker::makeKeyPair(int bits,RSAKey::PublicExp publicExp)
 {
@@ -293,6 +427,12 @@ QPair<RSAPrivateKey,RSAPublicKey> RSAKeyMaker::makeKeyPair(int bits,RSAKey::Publ
 
     return pair;
 }
+
+/*
+    获得 \c RSAKey::PublicExp 类型所代表的实际值.
+
+    \sa RSAKey::PublicExp
+*/
 
 unsigned long RSAKeyMaker::getPublicExp(RSAKey::PublicExp publicExp)
 {
