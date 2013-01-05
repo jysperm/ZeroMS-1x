@@ -45,13 +45,13 @@ class RSAPrivateKey : public RSAKey
     friend class RSAKeyMaker;
 public:
     RSAPrivateKey():RSAKey(){}
-    QByteArray toPEM(QString passwd="passwd");
+    QByteArray toPEM(QString passwd=QString("passwd"));
     bool isValid();
 
     QByteArray encrypt(QByteArray data);
     QByteArray decrypt(QByteArray data);
 
-    static RSAPrivateKey fromPEM(QByteArray pem,QString passwd="passwd");
+    static RSAPrivateKey fromPEM(QByteArray pem,QString passwd=QString("passwd"));
 private:
     RSAPrivateKey(RSAKeyPrivate *rsa):RSAKey(rsa){}
 };
