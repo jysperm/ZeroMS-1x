@@ -3,7 +3,7 @@ compiler:
   - gcc
 
 before_install:
-  - sudo add-apt-repository "deb http://ppa.launchpad.net/canonical-qt5-edgers/qt5-daily/ubuntu precise main"
+  - sudo add-apt-repository "deb http://ppa.launchpad.net/canonical-qt5-edgers/qt5-daily/ubuntu precise main" > /dev/null
   - sudo apt-get update -qq > /dev/null
   - sudo apt-get install -qq g++ > /dev/null
   - sudo apt-get install qtbase qttools > /dev/null
@@ -11,6 +11,9 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 
 script: 
-  - bash ./UnitTest/Travis/make.sh
+  - /opt/qt5/bin/qmake ZeroMS.pro
+  - make
+  - /opt/qt5/bin/qmake UnitTest/ZeroMSUnitTest.pro
+  - cd UnitTest/ && make
+  - export QT_INSTALL_DOCS=/usr/share/qt5/doc && /opt/qt5/bin/qdoc Doc/ZeroMS.qdocconf
   - bash ./UnitTest/Travis/test.sh
-  
