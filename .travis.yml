@@ -4,9 +4,9 @@ compiler:
 
 before_install:
   - sudo add-apt-repository "deb http://ppa.launchpad.net/canonical-qt5-edgers/qt5-daily/ubuntu precise main"
-  - sudo apt-get update -qq
+  - sudo apt-get update -qq > /dev/null
   - sudo apt-get install -qq g++ > /dev/null
-  - sudo apt-get install qtbase qttools
+  - sudo apt-get install qtbase qttools > /dev/null
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 
