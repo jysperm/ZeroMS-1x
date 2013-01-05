@@ -83,4 +83,26 @@ private:
 }}}   // namespace ZeroMS::Base::Auth
 #endif
 
+#ifdef QT_TESTLIB_LIB
+
+#include <QObject>
+
+namespace ZeroMS {
+namespace UnitTest {
+namespace Base {
+namespace Auth {
+
+class RSATest : public QObject
+{
+    Q_OBJECT
+public:
+    RSATest();
+private slots:
+    void testRSA();
+};
+
+}}}}    // namespace ZeroMS::UnitTest::Base::Auth
+
+#endif  // QT_TESTLIB_LIB
+
 #endif // ZEROMS_BASE_AUTH_RSA_H

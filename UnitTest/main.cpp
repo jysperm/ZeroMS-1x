@@ -6,6 +6,7 @@
 #endif
 
 #include "Base/Auth/Hash.h"
+#include "Base/Auth/RSA.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,8 +21,10 @@ int main(int argc, char *argv[])
 #endif
 
     ZeroMS::UnitTest::Base::Auth::HashTest hashTest;
+    ZeroMS::UnitTest::Base::Auth::RSATest rsaTest;
 
     QTest::qExec(&hashTest, argc, argv);
+    QTest::qExec(&rsaTest, argc, argv);
 
     return 0;
 }
