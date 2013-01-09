@@ -24,7 +24,7 @@ Wiki： <https://github.com/jybox/ZeroMS/wiki>
 主要使用的库：Qt5、openssl
 
 ### 目前进度
-正在进行理论设计，成员招募，目前仅有很少的代码和Deomo.
+正在进行理论设计，成员招募，目前仅有很少的代码和Demo.
 
 ### 成员招募
 见[成员招募](https://github.com/jybox/ZeroMS/wiki/成员招募)
