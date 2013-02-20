@@ -10,7 +10,6 @@
 作为一个演示，零毫秒会首先实现一个即时通讯应用.
 
 ### 更多信息
-论坛： <http://0-ms.org>  
 源代码： <https://github.com/jybox/ZeroMS>  
 Wiki： <https://github.com/jybox/ZeroMS/wiki>
 
