@@ -4,12 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += testlib
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += testlib widgets
 
 CONFIG += c++11
-QMAKE_CXXFLAGS += -std=c++0x
 
 TARGET = ZeroMSUnitTest
 CONFIG   += console
@@ -22,7 +19,7 @@ INCLUDEPATH += ../
 LIBS+= -lcrypto -lssl
 
 win32{
-LIBS+= -lgdi32
+    LIBS+= -lgdi32
 }
 
 SOURCES += \

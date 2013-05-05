@@ -4,12 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 CONFIG += c++11
-QMAKE_CXXFLAGS += -std=c++0x
 
 TARGET = RSATools
 TEMPLATE = app
@@ -17,11 +14,10 @@ TEMPLATE = app
 INCLUDEPATH += ../../
 
 
-
 LIBS+= -lcrypto -lssl
 
-win32{
-LIBS+= -lgdi32
+win32 {
+    LIBS+= -lgdi32
 }
 
 SOURCES += main.cpp\
