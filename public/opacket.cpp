@@ -1,6 +1,4 @@
-#include <QDataStream>
-#include <QDateTime>
-#include "opacket.h"
+#include "OPacket.h"
 #include "const.h"
 
 OPacket::OPacket(QByteArray d,int t):type(t),data(d)

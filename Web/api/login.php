@@ -1,38 +1,29 @@
 <?php
-require("lp-class/SafeSQL.class.php");
-require("lp-class/SQLRs.class.php");
-require("lp-class/MySQL.class.php");
 
-$pkey="0-ms-0.1";
+error_reporting(0);
 
-if($_GET["mode"]=="post")
-{
-    switch($_POST["do"])
-    {
-        case "login":
-            $conn=new MySQL();
-            $rs=$conn->SQL(SafeSQL("SELECT * FROM `jypw_members` WHERE `username`='%1'")->string($_POST["uname"]));
-            $rs->read();
-            $time=$_POST["time"];
-            $time=$time-($time%10);
-            if($_GET["time"]=="yes")
-                $spwd=md5(md5($time).md5($_POST["uname"]).($rs->password));
-            else
-                $spwd=md5(md5($_POST["uname"]).($rs->password));
-            $dpwd=md5($pkey.$spwd);
-            if($_POST["pwd"]==$dpwd)
-            {
-                echo "1\n";
-            }
-            else
-            {
-                echo "0\n";
-            }
-            echo $_POST["uname"]."\n";
-            echo $_POST["listname"]."\n";
-            echo $_POST["clientver"]."\n";
-            echo $_POST["clientname"]."\n";
-            break;
-    }
-}
-?>
+require_once("../../config/config.php");
+require_once("../../core/lib/vendor/phpass/PasswordHash.php");
+
+$dbh = mysqli_connect($config["esoTalk.database.host"], $config["esoTalk.database.user"], $config["esoTalk.database.password"], $config["esoTalk.database.dbName"]);
+
+$uname = mysqli_real_escape_string($dbh, $_POST["uname"]);
+
+$res = mysqli_query($dbh, "SELECT * FROM `et_member` WHERE `username`='{$uname}'");
+$row = mysqli_fetch_assoc($res);
+
+$result = [
+    "uname" => $_POST["uname"],
+    "listname" => $_POST["listname"],
+    "clientver" => $_POST["clientver"],
+    "clientname" => $_POST["clientname"]
+];
+
+$hasher = new PasswordHash(8, FALSE);
+if($hasher->CheckPassword($_POST["pwd"], $row["password"]))
+    $result["error"] = false;
+else
+    $result["error"] = true;
+
+echo json_encode($result);
+

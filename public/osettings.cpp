@@ -1,8 +1,4 @@
-#include <QCoreApplication>
-#include <QSettings>
-#include <QString>
-#include <QFile>
-#include "osettings.h"
+#include "OSettings.h"
 
 
 OSettings::OSettings(QString file):config(0),defaultConfig(0)
@@ -13,8 +9,8 @@ OSettings::OSettings(QString file):config(0),defaultConfig(0)
 
 OSettings::~OSettings()
 {
-    DELETE(config);
-    DELETE(defaultConfig);
+    delete config;
+    delete defaultConfig;
 }
 
 void OSettings::load()
@@ -28,9 +24,10 @@ void OSettings::load()
         file.open(QFile::WriteOnly);
         file.write(defaultConfigFile.readAll());
     }
-    DELETE(config);
-    config=new QSettings(configFile,QSettings::IniFormat,qApp);
-    DELETE(defaultConfig);
-    defaultConfig=new QSettings(":/config.ini",QSettings::IniFormat,qApp);
+
+    delete config;
+    config = new QSettings(configFile, QSettings::IniFormat, qApp);
+    delete defaultConfig;
+    defaultConfig = new QSettings(":/config.ini", QSettings::IniFormat, qApp);
 }
 

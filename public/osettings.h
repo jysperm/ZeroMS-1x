@@ -1,13 +1,12 @@
 #ifndef PUBLIC_OSETTINGS_H
 #define PUBLIC_OSETTINGS_H
 
-#include <QSettings>
-#include "const.h"
+#include <QtCore>
 
 class OSettings
 {
 public:
-    OSettings(QString file=PUBLIC_CONFIG_FILE);
+    OSettings(QString file);
     virtual ~OSettings();
     inline QVariant operator[](QString key);
     void load();

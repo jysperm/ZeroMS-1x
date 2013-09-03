@@ -1,9 +1,7 @@
 #ifndef PUBLIC_OPACKET_H
 #define PUBLIC_OPACKET_H
 
-#include <QByteArray>
-#include <QObject>
-#include "const.h"
+#include <QtCore>
 #include "p1.h"
 using namespace P1;
 
