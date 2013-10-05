@@ -15,8 +15,8 @@ const QString CLIENT_TITLE_NAME = QObject::trUtf8("零毫秒");
 const QString CLIENT_NAME = QObject::trUtf8("零毫秒官方客户端");
 
 //版本顺序号
-const int CLIENT_VER_NUM = 7;
+const int CLIENT_VER_NUM = 8;
 //版本描述性字符串(每次编译发布版的时候再修改就可以)
-const QString CLIENT_VER_NAME = QObject::trUtf8("1.0.0 build%1-2012.1.26 0000000000").arg(CLIENT_VER_NUM);
+const QString CLIENT_VER_NAME = QObject::trUtf8("1.1.0 build%1-2013.9.3 862df94734").arg(CLIENT_VER_NUM);
 
 #endif // CONST_H
