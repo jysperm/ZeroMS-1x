@@ -1,6 +1,7 @@
 #ifndef ZEROMS_BASE_EXCEPTION_H
 #define ZEROMS_BASE_EXCEPTION_H
 
+#include <string>
 #include <stdexcept>
 
 #ifndef Q_QDOC
